@@ -667,36 +667,38 @@ const LandingPage = () => {
                         </Box>
                       ))}
                     </Box>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      size="large"
-                      sx={{ 
-                        py: 2,
-                        borderRadius: 3,
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                        textTransform: 'none',
-                        background: plan.popular 
-                          ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                          : 'rgba(255, 255, 255, 0.1)',
-                        color: 'white',
-                        border: plan.popular ? 'none' : '1px solid rgba(255, 255, 255, 0.2)',
-                        boxShadow: plan.popular 
-                          ? '0 8px 24px rgba(102, 126, 234, 0.4)' 
-                          : 'none',
-                        '&:hover': {
-                          background: plan.popular 
-                            ? 'linear-gradient(135deg, #5a5fd6 0%, #6a4191 100%)'
-                            : 'rgba(255, 255, 255, 0.15)',
-                          boxShadow: '0 12px 32px rgba(102, 126, 234, 0.5)',
-                          transform: 'translateY(-2px)'
-                        },
-                        transition: 'all 0.3s'
-                      }}
-                    >
-                      {plan.name === 'Starter' ? 'Start Free Trial' : 'Get Started'}
-                    </Button>
+                    <Link to={plan.name === 'Starter' ? '/auth' : '/user/plans'} style={{ textDecoration: 'none' }}>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        size="large"
+                        sx={{
+                          py: 2,
+                          borderRadius: 3,
+                          fontSize: '1rem',
+                          fontWeight: 700,
+                          textTransform: 'none',
+                          background: plan.popular
+                            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                            : 'rgba(255, 255, 255, 0.1)',
+                          color: 'white',
+                          border: plan.popular ? 'none' : '1px solid rgba(255, 255, 255, 0.2)',
+                          boxShadow: plan.popular
+                            ? '0 8px 24px rgba(102, 126, 234, 0.4)'
+                            : 'none',
+                          '&:hover': {
+                            background: plan.popular
+                              ? 'linear-gradient(135deg, #5a5fd6 0%, #6a4191 100%)'
+                              : 'rgba(255, 255, 255, 0.15)',
+                            boxShadow: '0 12px 32px rgba(102, 126, 234, 0.5)',
+                            transform: 'translateY(-2px)'
+                          },
+                          transition: 'all 0.3s'
+                        }}
+                      >
+                        {plan.name === 'Starter' ? 'Start Free Trial' : 'Get Started'}
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </Grid>

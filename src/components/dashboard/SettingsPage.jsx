@@ -28,13 +28,22 @@ const SettingsPage = ({ user }) => {
     pushNotifications: false,
     autoPost: false,
     theme: 'light',
-    language: 'en'
+    language: 'en',
+    timezone: 'UTC'
   });
 
   useEffect(() => {
     const saved = localStorage.getItem('currentUser');
     if (saved) {
-      setCurrentUser(JSON.parse(saved));
+      const userData = JSON.parse(saved);
+      setCurrentUser(userData);
+      // Load timezone from user data
+      if (userData.timezone) {
+        setSettings(prev => ({
+          ...prev,
+          timezone: userData.timezone
+        }));
+      }
     }
   }, []);
 
@@ -49,14 +58,27 @@ const SettingsPage = ({ user }) => {
     }));
   };
 
-  const handleSaveSettings = () => {
-    const updatedUser = {
-      ...currentUser,
-      settings: settings
-    };
-    setCurrentUser(updatedUser);
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    showSnackbar('Settings saved successfully');
+  const handleSaveSettings = async () => {
+    try {
+      // Update timezone on backend
+      const profileData = {
+        timezone: settings.timezone
+      };
+      await api.updateProfile(profileData);
+
+      // Update local state
+      const updatedUser = {
+        ...currentUser,
+        timezone: settings.timezone,
+        settings: settings
+      };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      showSnackbar('Settings saved successfully');
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      showSnackbar('Failed to save settings. Please try again.', 'error');
+    }
   };
 
   return (
@@ -217,6 +239,37 @@ const SettingsPage = ({ user }) => {
                   <MenuItem value="es">Español</MenuItem>
                   <MenuItem value="fr">Français</MenuItem>
                   <MenuItem value="de">Deutsch</MenuItem>
+                </TextField>
+                <TextField
+                  select
+                  label="Timezone"
+                  value={settings.timezone}
+                  onChange={(e) => handleSettingChange('timezone', e.target.value)}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      background: 'rgba(255, 255, 255, 0.8)',
+                      '&:hover': {
+                        background: 'rgba(255, 255, 255, 0.9)'
+                      }
+                    }
+                  }}
+                >
+                  <MenuItem value="UTC">UTC</MenuItem>
+                  <MenuItem value="America/New_York">Eastern Time (ET)</MenuItem>
+                  <MenuItem value="America/Chicago">Central Time (CT)</MenuItem>
+                  <MenuItem value="America/Denver">Mountain Time (MT)</MenuItem>
+                  <MenuItem value="America/Los_Angeles">Pacific Time (PT)</MenuItem>
+                  <MenuItem value="Europe/London">London (GMT/BST)</MenuItem>
+                  <MenuItem value="Europe/Paris">Paris (CET/CEST)</MenuItem>
+                  <MenuItem value="Europe/Berlin">Berlin (CET/CEST)</MenuItem>
+                  <MenuItem value="Asia/Tokyo">Tokyo (JST)</MenuItem>
+                  <MenuItem value="Asia/Shanghai">Shanghai (CST)</MenuItem>
+                  <MenuItem value="Asia/Kolkata">India (IST)</MenuItem>
+                  <MenuItem value="Australia/Sydney">Sydney (AEST/AEDT)</MenuItem>
+                  <MenuItem value="Africa/Lagos">Lagos (WAT)</MenuItem>
+                  <MenuItem value="Africa/Johannesburg">Johannesburg (SAST)</MenuItem>
+                  <MenuItem value="America/Sao_Paulo">São Paulo (BRT)</MenuItem>
                 </TextField>
               </Box>
             </Box>

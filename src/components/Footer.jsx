@@ -230,7 +230,7 @@ const Footer = () => {
           textAlign: 'center'
         }}>
           <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-            © 2024 PostNexus. All rights reserved. Made with ❤️ for creators.
+            © {new Date().getFullYear()} PostNexus. All rights reserved. Made with ❤️ for creators.
           </Typography>
         </Box>
       </Container>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { UserProvider } from './hooks/useUser';
+import apiService from './services/api';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
@@ -14,6 +16,7 @@ import SocialSuccessPage from './components/dashboard/SocialSuccessPage';
 import SocialErrorPage from './components/dashboard/SocialErrorPage';
 import SchedulePage from './components/dashboard/SchedulePage';
 import TopicsPage from './components/dashboard/TopicsPage';
+import PlansPage from './components/dashboard/PlansPage';
 import SettingsPage from './components/dashboard/SettingsPage';
 import Terms from './components/Terms';
 import Privacy from './components/Privacy';
@@ -29,6 +32,51 @@ const theme = createTheme({
     },
   },
 });
+
+// Navigation-aware component to set up API service
+function AppContent() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set navigate function in API service for 401 redirects
+    apiService.setNavigate(navigate);
+  }, [navigate]);
+
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route
+        path="/auth"
+        element={
+          <Auth onLogin={(user) => {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            navigate('/user/dashboard');
+          }} />
+        }
+      />
+      <Route path="/user" element={<DashboardLayout onLogout={() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('currentUser');
+        navigate('/auth');
+      }} />}>
+        <Route index element={<DashboardHome />} />
+        <Route path="dashboard" element={<DashboardHome />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="social" element={<SocialPage />} />
+        <Route path="social/success" element={<SocialSuccessPage />} />
+        <Route path="social/error" element={<SocialErrorPage />} />
+        <Route path="schedule" element={<SchedulePage />} />
+        <Route path="topics" element={<TopicsPage />} />
+        <Route path="plans" element={<PlansPage />} />
+        <Route path="plans/payment/callback" element={<PlansPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+      </Route>
+    </Routes>
+  );
+}
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -61,38 +109,13 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <div className="App">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route
-              path="/auth"
-              element={
-                currentUser ? (
-                  <UserDashboard user={currentUser} onLogout={handleLogout} />
-                ) : (
-                  <Auth onLogin={handleLogin} />
-                )
-              }
-            />
-            <Route path="/user" element={
-              <DashboardLayout onLogout={handleLogout} />}>
-              <Route  index element={<DashboardHome user={currentUser} />} />
-              <Route path="dashboard" element={<DashboardHome user={currentUser} />} />
-              <Route path="profile" element={<ProfilePage user={currentUser} />} />
-              <Route path="social" element={<SocialPage user={currentUser} />} />
-              <Route path="social/success" element={<SocialSuccessPage />} />
-              <Route path="social/error" element={<SocialErrorPage />} />
-              <Route path="schedule" element={<SchedulePage user={currentUser} />} />
-              <Route path="topics" element={<TopicsPage user={currentUser} />} />
-              <Route path="settings" element={<SettingsPage user={currentUser} />} />
-            </Route>
-          </Routes>
-        </div>
-      </Router>
+      <UserProvider>
+        <Router>
+          <div className="App">
+            <AppContent />
+          </div>
+        </Router>
+      </UserProvider>
     </ThemeProvider>
   );
 }

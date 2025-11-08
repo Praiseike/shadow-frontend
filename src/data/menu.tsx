@@ -5,6 +5,7 @@ import {
   Schedule as ScheduleIcon,
   Topic as TopicIcon,
   Settings as SettingsIcon,
+  CreditCard as CreditCardIcon,
 } from '@mui/icons-material';
 
 export const menuItems = [
@@ -32,16 +33,22 @@ export const menuItems = [
     icon: <ScheduleIcon />, 
     path: '/user/schedule' 
   },
-  { 
-    id: 'topics', 
-    label: 'Topics', 
-    icon: <TopicIcon />, 
-    path: '/user/topics' 
+  {
+    id: 'topics',
+    label: 'Topics',
+    icon: <TopicIcon />,
+    path: '/user/topics'
   },
-  { 
-    id: 'settings', 
-    label: 'Settings', 
-    icon: <SettingsIcon />, 
-    path: '/user/settings' 
+  {
+    id: 'plans',
+    label: 'Plans',
+    icon: <CreditCardIcon />,
+    path: '/user/plans'
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: <SettingsIcon />,
+    path: '/user/settings'
   },
 ];

@@ -266,7 +266,7 @@ return (
           </Alert>
         )}
 
-        <Box sx={{ mb: 4 }}>
+        {/* <Box sx={{ mb: 4 }}>
           <Button
             fullWidth
             variant="outlined"
@@ -294,33 +294,33 @@ return (
             Continue with Google
           </Button>
 
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 2, 
-            my: 3 
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            my: 3
           }}>
-            <Box sx={{ 
-              flex: 1, 
-              height: '1px', 
-              background: 'rgba(255, 255, 255, 0.1)' 
+            <Box sx={{
+              flex: 1,
+              height: '1px',
+              background: 'rgba(255, 255, 255, 0.1)'
             }} />
-            <Typography 
-              variant="body2" 
-              sx={{ 
+            <Typography
+              variant="body2"
+              sx={{
                 color: 'rgba(255, 255, 255, 0.5)',
                 fontWeight: 600
               }}
             >
               or
             </Typography>
-            <Box sx={{ 
-              flex: 1, 
-              height: '1px', 
-              background: 'rgba(255, 255, 255, 0.1)' 
+            <Box sx={{
+              flex: 1,
+              height: '1px',
+              background: 'rgba(255, 255, 255, 0.1)'
             }} />
           </Box>
-        </Box>
+        </Box> */}
 
         {tabValue === 1 && (
           <TextField

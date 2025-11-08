@@ -1,8 +1,15 @@
+import { useNavigate } from 'react-router-dom';
+
 const API_BASE_URL = 'http://localhost:3001/api';
 
 class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
+    this.navigate = null;
+  }
+
+  setNavigate(navigate) {
+    this.navigate = navigate;
   }
 
   async request(endpoint, options = {}) {
@@ -26,6 +33,21 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
+        // Handle 401 Unauthorized
+        if (response.status === 401) {
+          // Clear user data
+          localStorage.removeItem('token');
+          localStorage.removeItem('currentUser');
+
+          // Redirect to login if navigate is available
+          if (this.navigate) {
+            this.navigate('/auth');
+          } else {
+            // Fallback: redirect using window.location
+            window.location.href = '/auth';
+          }
+        }
+
         throw new Error(data.error || 'API request failed');
       }
 
@@ -185,6 +207,29 @@ class ApiService {
   async deleteDraft(draftId) {
     return this.request(`/content/drafts/${draftId}`, {
       method: 'DELETE',
+    });
+  }
+
+  // Plan endpoints
+  async getPlans() {
+    return this.request('/plans');
+  }
+
+  async subscribeToPlan(plan) {
+    return this.request('/plans/subscribe', {
+      method: 'POST',
+      body: JSON.stringify(plan),
+    });
+  }
+
+  async getUserPlan() {
+    return this.request('/plans/user');
+  }
+
+  async createStripePaymentIntent(planId) {
+    return this.request('/plans/create-payment-intent', {
+      method: 'POST',
+      body: JSON.stringify({ planId }),
     });
   }
 }
