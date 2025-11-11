@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE_URL = process.env.VITE_API_URL;
-console.log('API_BASE_URL:', API_BASE_URL);
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 class ApiService {
   constructor() {
@@ -15,7 +14,6 @@ class ApiService {
 
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint ?? ''}`;
-    console.log('Request URL:', url);
     const config = {
       headers: {
         'Content-Type': 'application/json',
