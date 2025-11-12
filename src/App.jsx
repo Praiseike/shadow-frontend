@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { UserProvider } from './hooks/useUser';
 import apiService from './services/api';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
-import UserDashboard from './components/UserDashboard';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHome from './components/dashboard/DashboardHome';
 import ProfilePage from './components/dashboard/ProfilePage';
@@ -20,6 +18,7 @@ import PlansPage from './components/dashboard/PlansPage';
 import SettingsPage from './components/dashboard/SettingsPage';
 import Terms from './components/Terms';
 import Privacy from './components/Privacy';
+import Onboarding from './components/Onboarding';
 
 const theme = createTheme({
   palette: {
@@ -57,6 +56,7 @@ function AppContent() {
           }} />
         }
       />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/user" element={<DashboardLayout onLogout={() => {
         localStorage.removeItem('token');
         localStorage.removeItem('currentUser');
@@ -109,13 +109,11 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <UserProvider>
         <Router>
           <div className="App">
             <AppContent />
           </div>
         </Router>
-      </UserProvider>
     </ThemeProvider>
   );
 }

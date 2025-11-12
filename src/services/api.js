@@ -28,13 +28,17 @@ class ApiService {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+
+    const exceptions = ['/','/auth']
+
+
     try {
       const response = await fetch(url, config);
       const data = await response.json();
 
       if (!response.ok) {
         // Handle 401 Unauthorized
-        if (response.status === 401) {
+        if (response.status === 401 && !exceptions.includes(window.location.pathname)) {
           // Clear user data
           localStorage.removeItem('token');
           localStorage.removeItem('currentUser');

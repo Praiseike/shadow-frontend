@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -22,6 +23,7 @@ import {
 import apiService from '../services/api';
 
 const Auth = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -84,8 +86,17 @@ const Auth = ({ onLogin }) => {
           password: formData.password,
           name: formData.name
         });
+
+        // Store token and user data
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
+
+        // Redirect to onboarding for new users
+        navigate('/onboarding');
+        return;
       }
 
+      // For login, proceed as before
       // Store token and user data
       localStorage.setItem('token', response.token);
       localStorage.setItem('currentUser', JSON.stringify(response.user));

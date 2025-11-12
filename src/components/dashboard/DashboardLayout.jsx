@@ -4,6 +4,7 @@ import { Box, IconButton } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import Sidebar from './Sidebar';
 import MobileSidebar from './MobileSidebar';
+import { UserProvider } from '../../hooks/useUser';
 
 const DashboardLayout = ({ onLogout }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -13,6 +14,7 @@ const DashboardLayout = ({ onLogout }) => {
   };
 
   return (
+          <UserProvider>
     <Box sx={{
       display: 'flex',
       minHeight: '100vh',
@@ -55,6 +57,7 @@ const DashboardLayout = ({ onLogout }) => {
         <Outlet />
       </Box>
     </Box>
+          </UserProvider>
   );
 };
 
