@@ -1,0 +1,26 @@
+name: Deploy React App
+
+on:
+  push:
+    branches: [ main ]  # or master, depending on your branch name
+  workflow_dispatch:  # allows manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        port: 22
+        script: |
+          cd /var/www/shadow-frontend
+          git reset --hard origin/main
+          git pull origin main
+          npm install
+          npm run build
+          echo "Deployment completed at $(date)"
