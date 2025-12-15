@@ -506,73 +506,292 @@ const DashboardHome = ({ user, onLogout }) => {
         onClose={() => setScheduleDialog(false)}
         maxWidth="sm"
         fullWidth
-        sx={{ '& .MuiDialog-paper': { borderRadius: 3 } }}
+        sx={{
+          '& .MuiDialog-paper': {
+            borderRadius: { xs: 3, sm: 4 },
+            m: { xs: 1, sm: 2 },
+            width: { xs: 'calc(100% - 16px)', sm: 'auto' },
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            backdropFilter: 'blur(20px)',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)'
+          }
+        }}
       >
         <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
           color: 'white',
-          fontWeight: 700,
-          py: 2.5
+          fontWeight: 600,
+          py: { xs: 3, sm: 3.5 },
+          px: { xs: 3, sm: 4 },
+          fontSize: { xs: '1.125rem', sm: '1.25rem' },
+          letterSpacing: '-0.025em',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
+            borderRadius: 'inherit'
+          }
         }}>
-          Set Posting Schedule
+          <Box sx={{ position: 'relative', zIndex: 1 }}>
+            Set Posting Schedule
+          </Box>
         </DialogTitle>
-        <DialogContent sx={{ p: 4, mt: 2 }}>
-          <Typography variant="body2" sx={{ color: '#718096', mb: 3 }}>
-            Choose two times per day for automated posting
+        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: '#64748b',
+              mb: { xs: 4, sm: 5 },
+              fontSize: { xs: '0.875rem', sm: '0.95rem' },
+              lineHeight: 1.6,
+              fontWeight: 400
+            }}
+          >
+            Configure automated posting times and select which platforms to use for content distribution.
           </Typography>
-          <TextField
-            fullWidth
-            label="First Post Time"
-            type="time"
-            value={scheduleData.time1}
-            onChange={(e) => setScheduleData(prev => ({ ...prev, time1: e.target.value }))}
-            sx={{ mb: 3 }}
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            fullWidth
-            label="Second Post Time"
-            type="time"
-            value={scheduleData.time2}
-            onChange={(e) => setScheduleData(prev => ({ ...prev, time2: e.target.value }))}
-            sx={{ mb: 3 }}
-            InputLabelProps={{ shrink: true }}
-          />
-          
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#2d3748', mb: 2 }}>
-            Select Platforms
-          </Typography>
-          <div className="flex flex-col gap-2">
-            {['linkedin', 'twitter', 'facebook'].map((platform) => (
-              <FormControlLabel
-                key={platform}
-                control={
-                  <Switch
-                    checked={scheduleData.platforms.includes(platform)}
-                    onChange={(e) => setScheduleData(prev => ({
-                      ...prev,
-                      platforms: e.target.checked
-                        ? [...prev.platforms, platform]
-                        : prev.platforms.filter(p => p !== platform)
-                    }))}
-                  />
-                }
-                label={platform.charAt(0).toUpperCase() + platform.slice(1)}
+
+          {/* Time Selection Section */}
+          <Box sx={{ mb: { xs: 4, sm: 5 } }}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                color: '#1e293b',
+                mb: 3,
+                fontSize: '1rem',
+                letterSpacing: '-0.025em'
+              }}
+            >
+              Posting Times
+            </Typography>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <TextField
+                fullWidth
+                label="First Post Time"
+                type="time"
+                value={scheduleData.time1}
+                onChange={(e) => setScheduleData(prev => ({ ...prev, time1: e.target.value }))}
+                InputLabelProps={{ shrink: true }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(10px)',
+                    '& fieldset': {
+                      borderColor: 'rgba(0, 0, 0, 0.08)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(0, 0, 0, 0.15)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#6366f1',
+                      borderWidth: 2,
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#64748b',
+                    fontWeight: 500,
+                    '&.Mui-focused': {
+                      color: '#6366f1',
+                      fontWeight: 600,
+                    },
+                  },
+                }}
               />
-            ))}
-          </div>
+              <TextField
+                fullWidth
+                label="Second Post Time"
+                type="time"
+                value={scheduleData.time2}
+                onChange={(e) => setScheduleData(prev => ({ ...prev, time2: e.target.value }))}
+                InputLabelProps={{ shrink: true }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(10px)',
+                    '& fieldset': {
+                      borderColor: 'rgba(0, 0, 0, 0.08)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(0, 0, 0, 0.15)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#6366f1',
+                      borderWidth: 2,
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#64748b',
+                    fontWeight: 500,
+                    '&.Mui-focused': {
+                      color: '#6366f1',
+                      fontWeight: 600,
+                    },
+                  },
+                }}
+              />
+            </div>
+          </Box>
+
+          {/* Platform Selection Section */}
+          <Box>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                color: '#1e293b',
+                mb: 3,
+                fontSize: '1rem',
+                letterSpacing: '-0.025em'
+              }}
+            >
+              Target Platforms
+            </Typography>
+            <div className="space-y-3">
+              {[
+                { platform: 'linkedin', label: 'LinkedIn', description: 'Professional networking', available: true, color: '#0077b5' },
+                { platform: 'twitter', label: 'Twitter', description: 'Real-time engagement', available: true, color: '#1da1f2' },
+                { platform: 'facebook', label: 'Facebook', description: 'Coming Soon', available: false, color: '#f59e0b' }
+              ].map(({ platform, label, description, available, color }) => (
+                <Card
+                  key={platform}
+                  sx={{
+                    borderRadius: 2,
+                    border: '1px solid rgba(0, 0, 0, 0.06)',
+                    background: available
+                      ? 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)'
+                      : 'linear-gradient(145deg, rgba(254, 243, 199, 0.3) 0%, rgba(253, 230, 138, 0.2) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: available
+                      ? '0 2px 4px rgba(0, 0, 0, 0.04)'
+                      : '0 2px 4px rgba(245, 158, 11, 0.1)',
+                    transition: 'all 0.2s ease',
+                    opacity: available ? 1 : 0.7
+                  }}
+                >
+                  <CardContent sx={{ p: 3 }}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={scheduleData.platforms.includes(platform)}
+                          onChange={(e) => setScheduleData(prev => ({
+                            ...prev,
+                            platforms: e.target.checked
+                              ? [...prev.platforms, platform]
+                              : prev.platforms.filter(p => p !== platform)
+                          }))}
+                          disabled={!available}
+                          sx={{
+                            '& .MuiSwitch-switchBase': {
+                              color: color,
+                              '&.Mui-checked': {
+                                color: color,
+                                '& + .MuiSwitch-track': {
+                                  backgroundColor: `${color}40`,
+                                },
+                              },
+                            },
+                            '& .MuiSwitch-switchBase.Mui-disabled': {
+                              color: '#d1d5db',
+                              '& + .MuiSwitch-track': {
+                                backgroundColor: '#f3f4f6'
+                              }
+                            }
+                          }}
+                        />
+                      }
+                      label={
+                        <Box sx={{ ml: 1 }}>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                              color: available ? '#1e293b' : '#92400e',
+                              fontSize: '0.95rem',
+                              lineHeight: 1.2
+                            }}
+                          >
+                            {label}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: available ? '#64748b' : '#d97706',
+                              fontSize: '0.8rem',
+                              fontWeight: 400
+                            }}
+                          >
+                            {description}
+                          </Typography>
+                        </Box>
+                      }
+                      sx={{
+                        m: 0,
+                        width: '100%',
+                        alignItems: 'flex-start',
+                        '& .MuiFormControlLabel-label': {
+                          flex: 1,
+                          marginTop: '2px'
+                        }
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 0 }}>
-          <Button onClick={() => setScheduleDialog(false)} sx={{ fontWeight: 600 }}>
+        <DialogActions sx={{
+          p: { xs: 3, sm: 4 },
+          pt: 0,
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 2, sm: 0 },
+          borderTop: '1px solid rgba(0, 0, 0, 0.06)'
+        }}>
+          <Button
+            onClick={() => setScheduleDialog(false)}
+            sx={{
+              fontWeight: 500,
+              width: { xs: '100%', sm: 'auto' },
+              order: { xs: 1, sm: 0 },
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              color: '#64748b',
+              '&:hover': {
+                backgroundColor: '#f8fafc'
+              }
+            }}
+          >
             Cancel
           </Button>
           <Button
             onClick={handleScheduleSave}
             variant="contained"
             sx={{
-              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
               fontWeight: 600,
-              px: 3
+              px: { xs: 4, sm: 3 },
+              py: 1.5,
+              borderRadius: 2,
+              width: { xs: '100%', sm: 'auto' },
+              minWidth: { xs: '100%', sm: '140px' },
+              textTransform: 'none',
+              letterSpacing: '0.025em',
+              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
+              }
             }}
           >
             Save Schedule
@@ -586,106 +805,327 @@ const DashboardHome = ({ user, onLogout }) => {
         onClose={() => setTopicDialog(false)}
         maxWidth="md"
         fullWidth
-        sx={{ '& .MuiDialog-paper': { borderRadius: 3, maxHeight: '90vh' } }}
+        sx={{
+          '& .MuiDialog-paper': {
+            borderRadius: { xs: 3, sm: 4 },
+            m: { xs: 1, sm: 2 },
+            width: { xs: 'calc(100% - 16px)', sm: 'auto' },
+            maxHeight: { xs: '95vh', sm: '90vh' },
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            backdropFilter: 'blur(20px)',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)'
+          }
+        }}
       >
         <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
           color: 'white',
-          fontWeight: 700,
-          py: 2.5
+          fontWeight: 600,
+          py: { xs: 3, sm: 3.5 },
+          px: { xs: 3, sm: 4 },
+          fontSize: { xs: '1.125rem', sm: '1.25rem' },
+          letterSpacing: '-0.025em',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
+            borderRadius: 'inherit'
+          }
         }}>
-          Choose Content Topics
+          <Box sx={{ position: 'relative', zIndex: 1 }}>
+            Choose Content Topics
+          </Box>
         </DialogTitle>
-        <DialogContent sx={{ p: 4 }}>
-          <Typography variant="body2" sx={{ color: '#718096', mb: 3 }}>
-            Select topics for your AI-generated posts
+        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: '#64748b',
+              mb: { xs: 4, sm: 5 },
+              fontSize: { xs: '0.875rem', sm: '0.95rem' },
+              lineHeight: 1.6,
+              fontWeight: 400
+            }}
+          >
+            Select topics that interest you to generate personalized, relevant content for your social media posts.
           </Typography>
 
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#2d3748', mb: 2 }}>
-            Predefined Topics
-          </Typography>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {predefinedTopics.map(topic => (
-              <Chip
-                key={topic}
-                label={topic}
-                clickable
-                onClick={() => handleTopicToggle(topic)}
-                sx={{
-                  borderRadius: 2,
-                  fontWeight: 500,
-                  background: selectedTopics.includes(topic)
-                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                    : '#f7fafc',
-                  color: selectedTopics.includes(topic) ? 'white' : '#2d3748',
-                  border: selectedTopics.includes(topic) ? 'none' : '1px solid #e2e8f0',
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-                  }
-                }}
-              />
-            ))}
-          </div>
-
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#2d3748', mb: 2 }}>
-            Add Custom Topic
-          </Typography>
-          <div className="flex gap-2 mb-4">
-            <TextField
-              fullWidth
-              label="Custom topic"
-              value={customTopic}
-              onChange={(e) => setCustomTopic(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddCustomTopic()}
-            />
-            <Button
-              onClick={handleAddCustomTopic}
-              variant="contained"
+          {/* Predefined Topics Section */}
+          <Box sx={{ mb: { xs: 5, sm: 6 } }}>
+            <Typography
+              variant="subtitle1"
               sx={{
-                background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
                 fontWeight: 600,
-                px: 3
+                color: '#1e293b',
+                mb: 3,
+                fontSize: '1rem',
+                letterSpacing: '-0.025em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
               }}
             >
-              Add
-            </Button>
-          </div>
+              <Box sx={{
+                width: 4,
+                height: 16,
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                borderRadius: 2
+              }} />
+              Popular Topics
+            </Typography>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {predefinedTopics.map(topic => (
+                <Card
+                  key={topic}
+                  onClick={() => handleTopicToggle(topic)}
+                  sx={{
+                    borderRadius: 2,
+                    border: selectedTopics.includes(topic)
+                      ? '2px solid #6366f1'
+                      : '1px solid rgba(0, 0, 0, 0.06)',
+                    background: selectedTopics.includes(topic)
+                      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%)'
+                      : 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: selectedTopics.includes(topic)
+                      ? '0 4px 12px rgba(99, 102, 241, 0.15)'
+                      : '0 2px 4px rgba(0, 0, 0, 0.04)',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: selectedTopics.includes(topic)
+                        ? '0 8px 20px rgba(99, 102, 241, 0.2)'
+                        : '0 8px 20px rgba(0, 0, 0, 0.1)',
+                      borderColor: selectedTopics.includes(topic) ? '#6366f1' : 'rgba(0, 0, 0, 0.12)'
+                    }
+                  }}
+                >
+                  <CardContent sx={{ p: 2.5, textAlign: 'center' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: selectedTopics.includes(topic) ? 600 : 500,
+                        color: selectedTopics.includes(topic) ? '#6366f1' : '#374151',
+                        fontSize: '0.85rem',
+                        lineHeight: 1.3
+                      }}
+                    >
+                      {topic}
+                    </Typography>
+                    {selectedTopics.includes(topic) && (
+                      <Box sx={{
+                        mt: 1,
+                        width: 6,
+                        height: 6,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                        mx: 'auto'
+                      }} />
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </Box>
 
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#2d3748', mb: 2 }}>
-            Selected Topics ({selectedTopics.length})
-          </Typography>
-          <div className="flex flex-wrap gap-2">
-            {selectedTopics.map(topic => (
-              <Chip
-                key={topic}
-                label={topic}
-                onDelete={() => handleTopicToggle(topic)}
+          {/* Custom Topic Section */}
+          <Box sx={{ mb: { xs: 5, sm: 6 } }}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                color: '#1e293b',
+                mb: 3,
+                fontSize: '1rem',
+                letterSpacing: '-0.025em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
+              <Box sx={{
+                width: 4,
+                height: 16,
+                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                borderRadius: 2
+              }} />
+              Custom Topics
+            </Typography>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <TextField
+                fullWidth
+                label="Add your own topic"
+                placeholder="e.g., React development, AI ethics, startup growth..."
+                value={customTopic}
+                onChange={(e) => setCustomTopic(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAddCustomTopic()}
                 sx={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  fontWeight: 600,
-                  borderRadius: 2
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(10px)',
+                    '& fieldset': {
+                      borderColor: 'rgba(0, 0, 0, 0.08)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(0, 0, 0, 0.15)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#059669',
+                      borderWidth: 2,
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#64748b',
+                    fontWeight: 500,
+                    '&.Mui-focused': {
+                      color: '#059669',
+                      fontWeight: 600,
+                    },
+                  },
                 }}
               />
-            ))}
-          </div>
+              <Button
+                onClick={handleAddCustomTopic}
+                variant="contained"
+                sx={{
+                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                  fontWeight: 600,
+                  px: { xs: 4, sm: 3 },
+                  py: 1.5,
+                  borderRadius: 2,
+                  minWidth: { xs: '100%', sm: '120px' },
+                  textTransform: 'none',
+                  letterSpacing: '0.025em',
+                  boxShadow: '0 4px 14px 0 rgba(5, 150, 105, 0.25)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #047857 0%, #065f46 100%)',
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 6px 20px 0 rgba(5, 150, 105, 0.35)'
+                  }
+                }}
+              >
+                Add Topic
+              </Button>
+            </div>
+          </Box>
+
+          {/* Selected Topics Section */}
+          {selectedTopics.length > 0 && (
+            <Box>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  mb: 3,
+                  fontSize: '1rem',
+                  letterSpacing: '-0.025em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}
+              >
+                <Box sx={{
+                  width: 4,
+                  height: 16,
+                  background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                  borderRadius: 2
+                }} />
+                Selected Topics ({selectedTopics.length})
+              </Typography>
+              <div className="flex flex-wrap gap-2">
+                {selectedTopics.map(topic => (
+                  <Chip
+                    key={topic}
+                    label={topic}
+                    onDelete={() => handleTopicToggle(topic)}
+                    sx={{
+                      background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                      color: 'white',
+                      fontWeight: 500,
+                      borderRadius: 2,
+                      fontSize: '0.85rem',
+                      px: 1.5,
+                      py: 0.5,
+                      boxShadow: '0 2px 8px rgba(124, 58, 237, 0.2)',
+                      '& .MuiChip-deleteIcon': {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        '&:hover': {
+                          color: 'white'
+                        }
+                      },
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%)',
+                        boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)'
+                      }
+                    }}
+                  />
+                ))}
+              </div>
+            </Box>
+          )}
         </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 0 }}>
-          <Button onClick={() => setTopicDialog(false)} sx={{ fontWeight: 600 }}>
+        <DialogActions sx={{
+          p: { xs: 3, sm: 4 },
+          pt: 0,
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 2, sm: 0 },
+          borderTop: '1px solid rgba(0, 0, 0, 0.06)'
+        }}>
+          <Button
+            onClick={() => setTopicDialog(false)}
+            sx={{
+              fontWeight: 500,
+              width: { xs: '100%', sm: 'auto' },
+              order: { xs: 1, sm: 0 },
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              color: '#64748b',
+              '&:hover': {
+                backgroundColor: '#f8fafc'
+              }
+            }}
+          >
             Cancel
           </Button>
           <Button
             onClick={handleTopicsSave}
             variant="contained"
+            disabled={selectedTopics.length === 0}
             sx={{
-              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
               fontWeight: 600,
-              px: 3
+              px: { xs: 4, sm: 3 },
+              py: 1.5,
+              borderRadius: 2,
+              width: { xs: '100%', sm: 'auto' },
+              minWidth: { xs: '100%', sm: '140px' },
+              textTransform: 'none',
+              letterSpacing: '0.025em',
+              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
+              },
+              '&:disabled': {
+                background: '#9ca3af',
+                boxShadow: 'none',
+                transform: 'none'
+              }
             }}
           >
-            Save Topics
+            Save Topics ({selectedTopics.length})
           </Button>
         </DialogActions>
       </Dialog>
@@ -696,81 +1136,196 @@ const DashboardHome = ({ user, onLogout }) => {
         onClose={() => setSocialDialog(false)}
         maxWidth="sm"
         fullWidth
-        sx={{ '& .MuiDialog-paper': { borderRadius: 3 } }}
+        sx={{
+          '& .MuiDialog-paper': {
+            borderRadius: { xs: 3, sm: 4 },
+            m: { xs: 1, sm: 2 },
+            width: { xs: 'calc(100% - 16px)', sm: 'auto' },
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            backdropFilter: 'blur(20px)',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)'
+          }
+        }}
       >
         <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
           color: 'white',
-          fontWeight: 700,
-          py: 2.5
+          fontWeight: 600,
+          py: { xs: 3, sm: 3.5 },
+          px: { xs: 3, sm: 4 },
+          fontSize: { xs: '1.125rem', sm: '1.25rem' },
+          letterSpacing: '-0.025em',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
+            borderRadius: 'inherit'
+          }
         }}>
-          Connect Social Accounts
+          <Box sx={{ position: 'relative', zIndex: 1 }}>
+            Connect Social Accounts
+          </Box>
         </DialogTitle>
-        <DialogContent sx={{ p: 4 }}>
-          <Typography variant="body2" sx={{ color: '#718096', mb: 4 }}>
-            Connect your social media accounts to enable automated posting
+        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: '#64748b',
+              mb: { xs: 4, sm: 5 },
+              fontSize: { xs: '0.875rem', sm: '0.95rem' },
+              lineHeight: 1.6,
+              fontWeight: 400
+            }}
+          >
+            Link your social media accounts to enable automated content distribution and analytics tracking.
           </Typography>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {[
-              { platform: 'linkedin', icon: <LinkedInIcon />, name: 'LinkedIn', gradient: 'from-blue-600 to-blue-700' },
-              { platform: 'twitter', icon: <TwitterIcon />, name: 'Twitter', gradient: 'from-sky-400 to-sky-600' },
-              { platform: 'facebook', icon: <FacebookIcon />, name: 'Facebook', gradient: 'from-blue-500 to-blue-600' }
-            ].map(({ platform, icon, name, gradient }) => (
+              { platform: 'linkedin', icon: <LinkedInIcon />, name: 'LinkedIn', gradient: 'from-blue-600 to-blue-700', bgColor: '#0077b5', available: true },
+              { platform: 'twitter', icon: <TwitterIcon />, name: 'Twitter', gradient: 'from-sky-500 to-sky-600', bgColor: '#1da1f2', available: true },
+              { platform: 'facebook', icon: <FacebookIcon />, name: 'Facebook', gradient: 'from-blue-600 to-blue-700', bgColor: '#1877f2', available: false }
+            ].map(({ platform, icon, name, gradient, bgColor, available }) => (
               <Card
                 key={platform}
                 sx={{
-                  borderRadius: 2,
-                  border: '1px solid #e2e8f0',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)',
-                    transform: 'translateY(-2px)'
-                  }
+                  borderRadius: 3,
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': available ? {
+                    transform: 'translateY(-2px) scale(1.01)',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    border: '1px solid rgba(0, 0, 0, 0.08)'
+                  } : {}
                 }}
               >
-                <CardContent sx={{ p: 3 }}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`bg-gradient-to-br ${gradient} w-12 h-12 rounded-xl flex items-center justify-center text-white`}>
+                <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+                  {/* Professional responsive layout */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white flex-shrink-0 shadow-lg`}
+                           style={{ background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%)` }}>
                         {icon}
                       </div>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: '#2d3748' }}>
-                        {name}
-                      </Typography>
-                    </div>
-                    {currentUser?.socialConnections?.[platform]?.connected ? (
-                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
-                        <Chip
-                          label="Connected"
+                      <Box>
+                        <Typography
+                          variant="h6"
                           sx={{
                             fontWeight: 600,
-                            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                            color: 'white'
+                            color: '#1e293b',
+                            fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                            mb: 0.5,
+                            letterSpacing: '-0.025em'
+                          }}
+                        >
+                          {name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: '#64748b',
+                            fontSize: '0.875rem',
+                            fontWeight: 400
+                          }}
+                        >
+                          {platform === 'linkedin' && 'Professional networking'}
+                          {platform === 'twitter' && 'Real-time engagement'}
+                          {platform === 'facebook' && 'Community building'}
+                        </Typography>
+                      </Box>
+                    </div>
+                    {currentUser?.socialConnections?.[platform]?.connected ? (
+                      <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: { xs: 3, sm: 2 },
+                        alignItems: { xs: 'stretch', sm: 'center' },
+                        width: { xs: '100%', sm: 'auto' }
+                      }}>
+                        <Chip
+                          label="✓ Connected"
+                          sx={{
+                            fontWeight: 600,
+                            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                            color: 'white',
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                            height: { xs: 32, sm: 36 },
+                            px: 2,
+                            borderRadius: 2,
+                            boxShadow: '0 2px 4px rgba(5, 150, 105, 0.2)'
                           }}
                         />
                         <Button
                           variant="outlined"
-                          size="small"
                           onClick={() => handleSocialDisconnect(platform)}
-                          sx={{ textTransform: 'none', fontWeight: 600 }}
+                          sx={{
+                            textTransform: 'none',
+                            fontWeight: 500,
+                            fontSize: { xs: '0.875rem', sm: '0.9rem' },
+                            px: { xs: 3, sm: 2.5 },
+                            py: { xs: 1.25, sm: 1 },
+                            width: { xs: '100%', sm: 'auto' },
+                            borderColor: '#d1d5db',
+                            color: '#6b7280',
+                            borderRadius: 2,
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                              backgroundColor: '#f9fafb'
+                            }
+                          }}
                         >
                           Disconnect
                         </Button>
                       </Box>
-                    ) : (
+                    ) : available ? (
                       <Button
                         variant="contained"
                         onClick={() => handleSocialConnect(platform)}
                         sx={{
-                          background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                          background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%)`,
                           fontWeight: 600,
-                          px: 3
+                          px: { xs: 4, sm: 3.5 },
+                          py: { xs: 1.5, sm: 1.25 },
+                          fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                          width: { xs: '100%', sm: 'auto' },
+                          minWidth: { xs: '100%', sm: '140px' },
+                          borderRadius: 2,
+                          textTransform: 'none',
+                          letterSpacing: '0.025em',
+                          boxShadow: `0 4px 14px 0 rgba(${bgColor === '#0077b5' ? '0, 119, 181' : bgColor === '#1da1f2' ? '29, 161, 242' : '24, 119, 242'}, 0.25)`,
+                          '&:hover': {
+                            background: `linear-gradient(135deg, ${bgColor}dd 0%, ${bgColor} 100%)`,
+                            transform: 'translateY(-1px)',
+                            boxShadow: `0 6px 20px 0 rgba(${bgColor === '#0077b5' ? '0, 119, 181' : bgColor === '#1da1f2' ? '29, 161, 242' : '24, 119, 242'}, 0.35)`
+                          }
                         }}
-                        className={`bg-gradient-to-r ${gradient}`}
                       >
                         Connect
                       </Button>
+                    ) : (
+                      <Chip
+                        label="Coming Soon"
+                        sx={{
+                          fontWeight: 600,
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          color: 'white',
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                          height: { xs: 32, sm: 36 },
+                          px: 2,
+                          borderRadius: 2,
+                          boxShadow: '0 2px 4px rgba(245, 158, 11, 0.2)'
+                        }}
+                      />
                     )}
                   </div>
                 </CardContent>
@@ -778,8 +1333,28 @@ const DashboardHome = ({ user, onLogout }) => {
             ))}
           </div>
         </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 0 }}>
-          <Button onClick={() => setSocialDialog(false)} sx={{ fontWeight: 600 }}>
+        <DialogActions sx={{
+          p: { xs: 3, sm: 4 },
+          pt: 0,
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 2, sm: 0 },
+          borderTop: '1px solid rgba(0, 0, 0, 0.06)'
+        }}>
+          <Button
+            onClick={() => setSocialDialog(false)}
+            sx={{
+              fontWeight: 500,
+              width: { xs: '100%', sm: 'auto' },
+              order: { xs: 1, sm: 0 },
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              color: '#64748b',
+              '&:hover': {
+                backgroundColor: '#f8fafc'
+              }
+            }}
+          >
             Close
           </Button>
         </DialogActions>
