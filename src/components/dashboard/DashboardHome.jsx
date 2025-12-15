@@ -145,20 +145,18 @@ const DashboardHome = ({ user, onLogout }) => {
     }
   };
 
+  // Start real OAuth flow; mirrors SocialPage behaviour so both entry points are consistent.
   const handleSocialConnect = async (platform) => {
     try {
-      const mockConnectionData = {
-        platform,
-        accessToken: 'mock_token_' + Date.now(),
-        refreshToken: 'mock_refresh_' + Date.now(),
-        expiresAt: new Date(Date.now() + 3600000)
-      };
-
-      await apiService.connectSocial(platform, mockConnectionData);
-
-      showSnackbar(`${platform} connected successfully`);
+      if (platform === 'linkedin' || platform === 'twitter') {
+        const authResponse = await apiService.initiateSocialAuth(platform);
+        setSocialDialog(false);
+        window.location.href = authResponse.authUrl;
+      } else {
+        showSnackbar(`${platform} connection not yet implemented`, 'warning');
+      }
     } catch (error) {
-      console.error('Failed to connect social account:', error);
+      console.error('Failed to initiate social auth:', error);
       showSnackbar(`Failed to connect ${platform}`, 'error');
     }
   };
