@@ -163,177 +163,187 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section>
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 16 } }}>
-          <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Chip 
-                label="🚀 Now with GPT-4 Turbo" 
-                sx={{ 
+        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 14 } }}>
+          <Grid container spacing={8} alignItems="center">
+            <Grid item xs={12} md={7}>
+              <Chip
+                label="Trusted automation for modern professionals"
+                sx={{
                   mb: 3,
-                  background: 'rgba(102, 126, 234, 0.2)',
-                  color: 'white',
-                  border: '1px solid rgba(102, 126, 234, 0.3)',
-                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(15, 23, 42, 0.6)',
+                  color: '#cbd5e1',
+                  border: '1px solid rgba(226, 232, 240, 0.2)',
+                  textTransform: 'none',
                   fontWeight: 600
-                }} 
+                }}
               />
               <Typography
                 variant="h1"
                 sx={{
-                  fontWeight: 900,
-                  mb: 3,
-                  fontSize: { xs: '2.5rem', md: '4rem' },
-                  lineHeight: 1.1,
-                  background: 'linear-gradient(135deg, #ffffff 0%, #a8b5ff 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  letterSpacing: '-2px'
+                  fontWeight: 800,
+                  mb: 2,
+                  fontSize: { xs: '2.75rem', md: '3.75rem' },
+                  lineHeight: 1.05,
+                  color: '#e2e8f0',
+                  letterSpacing: '-1px'
                 }}
               >
-                AI-Powered Social Media on Autopilot
+                Automate your social growth with confident, on-brand AI.
               </Typography>
-              <Typography variant="h6" sx={{ 
-                color: 'rgba(255, 255, 255, 0.7)', 
-                mb: 5, 
-                lineHeight: 1.8,
-                fontSize: { xs: '1.1rem', md: '1.3rem' }
-              }}>
-                Connect once. Let AI create engaging content. Watch your network grow while you sleep.
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'rgba(226, 232, 240, 0.8)',
+                  mb: 4,
+                  lineHeight: 1.7,
+                  maxWidth: 720
+                }}
+              >
+                Connect LinkedIn and Twitter once. We plan, write, and schedule for you—so you can focus on work while your audience and pipeline grow.
               </Typography>
-              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', mb: 6 }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 4 }}>
                 <Link to="/auth">
                   <Button
                     variant="contained"
                     size="large"
                     endIcon={<BoltIcon />}
                     sx={{
-                      px: 5,
-                      py: 2,
-                      fontSize: '1.1rem',
+                      px: 4,
+                      py: 1.75,
                       fontWeight: 700,
-                      borderRadius: 4,
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      boxShadow: '0 12px 40px rgba(102, 126, 234, 0.5)',
                       textTransform: 'none',
-                      '&:hover': {
-                        boxShadow: '0 16px 56px rgba(102, 126, 234, 0.7)',
-                        transform: 'translateY(-3px)'
-                      },
-                      transition: 'all 0.3s'
+                      borderRadius: 3
                     }}
                   >
-                    Start Free Trial
+                    Start free trial
                   </Button>
                 </Link>
                 <Button
                   variant="outlined"
                   size="large"
-                  sx={{ 
-                    px: 5, 
-                    py: 2,
-                    fontSize: '1.1rem',
-                    fontWeight: 600,
-                    borderRadius: 4,
-                    borderColor: 'rgba(255, 255, 255, 0.3)',
-                    color: 'white',
+                  onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+                  sx={{
+                    px: 4,
+                    py: 1.65,
+                    fontWeight: 700,
                     textTransform: 'none',
-                    backdropFilter: 'blur(10px)',
+                    borderRadius: 3,
+                    color: '#e2e8f0',
+                    borderColor: 'rgba(226, 232, 240, 0.25)',
                     '&:hover': {
-                      borderColor: 'rgba(255, 255, 255, 0.6)',
-                      background: 'rgba(255, 255, 255, 0.05)'
+                      borderColor: 'rgba(226, 232, 240, 0.5)',
+                      backgroundColor: 'rgba(226, 232, 240, 0.04)'
                     }
                   }}
-                  onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
                 >
-                  See How It Works
+                  See how it works
                 </Button>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Box sx={{ display: 'flex' }}>
                     {[1, 2, 3, 4, 5].map((star) => (
                       <StarIcon key={star} sx={{ color: '#fbbf24', fontSize: 20 }} />
                     ))}
                   </Box>
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ color: '#cbd5e1', fontWeight: 600 }}>
                     4.9/5 from 10,000+ users
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  {['💼', '🚀', '🎯'].map((emoji, i) => (
-                    <Box key={i} sx={{ 
-                      width: 36, 
-                      height: 36, 
-                      borderRadius: 2, 
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      backdropFilter: 'blur(10px)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.2rem'
-                    }}>
-                      {emoji}
-                    </Box>
-                  ))}
-                </Box>
+                <Chip
+                  icon={<CheckCircleIcon sx={{ color: '#22c55e' }} />}
+                  label="Secure OAuth, no passwords stored"
+                  sx={{
+                    backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                    color: '#a7f3d0',
+                    borderRadius: 2,
+                    border: '1px solid rgba(34, 197, 94, 0.2)'
+                  }}
+                />
               </Box>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Box
+
+            <Grid item xs={12} md={5}>
+              <Card
                 sx={{
-                  position: 'relative',
-                  height: { xs: 300, md: 500 },
-                  borderRadius: 6,
-                  overflow: 'hidden',
-                  boxShadow: '0 25px 80px rgba(0, 0, 0, 0.4)',
-                  transform: 'perspective(1000px) rotateY(-5deg)',
-                  transition: 'transform 0.6s',
-                  '&:hover': {
-                    transform: 'perspective(1000px) rotateY(0deg)'
-                  }
+                  borderRadius: 4,
+                  background: 'linear-gradient(145deg, #0b1220, #111827)',
+                  border: '1px solid rgba(226, 232, 240, 0.08)',
+                  boxShadow: '0 24px 80px rgba(0, 0, 0, 0.45)',
+                  p: 3
                 }}
               >
-                <Box sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 4
-                }}>
-                  <Box sx={{ 
-                    fontSize: { xs: '4rem', md: '6rem' },
-                    animation: 'pulse 2s ease-in-out infinite'
-                  }}>
-                    🤖
-                  </Box>
-                  <Typography variant="h3" sx={{ color: 'white', fontWeight: 800, textAlign: 'center', px: 4 }}>
-                    AI Creates.<br/>You Succeed.
+                <CardContent sx={{ p: { xs: 1, md: 2 } }}>
+                  <Typography variant="subtitle2" sx={{ color: '#94a3b8', mb: 1 }}>
+                    Weekly plan preview
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    {[
-                      { icon: '📈', label: '+300%' },
-                      { icon: '⚡', label: '2x Daily' },
-                      { icon: '🎯', label: '100% Auto' }
-                    ].map((stat, i) => (
-                      <Box key={i} sx={{
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: 3,
-                        px: 3,
-                        py: 2,
-                        textAlign: 'center'
-                      }}>
-                        <Box sx={{ fontSize: '2rem', mb: 1 }}>{stat.icon}</Box>
-                        <Typography sx={{ color: 'white', fontWeight: 700 }}>{stat.label}</Typography>
-                      </Box>
-                    ))}
+                  <Box
+                    sx={{
+                      borderRadius: 3,
+                      background: 'rgba(226, 232, 240, 0.04)',
+                      border: '1px solid rgba(226, 232, 240, 0.06)',
+                      p: 2,
+                      mb: 3
+                    }}
+                  >
+                    {[['Mon', 'LinkedIn • 9:00'], ['Wed', 'Twitter • 15:00'], ['Fri', 'LinkedIn • 10:00']].map(
+                      ([day, slot], idx) => (
+                        <Box
+                          key={idx}
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            py: 1.25,
+                            borderBottom: idx < 2 ? '1px solid rgba(148, 163, 184, 0.18)' : 'none'
+                          }}
+                        >
+                          <Typography sx={{ color: '#e2e8f0', fontWeight: 700 }}>{day}</Typography>
+                          <Typography sx={{ color: '#cbd5e1', fontWeight: 500 }}>{slot}</Typography>
+                        </Box>
+                      )
+                    )}
                   </Box>
-                </Box>
-              </Box>
+                  <Grid container spacing={2} sx={{ mb: 2 }}>
+                    {[
+                      { icon: <TrendingUpIcon />, label: 'Engagement', value: '+212%' },
+                      { icon: <PeopleIcon />, label: 'Connections', value: '+3.2k' },
+                      { icon: <ScheduleIcon />, label: 'Posts automated', value: '14/wk' }
+                    ].map((item, idx) => (
+                      <Grid item xs={4} key={idx}>
+                        <Card
+                          sx={{
+                            background: 'rgba(226, 232, 240, 0.03)',
+                            border: '1px solid rgba(226, 232, 240, 0.06)',
+                            borderRadius: 3,
+                            p: 2,
+                            textAlign: 'center'
+                          }}
+                        >
+                          <Box sx={{ color: '#a5b4fc', display: 'flex', justifyContent: 'center', mb: 1 }}>
+                            {item.icon}
+                          </Box>
+                          <Typography sx={{ color: '#e2e8f0', fontWeight: 700 }}>{item.value}</Typography>
+                          <Typography variant="caption" sx={{ color: '#94a3b8' }}>
+                            {item.label}
+                          </Typography>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                  <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+                    <Avatar sx={{ width: 36, height: 36, bgcolor: '#312e81' }}>AI</Avatar>
+                    <Box>
+                      <Typography variant="body2" sx={{ color: '#e2e8f0', fontWeight: 700 }}>
+                        Live AI drafting
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#94a3b8' }}>
+                        Tailored to your topics and tone
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
         </Container>
@@ -342,98 +352,88 @@ const LandingPage = () => {
       {/* Features Section */}
       <section id="features" style={{ paddingTop: '120px', paddingBottom: '120px' }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 10 }}>
-            <Chip 
-              label="Features" 
-              sx={{ 
-                mb: 3,
-                background: 'rgba(102, 126, 234, 0.2)',
-                color: 'white',
-                border: '1px solid rgba(102, 126, 234, 0.3)',
-                backdropFilter: 'blur(10px)',
-                fontWeight: 600,
-                fontSize: '0.9rem'
-              }} 
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Chip
+              label="Why teams choose us"
+              sx={{
+                mb: 2,
+                background: 'rgba(148, 163, 184, 0.12)',
+                color: '#cbd5e1',
+                border: '1px solid rgba(148, 163, 184, 0.25)',
+                textTransform: 'none',
+                fontWeight: 600
+              }}
             />
-            <Typography variant="h2" sx={{ 
-              fontWeight: 900, 
-              color: 'white', 
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              letterSpacing: '-1px'
-            }}>
-              Everything You Need to Dominate
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: 800,
+                color: '#e2e8f0',
+                mb: 2,
+                fontSize: { xs: '2.25rem', md: '3rem' }
+              }}
+            >
+              Built for consistent, on-brand publishing
             </Typography>
-            <Typography variant="h6" sx={{ 
-              color: 'rgba(255, 255, 255, 0.6)', 
-              maxWidth: 700, 
-              mx: 'auto',
-              lineHeight: 1.8
-            }}>
-              Powerful AI meets seamless automation. Your social media presence, reimagined.
+            <Typography
+              variant="h6"
+              sx={{
+                color: 'rgba(226, 232, 240, 0.7)',
+                maxWidth: 760,
+                mx: 'auto',
+                lineHeight: 1.7
+              }}
+            >
+              AI drafting, scheduling, and analytics in one place—without the noisy UI.
             </Typography>
           </Box>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4" spacing={4}>
+          <Grid container spacing={3}>
             {features.map((feature, index) => (
-              <Grid xs={12} md={4} key={index}>
+              <Grid item xs={12} md={4} key={index}>
                 <Card
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
                   sx={{
                     height: '100%',
-                    background: hoveredCard === index 
-                      ? 'rgba(255, 255, 255, 0.08)' 
-                      : 'rgba(255, 255, 255, 0.03)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: 5,
-                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transform: hoveredCard === index ? 'translateY(-12px) scale(1.02)' : 'translateY(0) scale(1)',
-                    boxShadow: hoveredCard === index 
-                      ? '0 24px 60px rgba(102, 126, 234, 0.3)' 
-                      : '0 8px 24px rgba(0, 0, 0, 0.2)',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '4px',
-                      background: feature.gradient,
-                      opacity: hoveredCard === index ? 1 : 0,
-                      transition: 'opacity 0.3s'
-                    }
+                    background: hoveredCard === index ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(226, 232, 240, 0.12)',
+                    borderRadius: 4,
+                    transition: 'all 0.3s ease',
+                    boxShadow: hoveredCard === index
+                      ? '0 18px 48px rgba(0, 0, 0, 0.28)'
+                      : '0 10px 32px rgba(0, 0, 0, 0.18)',
+                    transform: hoveredCard === index ? 'translateY(-6px)' : 'translateY(0)'
                   }}
                 >
-                  <CardContent sx={{ p: 5 }}>
-                    <Box sx={{ 
-                      mb: 3,
-                      width: 80,
-                      height: 80,
-                      borderRadius: 4,
-                      background: feature.gradient,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
-                    }}>
+                  <CardContent sx={{ p: 4 }}>
+                    <Box
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 3,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        background: feature.gradient,
+                        boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
+                        mb: 2.5
+                      }}
+                    >
                       {feature.icon}
                     </Box>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: 'white', mb: 2 }}>
+                    <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 700, mb: 1.5 }}>
                       {feature.title}
                     </Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4, lineHeight: 1.7 }}>
+                    <Typography variant="body1" sx={{ color: 'rgba(226, 232, 240, 0.72)', mb: 2, lineHeight: 1.6 }}>
                       {feature.description}
                     </Typography>
-                    <Box>
-                      {feature.benefits.map((benefit, idx) => (
-                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                          <CheckCircleIcon sx={{ color: '#10b981', mr: 1.5, fontSize: 20 }} />
-                          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                    <Box sx={{ display: 'grid', gap: 1 }}>
+                      {feature.benefits.map((benefit, i) => (
+                        <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <CheckCircleIcon sx={{ color: '#22c55e', fontSize: 20 }} />
+                          <Typography variant="body2" sx={{ color: 'rgba(226, 232, 240, 0.85)', fontWeight: 500 }}>
                             {benefit}
                           </Typography>
                         </Box>
@@ -443,7 +443,7 @@ const LandingPage = () => {
                 </Card>
               </Grid>
             ))}
-          </div>
+          </Grid>
         </Container>
       </section>
 
