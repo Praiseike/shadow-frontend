@@ -271,11 +271,11 @@ const SchedulePage = ({ user }) => {
                         {schedule.platforms?.length > 0 ? schedule.platforms.map(platform => (
                           <Chip
                             key={platform}
-                            label={platform?.charAt(0).toUpperCase() + platform?.slice(1)}
+                            label={platform.platform?.charAt(0).toUpperCase() + platform.platform?.slice(1)}
                             sx={{
-                              background: platform === 'linkedin'
+                              background: platform?.platform === 'linkedin'
                                 ? 'linear-gradient(135deg, #0077b5 0%, #005885 100%)'
-                                : platform === 'twitter'
+                                : platform?.platform === 'twitter'
                                 ? 'linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%)'
                                 : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                               color: 'white',
