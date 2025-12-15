@@ -36,7 +36,7 @@ import { useUser } from '../../hooks/useUser';
 import apiService from '../../services/api';
 
 const DashboardHome = ({ user, onLogout }) => {
-  const { user: currentUser, userPlan, loading: userLoading, updateUser } = useUser();
+  const { user: currentUser, userPlan, loading: userLoading, updateUser, loadUserData } = useUser();
   const [profileDialog, setProfileDialog] = useState(false);
   const [scheduleDialog, setScheduleDialog] = useState(false);
   const [topicDialog, setTopicDialog] = useState(false);
@@ -158,6 +158,17 @@ const DashboardHome = ({ user, onLogout }) => {
     } catch (error) {
       console.error('Failed to initiate social auth:', error);
       showSnackbar(`Failed to connect ${platform}`, 'error');
+    }
+  };
+
+  const handleSocialDisconnect = async (platform) => {
+    try {
+      await apiService.disconnectSocial(platform);
+      await loadUserData();
+      showSnackbar(`${platform} disconnected`, 'success');
+    } catch (error) {
+      console.error('Failed to disconnect social account:', error);
+      showSnackbar(`Failed to disconnect ${platform}`, 'error');
     }
   };
 
@@ -729,14 +740,24 @@ const DashboardHome = ({ user, onLogout }) => {
                       </Typography>
                     </div>
                     {currentUser?.socialConnections?.[platform]?.connected ? (
-                      <Chip
-                        label="Connected"
-                        sx={{
-                          fontWeight: 600,
-                          background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                          color: 'white'
-                        }}
-                      />
+                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <Chip
+                          label="Connected"
+                          sx={{
+                            fontWeight: 600,
+                            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                            color: 'white'
+                          }}
+                        />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleSocialDisconnect(platform)}
+                          sx={{ textTransform: 'none', fontWeight: 600 }}
+                        >
+                          Disconnect
+                        </Button>
+                      </Box>
                     ) : (
                       <Button
                         variant="contained"

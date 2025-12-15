@@ -72,6 +72,12 @@ const SocialPage = ({ user }) => {
     setSnackbar({ open: true, message, severity });
   };
 
+  const refreshProfile = async () => {
+    const profileData = await apiService.getProfile();
+    setCurrentUser(profileData.user);
+    localStorage.setItem('currentUser', JSON.stringify(profileData.user));
+  };
+
   const handleSocialConnect = async (platform) => {
     try {
       if (platform === 'linkedin' || platform === 'twitter') {
@@ -86,6 +92,17 @@ const SocialPage = ({ user }) => {
     } catch (error) {
       console.error('Failed to initiate social auth:', error);
       showSnackbar(`Failed to connect ${platform}`, 'error');
+    }
+  };
+
+  const handleSocialDisconnect = async (platform) => {
+    try {
+      await apiService.disconnectSocial(platform);
+      await refreshProfile();
+      showSnackbar(`${platform} disconnected`, 'success');
+    } catch (error) {
+      console.error('Failed to disconnect social account:', error);
+      showSnackbar(`Failed to disconnect ${platform}`, 'error');
     }
   };
 
@@ -158,15 +175,25 @@ const SocialPage = ({ user }) => {
                     <Typography variant="h6" sx={{ color: '#2d3748', fontWeight: 600 }}>{name}</Typography>
                   </Box>
                   {currentUser.socialConnections?.[platform]?.connected ? (
-                    <Chip
-                      label="Connected"
-                      color="success"
-                      sx={{
-                        fontWeight: 600,
-                        background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                        color: 'white'
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <Chip
+                        label="Connected"
+                        color="success"
+                        sx={{
+                          fontWeight: 600,
+                          background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                          color: 'white'
+                        }}
+                      />
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleSocialDisconnect(platform)}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                      >
+                        Disconnect
+                      </Button>
+                    </Box>
                   ) : available ? (
                     <Button
                       variant="contained"
@@ -262,15 +289,25 @@ const SocialPage = ({ user }) => {
                       <Typography variant="h6" sx={{ fontWeight: 600, color: '#2d3748' }}>{name}</Typography>
                     </Box>
                     {currentUser.socialConnections?.[platform]?.connected ? (
-                      <Chip
-                        label="Connected"
-                        color="success"
-                        sx={{
-                          fontWeight: 600,
-                          background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                          color: 'white'
-                        }}
-                      />
+                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <Chip
+                          label="Connected"
+                          color="success"
+                          sx={{
+                            fontWeight: 600,
+                            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                            color: 'white'
+                          }}
+                        />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleSocialDisconnect(platform)}
+                          sx={{ textTransform: 'none', fontWeight: 600 }}
+                        >
+                          Disconnect
+                        </Button>
+                      </Box>
                     ) : available ? (
                       <Button
                         variant="contained"
