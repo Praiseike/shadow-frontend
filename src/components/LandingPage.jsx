@@ -164,8 +164,8 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 14 } }}>
-          <Grid container spacing={8} alignItems="center">
-            <Grid item xs={12} md={7}>
+        <div className="flex flex-wrap items-center gap-8">
+            <Grid className="w-full md:w-[calc(58.333%-1rem)]" >
               <Chip
                 label="Trusted automation for modern professionals"
                 sx={{
@@ -263,7 +263,7 @@ const LandingPage = () => {
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={5}>
+            <Grid className="w-full md:w-[calc(41.667%-1rem)]" >
               <Card
                 sx={{
                   borderRadius: 4,
@@ -345,7 +345,7 @@ const LandingPage = () => {
                 </CardContent>
               </Card>
             </Grid>
-          </Grid>
+          </div>
         </Container>
       </section>
 
@@ -388,7 +388,7 @@ const LandingPage = () => {
             </Typography>
           </Box>
 
-          <Grid container spacing={3}>
+          <Grid className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {features.map((feature, index) => (
               <Grid item xs={12} md={4} key={index}>
                 <Card
