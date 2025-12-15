@@ -177,28 +177,32 @@ const DashboardHome = ({ user, onLogout }) => {
       value: Object.keys(currentUser?.socialConnections || {}).length,
       subtitle: 'Accounts',
       icon: <LinkedInIcon />,
-      gradient: 'from-blue-500 to-purple-600'
+      iconColor: '#1e3a8a',
+      iconBg: 'rgba(30, 58, 138, 0.08)'
     },
     {
       title: 'Active',
       value: currentUser?.schedules?.length || 0,
       subtitle: 'Schedules',
       icon: <CalendarMonth />,
-      gradient: 'from-pink-500 to-red-500'
+      iconColor: '#b45309',
+      iconBg: 'rgba(180, 83, 9, 0.08)'
     },
     {
       title: 'Selected',
       value: currentUser?.topics?.length || 0,
       subtitle: 'Topics',
       icon: <Folder />,
-      gradient: 'from-cyan-500 to-blue-500'
+      iconColor: '#0f766e',
+      iconBg: 'rgba(15, 118, 110, 0.08)'
     },
     {
       title: 'Generated',
       value: 0,
       subtitle: 'Posts',
       icon: <Article />,
-      gradient: 'from-green-500 to-teal-500'
+      iconColor: '#334155',
+      iconBg: 'rgba(51, 65, 85, 0.08)'
     }
   ];
 
@@ -220,17 +224,20 @@ const DashboardHome = ({ user, onLogout }) => {
         <div className="flex-1">
           {/* Plan Card */}
           {userPlan && (
-            <Card sx={{
-              mb: 4,
-              borderRadius: 3,
-              boxShadow: '0 10px 30px -5px rgba(102, 126, 234, 0.3)',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white'
-            }}>
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 3,
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 12px 30px rgba(15, 23, 42, 0.08)',
+                background: 'linear-gradient(135deg, #0f172a 0%, #1f2937 60%, #0f172a 100%)',
+                color: 'white'
+              }}
+            >
               <CardContent sx={{ p: 4 }}>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb:4 md:mb-3">
                   <div>
-                    <Typography variant="overline" sx={{ opacity: 0.9, fontSize: '0.75rem', letterSpacing: 1 }}>
+                    <Typography variant="overline" sx={{ opacity: 0.85, fontSize: '0.75rem', letterSpacing: 1 }}>
                       CURRENT PLAN
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.5 }}>
@@ -238,15 +245,15 @@ const DashboardHome = ({ user, onLogout }) => {
                     </Typography>
                   </div>
                   <div className="flex items-center gap-2">
-                    <TrendingUp sx={{ fontSize: 40 }} />
+                    <TrendingUp sx={{ fontSize: 40, color: 'rgba(255,255,255,0.8)' }} />
                   </div>
                 </div>
-                
-                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)', my: 3 }} />
-                
+
+                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)', my: 3 }} />
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Typography variant="body2" sx={{ opacity: 0.8, mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
                       Posts per Week
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: 700 }}>
@@ -254,7 +261,7 @@ const DashboardHome = ({ user, onLogout }) => {
                     </Typography>
                   </div>
                   <div>
-                    <Typography variant="body2" sx={{ opacity: 0.8, mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
                       Used This Week
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: 700 }}>
@@ -262,7 +269,7 @@ const DashboardHome = ({ user, onLogout }) => {
                     </Typography>
                   </div>
                   <div>
-                    <Typography variant="body2" sx={{ opacity: 0.8, mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
                       Remaining
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: 700 }}>
@@ -271,7 +278,7 @@ const DashboardHome = ({ user, onLogout }) => {
                   </div>
                   {userPlan.subscribedAt && (
                     <div>
-                      <Typography variant="body2" sx={{ opacity: 0.8, mb: 0.5 }}>
+                      <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
                         Member Since
                       </Typography>
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -291,27 +298,38 @@ const DashboardHome = ({ user, onLogout }) => {
                 key={index}
                 sx={{
                   borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 6px 20px rgba(15, 23, 42, 0.06)',
+                  transition: 'all 0.2s ease',
                   '&:hover': {
-                    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)',
-                    transform: 'translateY(-4px)'
+                    boxShadow: '0 10px 30px rgba(15, 23, 42, 0.12)',
+                    transform: 'translateY(-3px)'
                   }
                 }}
               >
                 <CardContent sx={{ p: 3 }}>
-                  <div className={`bg-gradient-to-br ${stat.gradient} w-12 h-12 rounded-xl flex items-center justify-center mb-3`}>
-                    <div className="text-white">
-                      {stat.icon}
-                    </div>
-                  </div>
-                  <Typography variant="h3" sx={{ fontWeight: 700, color: '#2d3748', mb: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: stat.iconBg,
+                      color: stat.iconColor,
+                      mb: 2
+                    }}
+                  >
+                    {stat.icon}
+                  </Box>
+                  <Typography variant="h4" sx={{ fontWeight: 700, color: '#0f172a', mb: 0.5 }}>
                     {stat.value}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#718096' }}>
+                  <Typography variant="body2" sx={{ color: '#334155', fontWeight: 600 }}>
                     {stat.title}
                   </Typography>
-                  <Typography variant="caption" sx={{ color: '#a0aec0' }}>
+                  <Typography variant="caption" sx={{ color: '#64748b' }}>
                     {stat.subtitle}
                   </Typography>
                 </CardContent>
@@ -357,64 +375,60 @@ const DashboardHome = ({ user, onLogout }) => {
               <div className="flex flex-col gap-3">
                 <Button
                   variant="contained"
+                  color="primary"
                   startIcon={<LinkedInIcon />}
                   onClick={() => setSocialDialog(true)}
                   fullWidth
                   sx={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     borderRadius: 2,
-                    py: 1.8,
-                    fontWeight: 600,
-                    boxShadow: '0 4px 14px 0 rgba(102, 126, 234, 0.4)',
-                    transition: 'all 0.3s ease',
+                    py: 1.4,
+                    fontWeight: 700,
+                    textTransform: 'none',
+                    boxShadow: '0 6px 18px rgba(59, 130, 246, 0.28)',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 6px 20px 0 rgba(102, 126, 234, 0.5)'
+                      boxShadow: '0 10px 24px rgba(59, 130, 246, 0.35)'
                     }
                   }}
                 >
                   Connect Accounts
                 </Button>
-                
+
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   startIcon={<ScheduleIcon />}
                   onClick={() => setScheduleDialog(true)}
                   fullWidth
                   sx={{
-                    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
                     borderRadius: 2,
-                    py: 1.8,
-                    fontWeight: 600,
-                    boxShadow: '0 4px 14px 0 rgba(240, 147, 251, 0.4)',
-                    transition: 'all 0.3s ease',
+                    py: 1.35,
+                    fontWeight: 700,
+                    textTransform: 'none',
+                    borderColor: '#cbd5e1',
+                    color: '#0f172a',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #e07dd1 0%, #e74c5f 100%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 6px 20px 0 rgba(240, 147, 251, 0.5)'
+                      borderColor: '#94a3b8',
+                      backgroundColor: '#f8fafc'
                     }
                   }}
                 >
                   Set Schedule
                 </Button>
-                
+
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   startIcon={<TopicIcon />}
                   onClick={() => setTopicDialog(true)}
                   fullWidth
                   sx={{
-                    background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                     borderRadius: 2,
-                    py: 1.8,
-                    fontWeight: 600,
-                    boxShadow: '0 4px 14px 0 rgba(79, 172, 254, 0.4)',
-                    transition: 'all 0.3s ease',
+                    py: 1.35,
+                    fontWeight: 700,
+                    textTransform: 'none',
+                    borderColor: '#cbd5e1',
+                    color: '#0f172a',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #3d9efc 0%, #00e5f0 100%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 6px 20px 0 rgba(79, 172, 254, 0.5)'
+                      borderColor: '#94a3b8',
+                      backgroundColor: '#f8fafc'
                     }
                   }}
                 >
