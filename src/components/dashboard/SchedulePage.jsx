@@ -111,9 +111,6 @@ const SchedulePage = ({ user }) => {
     );
   }
 
-  console.log(currentUser.schedules);
-  
-
   return (
     <Container maxWidth="lg" sx={{
       py: { xs: 3, sm: 4 },
@@ -151,251 +148,216 @@ const SchedulePage = ({ user }) => {
         </Typography>
       </Box>
 
-      <Card sx={{
-        borderRadius: { xs: 3, sm: 4 },
-        border: '1px solid rgba(0, 0, 0, 0.06)',
-        background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-        overflow: 'hidden'
-      }}>
-        <CardContent sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
-          <Box sx={{ mb: { xs: 4, sm: 5 } }}>
+      <Box sx={{ mb: { xs: 4, sm: 5 } }}>
+        {currentUser.schedules?.length > 0 ? (
+          <Box>
+            {currentUser.schedules.map((schedule, index) => (
+              <Card
+                key={index}
+                sx={{
+                  mb: 4,
+                  borderRadius: 3,
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <Box sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                      mr: 3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <ScheduleIcon sx={{ color: 'white', fontSize: 24 }} />
+                    </Box>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        color: '#1e293b',
+                        fontSize: '1.125rem',
+                        letterSpacing: '-0.025em'
+                      }}
+                    >
+                      Active Schedule
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3, mb: 3 }}>
+                    <Box sx={{
+                      p: 3,
+                      background: 'linear-gradient(145deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%)',
+                      borderRadius: 2,
+                      border: '1px solid rgba(99, 102, 241, 0.2)',
+                      textAlign: 'center'
+                    }}>
+                      <Typography variant="body2" sx={{ color: '#6366f1', fontWeight: 600, mb: 1 }}>
+                        First Post
+                      </Typography>
+                      <Typography variant="h5" sx={{ color: '#1e293b', fontWeight: 700, fontSize: '1.25rem' }}>
+                        {schedule.time1}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{
+                      p: 3,
+                      background: 'linear-gradient(145deg, rgba(5, 150, 105, 0.1) 0%, rgba(4, 120, 87, 0.05) 100%)',
+                      borderRadius: 2,
+                      border: '1px solid rgba(5, 150, 105, 0.2)',
+                      textAlign: 'center'
+                    }}>
+                      <Typography variant="body2" sx={{ color: '#059669', fontWeight: 600, mb: 1 }}>
+                        Second Post
+                      </Typography>
+                      <Typography variant="h5" sx={{ color: '#1e293b', fontWeight: 700, fontSize: '1.25rem' }}>
+                        {schedule.time2}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, mb: 2 }}>
+                      Target Platforms
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                      {schedule.platforms?.length > 0 ? schedule.platforms.map(platform => (
+                        <Chip
+                          key={platform}
+                          label={platform.platform?.charAt(0).toUpperCase() + platform.platform?.slice(1)}
+                          sx={{
+                            background: platform?.platform === 'linkedin'
+                              ? 'linear-gradient(135deg, #0077b5 0%, #005885 100%)'
+                              : platform?.platform === 'twitter'
+                                ? 'linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%)'
+                                : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                            color: 'white',
+                            fontWeight: 500,
+                            fontSize: '0.8rem',
+                            height: 28
+                          }}
+                        />
+                      )) : (
+                        <Typography variant="body2" sx={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                          No platforms selected
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Button
+                    startIcon={<EditIcon />}
+                    onClick={() => setScheduleDialog(true)}
+                    variant="contained"
+                    sx={{
+                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                      borderRadius: 2,
+                      py: 1.5,
+                      px: 4,
+                      fontWeight: 600,
+                      fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                      textTransform: 'none',
+                      letterSpacing: '0.025em',
+                      boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
+                      }
+                    }}
+                  >
+                    Edit Schedule
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        ) : (
+          <Card sx={{
+            borderRadius: 3,
+            border: '2px dashed rgba(0, 0, 0, 0.08)',
+            background: 'linear-gradient(145deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%)',
+            backdropFilter: 'blur(10px)',
+            textAlign: 'center',
+            py: { xs: 6, sm: 8 },
+            px: 4
+          }}>
+            <Box sx={{
+              p: 2,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)',
+              width: 80,
+              height: 80,
+              mx: 'auto',
+              mb: 4,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <ScheduleIcon sx={{ fontSize: 40, color: '#9ca3af' }} />
+            </Box>
             <Typography
               variant="h6"
               sx={{
                 color: '#1e293b',
                 fontWeight: 600,
-                fontSize: '1.25rem',
-                letterSpacing: '-0.025em',
-                mb: 2
+                mb: 2,
+                fontSize: '1.25rem'
               }}
             >
-              Current Schedule
+              No Schedule Configured
             </Typography>
             <Typography
               variant="body2"
               sx={{
                 color: '#64748b',
+                mb: 4,
                 fontSize: '1rem',
                 lineHeight: 1.6,
-                fontWeight: 400
+                maxWidth: '400px',
+                mx: 'auto'
               }}
             >
-              Manage your automated posting schedule and target platforms
+              Set up automated posting times to maintain consistent engagement across your social platforms
             </Typography>
-          </Box>
-
-          {currentUser.schedules?.length > 0 ? (
-            <Box>
-              {currentUser.schedules.map((schedule, index) => (
-                <Card
-                  key={index}
-                  sx={{
-                    mb: 4,
-                    borderRadius: 3,
-                    border: '1px solid rgba(0, 0, 0, 0.06)',
-                    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                      <Box sx={{
-                        p: 1.5,
-                        borderRadius: 2,
-                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                        mr: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <ScheduleIcon sx={{ color: 'white', fontSize: 24 }} />
-                      </Box>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: 600,
-                          color: '#1e293b',
-                          fontSize: '1.125rem',
-                          letterSpacing: '-0.025em'
-                        }}
-                      >
-                        Active Schedule
-                      </Typography>
-                    </Box>
-
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3, mb: 3 }}>
-                      <Box sx={{
-                        p: 3,
-                        background: 'linear-gradient(145deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%)',
-                        borderRadius: 2,
-                        border: '1px solid rgba(99, 102, 241, 0.2)',
-                        textAlign: 'center'
-                      }}>
-                        <Typography variant="body2" sx={{ color: '#6366f1', fontWeight: 600, mb: 1 }}>
-                          First Post
-                        </Typography>
-                        <Typography variant="h5" sx={{ color: '#1e293b', fontWeight: 700, fontSize: '1.25rem' }}>
-                          {schedule.time1}
-                        </Typography>
-                      </Box>
-
-                      <Box sx={{
-                        p: 3,
-                        background: 'linear-gradient(145deg, rgba(5, 150, 105, 0.1) 0%, rgba(4, 120, 87, 0.05) 100%)',
-                        borderRadius: 2,
-                        border: '1px solid rgba(5, 150, 105, 0.2)',
-                        textAlign: 'center'
-                      }}>
-                        <Typography variant="body2" sx={{ color: '#059669', fontWeight: 600, mb: 1 }}>
-                          Second Post
-                        </Typography>
-                        <Typography variant="h5" sx={{ color: '#1e293b', fontWeight: 700, fontSize: '1.25rem' }}>
-                          {schedule.time2}
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ mb: 3 }}>
-                      <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, mb: 2 }}>
-                        Target Platforms
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {schedule.platforms?.length > 0 ? schedule.platforms.map(platform => (
-                          <Chip
-                            key={platform}
-                            label={platform.platform?.charAt(0).toUpperCase() + platform.platform?.slice(1)}
-                            sx={{
-                              background: platform?.platform === 'linkedin'
-                                ? 'linear-gradient(135deg, #0077b5 0%, #005885 100%)'
-                                : platform?.platform === 'twitter'
-                                ? 'linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%)'
-                                : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                              color: 'white',
-                              fontWeight: 500,
-                              fontSize: '0.8rem',
-                              height: 28
-                            }}
-                          />
-                        )) : (
-                          <Typography variant="body2" sx={{ color: '#9ca3af', fontStyle: 'italic' }}>
-                            No platforms selected
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-
-                    <Button
-                      startIcon={<EditIcon />}
-                      onClick={() => setScheduleDialog(true)}
-                      variant="contained"
-                      sx={{
-                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                        borderRadius: 2,
-                        py: 1.5,
-                        px: 4,
-                        fontWeight: 600,
-                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                        textTransform: 'none',
-                        letterSpacing: '0.025em',
-                        boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
-                        }
-                      }}
-                    >
-                      Edit Schedule
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          ) : (
-            <Card sx={{
-              borderRadius: 3,
-              border: '2px dashed rgba(0, 0, 0, 0.08)',
-              background: 'linear-gradient(145deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%)',
-              backdropFilter: 'blur(10px)',
-              textAlign: 'center',
-              py: { xs: 6, sm: 8 },
-              px: 4
-            }}>
-              <Box sx={{
-                p: 2,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)',
-                width: 80,
-                height: 80,
-                mx: 'auto',
-                mb: 4,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <ScheduleIcon sx={{ fontSize: 40, color: '#9ca3af' }} />
-              </Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#1e293b',
-                  fontWeight: 600,
-                  mb: 2,
-                  fontSize: '1.25rem'
-                }}
-              >
-                No Schedule Configured
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: '#64748b',
-                  mb: 4,
-                  fontSize: '1rem',
-                  lineHeight: 1.6,
-                  maxWidth: '400px',
-                  mx: 'auto'
-                }}
-              >
-                Set up automated posting times to maintain consistent engagement across your social platforms
-              </Typography>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => setScheduleDialog(true)}
-                sx={{
-                  background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                  borderRadius: 2,
-                  py: 1.5,
-                  px: { xs: 4, sm: 5 },
-                  fontWeight: 600,
-                  fontSize: '1rem',
-                  textTransform: 'none',
-                  letterSpacing: '0.025em',
-                  boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
-                  }
-                }}
-              >
-                Create Schedule
-              </Button>
-            </Card>
-          )}
-        </CardContent>
-      </Card>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => setScheduleDialog(true)}
+              sx={{
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                borderRadius: 2,
+                py: 1.5,
+                px: { xs: 4, sm: 5 },
+                fontWeight: 600,
+                fontSize: '1rem',
+                textTransform: 'none',
+                letterSpacing: '0.025em',
+                boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
+                }
+              }}
+            >
+              Create Schedule
+            </Button>
+          </Card>
+        )}
+      </Box>
 
       {/* Schedule Dialog */}
       <Dialog
