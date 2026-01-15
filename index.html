@@ -8,36 +8,6 @@
   </head>
   <body>
     <div id="root"></div>
-
-
-	<!-- Start of Nuedesk Script -->
-		<script>
-			(function (w, d) {
-				w.NuedeskSettings = {
-					widgetId: 1242486,
-					id: "chat-widget",
-				};
-				if (typeof w.NuedeskWidget !== "function") {
-					var q = function () {
-						q.q.push(arguments);
-					};
-					q.q = [];
-					w.NuedeskWidget = q;
-				}
-				if (!d.querySelector("nue-chat-box")) {
-					var chatBox = d.createElement("nue-chat-box");
-					chatBox.setAttribute("id", w.NuedeskSettings.id);
-					d.body.appendChild(chatBox);
-				}
-				var v = localStorage.getItem("nuedesk_version") || Date.now().toString();
-				var s = d.createElement("script");
-				s.src = "http://localhost:5173/assets/js/chat-widget.js?v=" + v;
-				s.async = true;
-				s.defer = true;
-				d.body.appendChild(s);
-			})(window, document);
-		</script>
-	<!-- End of Nuedesk Script -->
-    <!-- <script type="module" src="/src/main.jsx"></script> -->
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
