@@ -30,7 +30,11 @@ import {
   TrendingUp,
   CalendarMonth,
   Folder,
-  Article
+  Article,
+  CheckCircle,
+  Error as ErrorIcon,
+  Pending,
+  BarChart
 } from '@mui/icons-material';
 import { useUser } from '../../hooks/useUser';
 import apiService from '../../services/api';
@@ -42,6 +46,8 @@ const DashboardHome = ({ user, onLogout }) => {
   const [topicDialog, setTopicDialog] = useState(false);
   const [socialDialog, setSocialDialog] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
 
   const [profileData, setProfileData] = useState({
     name: currentUser?.name || '',
@@ -59,6 +65,26 @@ const DashboardHome = ({ user, onLogout }) => {
 
   const [selectedTopics, setSelectedTopics] = useState(currentUser?.topics?.map(t => t.topic) || []);
   const [customTopic, setCustomTopic] = useState('');
+
+  // Fetch dashboard overview data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoadingDashboard(true);
+        const data = await apiService.getDashboardOverview();
+        setDashboardData(data.overview);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+        showSnackbar('Failed to load dashboard data', 'error');
+      } finally {
+        setLoadingDashboard(false);
+      }
+    };
+
+    if (!userLoading) {
+      fetchDashboardData();
+    }
+  }, [userLoading]);
 
   const predefinedTopics = [
     'clean code practices',
@@ -161,7 +187,7 @@ const DashboardHome = ({ user, onLogout }) => {
     }
   };
 
-  if (userLoading) {
+  if (userLoading || loadingDashboard) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <div className="flex justify-center items-center min-h-[60vh]">
@@ -171,7 +197,50 @@ const DashboardHome = ({ user, onLogout }) => {
     );
   }
 
-  const stats = [
+  const stats = dashboardData ? [
+    {
+      title: 'Connected',
+      value: dashboardData.stats.connectedAccounts,
+      subtitle: 'Accounts',
+      icon: <LinkedInIcon />,
+      gradient: 'from-blue-500 to-purple-600'
+    },
+    {
+      title: 'Active',
+      value: dashboardData.stats.activeSchedules,
+      subtitle: 'Schedules',
+      icon: <CalendarMonth />,
+      gradient: 'from-pink-500 to-red-500'
+    },
+    {
+      title: 'Selected',
+      value: dashboardData.stats.selectedTopics,
+      subtitle: 'Topics',
+      icon: <Folder />,
+      gradient: 'from-cyan-500 to-blue-500'
+    },
+    {
+      title: 'Generated',
+      value: dashboardData.stats.totalGenerated,
+      subtitle: 'Posts',
+      icon: <Article />,
+      gradient: 'from-green-500 to-teal-500'
+    },
+    {
+      title: 'Posted',
+      value: dashboardData.stats.totalPosted,
+      subtitle: 'Posts',
+      icon: <CheckCircle />,
+      gradient: 'from-emerald-500 to-green-600'
+    },
+    {
+      title: 'This Week',
+      value: dashboardData.stats.postsThisWeek,
+      subtitle: 'Posts',
+      icon: <BarChart />,
+      gradient: 'from-orange-500 to-red-500'
+    }
+  ] : [
     {
       title: 'Connected',
       value: Object.keys(currentUser?.socialConnections || {}).length,
@@ -219,7 +288,7 @@ const DashboardHome = ({ user, onLogout }) => {
         {/* Left Column - Main Content */}
         <div className="flex-1">
           {/* Plan Card */}
-          {userPlan && (
+          {(userPlan || dashboardData?.plan) && (
             <Card sx={{
               mb: 4,
               borderRadius: 3,
@@ -234,7 +303,7 @@ const DashboardHome = ({ user, onLogout }) => {
                       CURRENT PLAN
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.5 }}>
-                      {userPlan.plan?.name || 'Free Trial'}
+                      {dashboardData?.plan?.name || userPlan?.plan?.name || 'Free Trial'}
                     </Typography>
                   </div>
                   <div className="flex items-center gap-2">
@@ -250,7 +319,7 @@ const DashboardHome = ({ user, onLogout }) => {
                       Posts per Week
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                      {userPlan.postsPerWeek}
+                      {dashboardData?.plan?.postsPerWeek || userPlan?.postsPerWeek || 2}
                     </Typography>
                   </div>
                   <div>
@@ -258,7 +327,7 @@ const DashboardHome = ({ user, onLogout }) => {
                       Used This Week
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                      {userPlan.postsThisWeek}
+                      {dashboardData?.plan?.postsThisWeek || userPlan?.postsThisWeek || 0}
                     </Typography>
                   </div>
                   <div>
@@ -266,16 +335,16 @@ const DashboardHome = ({ user, onLogout }) => {
                       Remaining
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                      {userPlan.remainingPosts}
+                      {dashboardData?.plan?.remainingPosts || userPlan?.remainingPosts || 0}
                     </Typography>
                   </div>
-                  {userPlan.subscribedAt && (
+                  {(userPlan?.subscribedAt || dashboardData?.plan?.subscribedAt) && (
                     <div>
                       <Typography variant="body2" sx={{ opacity: 0.8, mb: 0.5 }}>
                         Member Since
                       </Typography>
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {new Date(userPlan.subscribedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                        {new Date(userPlan?.subscribedAt || dashboardData?.plan?.subscribedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                       </Typography>
                     </div>
                   )}
@@ -285,7 +354,7 @@ const DashboardHome = ({ user, onLogout }) => {
           )}
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {stats.map((stat, index) => (
               <Card
                 key={index}
@@ -322,23 +391,111 @@ const DashboardHome = ({ user, onLogout }) => {
           {/* Recent Activity */}
           <Card sx={{
             borderRadius: 3,
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+            mb: 4
           }}>
             <CardContent sx={{ p: 4 }}>
               <Typography variant="h6" sx={{ fontWeight: 700, color: '#2d3748', mb: 1 }}>
                 Recent Activity
               </Typography>
               <Divider sx={{ mb: 3 }} />
-              <div className="text-center py-8">
-                <Typography variant="body1" sx={{ color: '#718096' }}>
-                  No recent activity yet
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#a0aec0', mt: 1 }}>
-                  Connect your accounts and set up a schedule to get started
-                </Typography>
-              </div>
+              {dashboardData?.recentPosts && dashboardData.recentPosts.length > 0 ? (
+                <div className="space-y-3">
+                  {dashboardData.recentPosts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Chip
+                            label={post.platform}
+                            size="small"
+                            sx={{
+                              fontWeight: 600,
+                              textTransform: 'capitalize'
+                            }}
+                          />
+                          <Chip
+                            label={post.status}
+                            size="small"
+                            icon={
+                              post.status === 'posted' ? <CheckCircle /> :
+                              post.status === 'failed' ? <ErrorIcon /> :
+                              <Pending />
+                            }
+                            color={
+                              post.status === 'posted' ? 'success' :
+                              post.status === 'failed' ? 'error' :
+                              'default'
+                            }
+                          />
+                        </div>
+                        <Typography variant="caption" sx={{ color: '#718096' }}>
+                          {new Date(post.createdAt).toLocaleDateString()}
+                        </Typography>
+                      </div>
+                      <Typography variant="body2" sx={{ color: '#2d3748' }}>
+                        {post.content}
+                      </Typography>
+                      {post.error && (
+                        <Typography variant="caption" sx={{ color: '#e53e3e', mt: 1, display: 'block' }}>
+                          Error: {post.error}
+                        </Typography>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Typography variant="body1" sx={{ color: '#718096' }}>
+                    No recent activity yet
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#a0aec0', mt: 1 }}>
+                    Connect your accounts and set up a schedule to get started
+                  </Typography>
+                </div>
+              )}
             </CardContent>
           </Card>
+
+          {/* Post Performance */}
+          {dashboardData?.postsByPlatform && dashboardData.postsByPlatform.length > 0 && (
+            <Card sx={{
+              borderRadius: 3,
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#2d3748', mb: 1 }}>
+                  Post Performance by Platform
+                </Typography>
+                <Divider sx={{ mb: 3 }} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {dashboardData.postsByPlatform.map((platform) => (
+                    <div
+                      key={platform.platform}
+                      className="p-4 rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        {platform.platform === 'linkedin' && <LinkedInIcon sx={{ color: '#0077b5' }} />}
+                        {platform.platform === 'twitter' && <TwitterIcon sx={{ color: '#1DA1F2' }} />}
+                        {platform.platform === 'facebook' && <FacebookIcon sx={{ color: '#1877F2' }} />}
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#2d3748', textTransform: 'capitalize' }}>
+                          {platform.platform}
+                        </Typography>
+                      </div>
+                      <Typography variant="h4" sx={{ fontWeight: 700, color: '#667eea' }}>
+                        {platform.count}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#718096' }}>
+                        Posts
+                      </Typography>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Right Column - Quick Actions */}

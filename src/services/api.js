@@ -22,14 +22,16 @@ class ApiService {
       ...options,
     };
 
-    // Add auth token if available
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Add auth token if available and not explicitly skipped
+    if (!options.skipAuth) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
 
 
-    const exceptions = ['/','/auth']
+    const exceptions = ['/','/auth', '/admin/dashboard']
 
 
     try {
@@ -235,6 +237,12 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify({ planId }),
     });
+  }
+
+  // Dashboard endpoints
+  async getDashboardOverview(requireAuth = false) {
+    // Skip auth for admin dashboard (open route)
+    return this.request('/dashboard/overview', { skipAuth: !requireAuth });
   }
 }
 
