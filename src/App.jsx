@@ -19,6 +19,7 @@ import SettingsPage from './components/dashboard/SettingsPage';
 import Terms from './components/Terms';
 import Privacy from './components/Privacy';
 import Onboarding from './components/Onboarding';
+import AdminDashboard from './components/AdminDashboard';
 
 const theme = createTheme({
   palette: {
@@ -45,6 +46,7 @@ function AppContent() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route
