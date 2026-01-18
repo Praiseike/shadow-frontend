@@ -26,6 +26,9 @@ const Auth = ({ onLogin }) => {
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [showOTPVerification, setShowOTPVerification] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [pendingEmail, setPendingEmail] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,6 +36,7 @@ const Auth = ({ onLogin }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resendingOTP, setResendingOTP] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -76,6 +80,19 @@ const Auth = ({ onLogin }) => {
           email: formData.email,
           password: formData.password
         });
+
+        // Check if email verification is required
+        if (response.requiresVerification) {
+          setPendingEmail(formData.email);
+          setShowOTPVerification(true);
+          setError(response.message || 'Please verify your email address');
+          return;
+        }
+
+        // Store token and user data
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
+        onLogin(response.user);
       } else { // Sign up
         if (!formData.email || !formData.password || !formData.name) {
           throw new Error('All fields are required');
@@ -87,6 +104,14 @@ const Auth = ({ onLogin }) => {
           name: formData.name
         });
 
+        // Check if OTP verification is required
+        if (response.requiresVerification) {
+          setPendingEmail(formData.email);
+          setShowOTPVerification(true);
+          setError('');
+          return;
+        }
+
         // Store token and user data
         localStorage.setItem('token', response.token);
         localStorage.setItem('currentUser', JSON.stringify(response.user));
@@ -95,17 +120,64 @@ const Auth = ({ onLogin }) => {
         navigate('/onboarding');
         return;
       }
-
-      // For login, proceed as before
-      // Store token and user data
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('currentUser', JSON.stringify(response.user));
-      onLogin(response.user);
     } catch (err) {
       setError(err.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResendOTP = async () => {
+    if (!pendingEmail) return;
+    
+    setResendingOTP(true);
+    setError('');
+
+    try {
+      await apiService.sendOTP(pendingEmail);
+      setError('');
+      alert('Verification code sent to your email');
+    } catch (err) {
+      setError(err.message || 'Failed to resend verification code');
+    } finally {
+      setResendingOTP(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    if (!otp || otp.length !== 6) {
+      setError('Please enter a valid 6-digit code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await apiService.verifyOTP(pendingEmail, otp);
+
+      // Store token and user data
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+
+      // If signup, redirect to onboarding; if login, proceed normally
+      if (tabValue === 1) {
+        navigate('/onboarding');
+      } else {
+        onLogin(response.user);
+      }
+    } catch (err) {
+      setError(err.message || 'Invalid verification code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBackToAuth = () => {
+    setShowOTPVerification(false);
+    setOtp('');
+    setPendingEmail('');
+    setError('');
   };
 
 return (
@@ -261,21 +333,155 @@ return (
 
         {error && (
           <Alert 
-            severity="error" 
+            severity={error.includes('verify') || error.includes('sent') ? 'info' : 'error'} 
             sx={{ 
               mb: 3,
-              background: 'rgba(239, 68, 68, 0.1)',
+              background: error.includes('verify') || error.includes('sent') 
+                ? 'rgba(59, 130, 246, 0.1)'
+                : 'rgba(239, 68, 68, 0.1)',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              color: '#fca5a5',
+              border: error.includes('verify') || error.includes('sent')
+                ? '1px solid rgba(59, 130, 246, 0.3)'
+                : '1px solid rgba(239, 68, 68, 0.3)',
+              color: error.includes('verify') || error.includes('sent')
+                ? '#93c5fd'
+                : '#fca5a5',
               '& .MuiAlert-icon': {
-                color: '#fca5a5'
+                color: error.includes('verify') || error.includes('sent')
+                  ? '#93c5fd'
+                  : '#fca5a5'
               }
             }}
           >
             {error}
           </Alert>
         )}
+
+        {showOTPVerification ? (
+          <>
+            <Box sx={{ mb: 3, textAlign: 'center' }}>
+              <Typography variant="h6" sx={{ color: 'white', mb: 1, fontWeight: 600 }}>
+                Verify Your Email
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                We've sent a 6-digit verification code to
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#a8b5ff', fontWeight: 600, mt: 0.5 }}>
+                {pendingEmail}
+              </Typography>
+            </Box>
+
+            <TextField
+              fullWidth
+              label="Verification Code"
+              value={otp}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                setOtp(value);
+                setError('');
+              }}
+              placeholder="000000"
+              inputProps={{
+                maxLength: 6,
+                style: { textAlign: 'center', letterSpacing: '8px', fontSize: '24px', fontWeight: 600 }
+              }}
+              sx={{ 
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: 3,
+                  '& fieldset': {
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'rgba(102, 126, 234, 0.5)',
+                  }
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'rgba(255, 255, 255, 0.6)',
+                },
+                '& .MuiInputBase-input': {
+                  color: 'white',
+                  py: 2
+                }
+              }}
+            />
+
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleResendOTP}
+              disabled={resendingOTP}
+              sx={{
+                mb: 2,
+                py: 1.5,
+                borderRadius: 3,
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                textTransform: 'none',
+                fontWeight: 600,
+                '&:hover': {
+                  borderColor: 'rgba(255, 255, 255, 0.4)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                }
+              }}
+            >
+              {resendingOTP ? 'Sending...' : "Didn't receive code? Resend"}
+            </Button>
+
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={handleVerifyOTP}
+              disabled={loading || otp.length !== 6}
+              sx={{
+                mb: 2,
+                py: 2,
+                borderRadius: 3,
+                textTransform: 'none',
+                fontWeight: 700,
+                fontSize: '1.1rem',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                boxShadow: '0 12px 40px rgba(102, 126, 234, 0.5)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #5a5fd6 0%, #6a4191 100%)',
+                  boxShadow: '0 16px 56px rgba(102, 126, 234, 0.7)',
+                  transform: 'translateY(-2px)'
+                },
+                '&:disabled': {
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: 'rgba(255, 255, 255, 0.3)'
+                },
+                transition: 'all 0.3s'
+              }}
+            >
+              {loading ? 'Verifying...' : 'Verify Email'}
+            </Button>
+
+            <Button
+              fullWidth
+              variant="text"
+              onClick={handleBackToAuth}
+              sx={{
+                py: 1,
+                textTransform: 'none',
+                color: 'rgba(255, 255, 255, 0.6)',
+                fontWeight: 600,
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  color: 'white'
+                }
+              }}
+            >
+              ← Back to {tabValue === 0 ? 'Login' : 'Sign Up'}
+            </Button>
+          </>
+        ) : (
+          <>
 
         {/* <Box sx={{ mb: 4 }}>
           <Button
@@ -529,6 +735,8 @@ return (
           >
             ✓ No credit card required  •  ✓ 14-day free trial
           </Typography>
+        )}
+          </>
         )}
       </Paper>
     </Box>
