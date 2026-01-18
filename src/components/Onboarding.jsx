@@ -7,15 +7,12 @@ import {
   Button,
   TextField,
   Chip,
-  Switch,
-  FormControlLabel,
   Alert,
   CircularProgress
 } from '@mui/material';
 import {
   Topic as TopicIcon,
   Person as PersonIcon,
-  Schedule as ScheduleIcon,
   ArrowForward as ArrowForwardIcon,
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
@@ -32,12 +29,7 @@ const Onboarding = () => {
 
   const [onboardingData, setOnboardingData] = useState({
     topics: [],
-    bio: '',
-    schedule: {
-      time1: '09:00',
-      time2: '15:00',
-      platforms: ['linkedin']
-    }
+    bio: ''
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,11 +57,6 @@ const Onboarding = () => {
       title: 'Tell Us About Yourself',
       subtitle: 'Write a short bio for your profile',
       icon: <PersonIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.8)' }} />
-    },
-    {
-      title: 'Set Your Schedule',
-      subtitle: 'Choose when to post automatically',
-      icon: <ScheduleIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.8)' }} />
     }
   ];
 
@@ -108,14 +95,6 @@ const Onboarding = () => {
 
       // Update topics
       await apiService.updateTopics(onboardingData.topics);
-
-      // Create schedule
-      await apiService.createOrUpdateSchedule({
-        time1: onboardingData.schedule.time1,
-        time2: onboardingData.schedule.time2,
-        platforms: onboardingData.schedule.platforms,
-        active: true
-      });
 
       // Refresh user data
       const profileData = await apiService.getProfile();
@@ -266,115 +245,6 @@ const Onboarding = () => {
                   py: 2
                 }
               }}
-            />
-          </Box>
-        );
-
-      case 2:
-        return (
-          <Box sx={{ width: '100%', maxWidth: 600 }}>
-            <Typography variant="h6" gutterBottom sx={{ color: 'white', fontWeight: 600 }}>
-              Posting Schedule
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 3 }}>
-              Set two times per day for automated posting
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-              <TextField
-                label="First Post Time"
-                type="time"
-                value={onboardingData.schedule.time1}
-                onChange={(e) => setOnboardingData(prev => ({
-                  ...prev,
-                  schedule: { ...prev.schedule, time1: e.target.value }
-                }))}
-                sx={{
-                  flex: 1,
-                  '& .MuiOutlinedInput-root': {
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: 3,
-                    '& fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.3)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'rgba(102, 126, 234, 0.5)',
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: 'rgba(255, 255, 255, 0.6)',
-                  },
-                  '& .MuiInputBase-input': {
-                    color: 'white'
-                  }
-                }}
-                InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                label="Second Post Time"
-                type="time"
-                value={onboardingData.schedule.time2}
-                onChange={(e) => setOnboardingData(prev => ({
-                  ...prev,
-                  schedule: { ...prev.schedule, time2: e.target.value }
-                }))}
-                sx={{
-                  flex: 1,
-                  '& .MuiOutlinedInput-root': {
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: 3,
-                    '& fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.3)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'rgba(102, 126, 234, 0.5)',
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: 'rgba(255, 255, 255, 0.6)',
-                  },
-                  '& .MuiInputBase-input': {
-                    color: 'white'
-                  }
-                }}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Box>
-            <Typography variant="subtitle2" gutterBottom sx={{ color: 'white', fontWeight: 600 }}>
-              Platforms
-            </Typography>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={onboardingData.schedule.platforms.includes('linkedin')}
-                  onChange={(e) => setOnboardingData(prev => ({
-                    ...prev,
-                    schedule: {
-                      ...prev.schedule,
-                      platforms: e.target.checked
-                        ? [...prev.schedule.platforms, 'linkedin']
-                        : prev.schedule.platforms.filter(p => p !== 'linkedin')
-                    }
-                  }))}
-                  sx={{
-                    '& .MuiSwitch-switchBase.Mui-checked': {
-                      color: '#0077b5',
-                      '& + .MuiSwitch-track': {
-                        backgroundColor: '#0077b5'
-                      }
-                    }
-                  }}
-                />
-              }
-              label="LinkedIn"
-              sx={{ '& .MuiFormControlLabel-label': { color: 'white', fontWeight: 500 } }}
             />
           </Box>
         );
