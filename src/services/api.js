@@ -244,6 +244,37 @@ class ApiService {
     // Skip auth for admin dashboard (open route)
     return this.request('/dashboard/overview', { skipAuth: !requireAuth });
   }
+
+  // Scheduled posts endpoints (manual scheduling)
+  async createScheduledPost(postData) {
+    return this.request('/posts/schedule', {
+      method: 'POST',
+      body: JSON.stringify(postData),
+    });
+  }
+
+  async getScheduledPosts(status = null, page = 1, limit = 20) {
+    const params = new URLSearchParams({ page, limit });
+    if (status) params.append('status', status);
+    return this.request(`/posts/scheduled?${params}`);
+  }
+
+  async getScheduledPost(id) {
+    return this.request(`/posts/scheduled/${id}`);
+  }
+
+  async updateScheduledPost(id, postData) {
+    return this.request(`/posts/scheduled/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(postData),
+    });
+  }
+
+  async cancelScheduledPost(id) {
+    return this.request(`/posts/scheduled/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export default new ApiService();

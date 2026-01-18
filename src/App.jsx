@@ -16,6 +16,7 @@ import SchedulePage from './components/dashboard/SchedulePage';
 import TopicsPage from './components/dashboard/TopicsPage';
 import PlansPage from './components/dashboard/PlansPage';
 import SettingsPage from './components/dashboard/SettingsPage';
+import ScheduledPostsPage from './components/dashboard/ScheduledPostsPage';
 import Terms from './components/Terms';
 import Privacy from './components/Privacy';
 import Onboarding from './components/Onboarding';
@@ -71,6 +72,7 @@ function AppContent() {
         <Route path="social/success" element={<SocialSuccessPage />} />
         <Route path="social/error" element={<SocialErrorPage />} />
         <Route path="schedule" element={<SchedulePage />} />
+        <Route path="posts/scheduled" element={<ScheduledPostsPage />} />
         <Route path="topics" element={<TopicsPage />} />
         <Route path="plans" element={<PlansPage />} />
         <Route path="plans/payment/callback" element={<PlansPage />} />

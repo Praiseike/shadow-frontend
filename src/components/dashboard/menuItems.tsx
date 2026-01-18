@@ -5,6 +5,7 @@ import {
   Schedule as ScheduleIcon,
   Topic as TopicIcon,
   Settings as SettingsIcon,
+  Article as ArticleIcon,
 } from '@mui/icons-material';
 
 export const menuItems = [
@@ -31,6 +32,12 @@ export const menuItems = [
     label: 'Schedule', 
     icon: <ScheduleIcon />, 
     path: '/user/schedule' 
+  },
+  {
+    id: 'scheduled-posts',
+    label: 'Scheduled Posts',
+    icon: <ArticleIcon />,
+    path: '/user/posts/scheduled'
   },
   { 
     id: 'topics', 
