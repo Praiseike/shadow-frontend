@@ -1,239 +1,154 @@
 import { Link } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  IconButton,
-  Grid,
-  Box
-} from '@mui/material';
-import {
-  AutoAwesome as AutoAwesomeIcon,
-  Business as BusinessIcon,
-  People as PeopleIcon
-} from '@mui/icons-material';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer style={{
-      position: 'relative',
-      zIndex: 1,
-      background: 'rgba(15, 12, 41, 0.8)',
-      backdropFilter: 'blur(20px)',
-      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-      paddingTop: '80px',
-      paddingBottom: '40px'
-    }}>
-      <Container maxWidth="lg">
-        <Grid container spacing={6}>
-          <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-              <AutoAwesomeIcon sx={{ color: '#667eea', fontSize: 36 }} />
-              <Typography variant="h4" sx={{
-                fontWeight: 800,
-                background: 'linear-gradient(135deg, #667eea 0%, #f093fb 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
+    <footer className="bg-white border-t border-slate-200 py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+          {/* Logo & Intro */}
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="text-xl font-extrabold text-slate-900 tracking-tight">
                 PostNexus
-              </Typography>
-            </Box>
-            <Typography variant="body2" sx={{
-              color: 'rgba(255, 255, 255, 0.7)',
-              mb: 3,
-              lineHeight: 1.8
-            }}>
+              </span>
+            </div>
+            <p className="text-sm text-slate-500 leading-relaxed mb-6">
               AI-powered social media automation for professionals who want to grow their online presence without the hassle.
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <IconButton sx={{
-                color: 'white',
-                background: 'rgba(255, 255, 255, 0.1)',
-                '&:hover': {
-                  background: 'rgba(102, 126, 234, 0.3)'
-                }
-              }}>
-                <BusinessIcon />
-              </IconButton>
-              <IconButton sx={{
-                color: 'white',
-                background: 'rgba(255, 255, 255, 0.1)',
-                '&:hover': {
-                  background: 'rgba(102, 126, 234, 0.3)'
-                }
-              }}>
-                <PeopleIcon />
-              </IconButton>
-            </Box>
-          </Grid>
-          <Grid item xs={6} md={2}>
-            <Typography variant="h6" sx={{
-              fontWeight: 700,
-              color: 'white',
-              mb: 3
-            }}>
+            </p>
+          </div>
+
+          {/* Links Column 1 */}
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">
               Product
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <a href="#features" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Features
-              </a>
-              <a href="#pricing" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Pricing
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                API
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Integrations
-              </a>
-            </Box>
-          </Grid>
-          <Grid item xs={6} md={2}>
-            <Typography variant="h6" sx={{
-              fontWeight: 700,
-              color: 'white',
-              mb: 3
-            }}>
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a href="#features" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  API
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Integrations
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Links Column 2 */}
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">
               Company
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                About
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Blog
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Careers
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Contact
-              </a>
-            </Box>
-          </Grid>
-          <Grid item xs={6} md={2}>
-            <Typography variant="h6" sx={{
-              fontWeight: 700,
-              color: 'white',
-              mb: 3
-            }}>
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Careers
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Links Column 3 */}
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">
               Support
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Help Center
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Documentation
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Community
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Status
-              </a>
-            </Box>
-          </Grid>
-          <Grid item xs={6} md={2}>
-            <Typography variant="h6" sx={{
-              fontWeight: 700,
-              color: 'white',
-              mb: 3
-            }}>
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Help Center
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Documentation
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Community
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Status
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Links Column 4 */}
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">
               Legal
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Link to="/privacy" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Privacy
-              </Link>
-              <Link to="/terms" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Terms
-              </Link>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Security
-              </a>
-              <a href="#" style={{
-                color: 'rgba(255, 255, 255, 0.7)',
-                textDecoration: 'none',
-                transition: 'color 0.3s'
-              }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
-                Cookies
-              </a>
-            </Box>
-          </Grid>
-        </Grid>
-        <Box sx={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          mt: 8,
-          pt: 6,
-          textAlign: 'center'
-        }}>
-          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-            © {new Date().getFullYear()} PostNexus. All rights reserved. Made with ❤️ for creators.
-          </Typography>
-        </Box>
-      </Container>
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/privacy" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Security
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                  Cookies
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="border-t border-slate-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-slate-400">
+            &copy; {currentYear} PostNexus. All rights reserved.
+          </p>
+          <p className="text-sm text-slate-400 flex items-center gap-1">
+            Made for builders and creators.
+          </p>
+        </div>
+      </div>
     </footer>
   );
 };

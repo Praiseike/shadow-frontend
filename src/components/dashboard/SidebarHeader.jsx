@@ -1,17 +1,13 @@
-import { Box, Typography } from '@mui/material';
-
 const SidebarHeader = () => {
   return (
-    <Box sx={{
-      p: 3,
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(10px)'
-    }}>
-      <Typography variant="h6" sx={{ fontWeight: 700, color: 'white' }}>
+    <div className="p-5 border-b border-slate-200/80 flex items-center gap-2">
+      <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      <span className="text-xl font-bold text-slate-900 tracking-tight">
         PostNexus
-      </Typography>
-    </Box>
+      </span>
+    </div>
   );
 };
 

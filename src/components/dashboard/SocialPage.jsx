@@ -1,27 +1,4 @@
 import { useState, useEffect } from 'react';
-import {
-  Container,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Avatar,
-  Button,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-  Alert,
-  Snackbar,
-  CircularProgress
-} from '@mui/material';
-import {
-  LinkedIn as LinkedInIcon,
-  Twitter as TwitterIcon,
-  Facebook as FacebookIcon
-} from '@mui/icons-material';
 import apiService from '../../services/api';
 
 const SocialPage = ({ user }) => {
@@ -38,7 +15,6 @@ const SocialPage = ({ user }) => {
         localStorage.setItem('currentUser', JSON.stringify(profileData.user));
       } catch (error) {
         console.error('Failed to fetch user data:', error);
-        // Fallback to localStorage if API fails
         const saved = localStorage.getItem('currentUser');
         if (saved) {
           setCurrentUser(JSON.parse(saved));
@@ -48,20 +24,16 @@ const SocialPage = ({ user }) => {
       }
     };
 
-    // Check for OAuth callback parameters
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
     const error = urlParams.get('error');
 
     if (success) {
       showSnackbar(success, 'success');
-      // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
-      // Refresh user data to show connected account
       fetchUserData();
     } else if (error) {
       showSnackbar(decodeURIComponent(error), 'error');
-      // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
@@ -70,17 +42,17 @@ const SocialPage = ({ user }) => {
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
+    setTimeout(() => {
+      setSnackbar(prev => ({ ...prev, open: false }));
+    }, 4000);
   };
 
   const handleSocialConnect = async (platform) => {
     try {
       if (platform === 'linkedin' || platform === 'twitter') {
-        // Initiate OAuth flow for LinkedIn or Twitter
         const authResponse = await apiService.initiateSocialAuth(platform);
-        // Redirect to OAuth URL
         window.location.href = authResponse.authUrl;
       } else {
-        // For other platforms (when implemented), use direct connection
         showSnackbar(`${platform} connection not yet implemented`, 'warning');
       }
     } catch (error) {
@@ -91,249 +63,95 @@ const SocialPage = ({ user }) => {
 
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Container>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <svg className="animate-spin h-10 w-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+      </div>
     );
   }
 
+  const platforms = [
+    { platform: 'linkedin', name: 'LinkedIn', color: 'bg-blue-600 hover:bg-blue-700', available: true, icon: (
+      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+      </svg>
+    ) },
+    { platform: 'twitter', name: 'Twitter', color: 'bg-sky-500 hover:bg-sky-600', available: true, icon: (
+      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+      </svg>
+    ) },
+    { platform: 'facebook', name: 'Facebook', color: 'bg-blue-700 hover:bg-blue-800', available: false, icon: (
+      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      </svg>
+    ) }
+  ];
+
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{
-          mb: 4,
-          color: '#2d3748',
-          fontWeight: 700,
-          textAlign: { xs: 'center', md: 'left' }
-        }}
-      >
-        Social Accounts
-      </Typography>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Social Accounts</h1>
+        <p className="text-sm text-slate-500 mt-1">Connect your social media accounts to start automated posting.</p>
+      </div>
 
-      <Card sx={{
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        borderRadius: 3,
-        border: '1px solid rgba(255, 255, 255, 0.8)',
-        backdropFilter: 'blur(10px)'
-      }}>
-        <CardContent sx={{ p: 4 }}>
-          <Typography variant="h6" gutterBottom sx={{ color: '#2d3748', fontWeight: 600 }}>
-            Connected Social Accounts
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 4, fontSize: '1rem' }}>
-            Connect your social media accounts to start automated posting
-          </Typography>
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs max-w-4xl space-y-6">
+        <div>
+          <h2 className="text-base font-bold text-slate-900">Connected Social Accounts</h2>
+          <p className="text-xs text-slate-400 mt-0.5">Manage authorization and connection status for each target network.</p>
+        </div>
 
-          <Grid container spacing={3}>
-            {[
-              { platform: 'linkedin', icon: <LinkedInIcon />, name: 'LinkedIn', color: '#0077b5', gradient: 'linear-gradient(135deg, #0077b5 0%, #005885 100%)', available: true },
-              { platform: 'twitter', icon: <TwitterIcon />, name: 'Twitter', color: '#1da1f2', gradient: 'linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%)', available: true },
-              { platform: 'facebook', icon: <FacebookIcon />, name: 'Facebook', color: '#1877f2', gradient: 'linear-gradient(135deg, #1877f2 0%, #0d5bd7 100%)', available: false }
-            ].map(({ platform, icon, name, color, gradient, available }) => (
-              <Grid item xs={12} sm={4} key={platform}>
-                <Card variant="outlined" sx={{
-                  p: 3,
-                  borderRadius: 3,
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                  border: '1px solid rgba(255, 255, 255, 0.8)',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15)'
-                  }
-                }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                    <Avatar sx={{
-                      bgcolor: gradient,
-                      mr: 2,
-                      width: 50,
-                      height: 50,
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                    }}>
-                      {icon}
-                    </Avatar>
-                    <Typography variant="h6" sx={{ color: '#2d3748', fontWeight: 600 }}>{name}</Typography>
-                  </Box>
-                  {currentUser.socialConnections?.[platform]?.connected ? (
-                    <Chip
-                      label="Connected"
-                      color="success"
-                      sx={{
-                        fontWeight: 600,
-                        background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                        color: 'white'
-                      }}
-                    />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {platforms.map(({ platform, name, color, available, icon }) => {
+            const isConnected = currentUser.socialConnections?.[platform]?.connected;
+            return (
+              <div key={platform} className="bg-slate-50/50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between items-center text-center gap-4 hover:-translate-y-1 transition-all">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xs ${color}`}>
+                  {icon}
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800">{name}</h3>
+                </div>
+                <div className="w-full">
+                  {isConnected ? (
+                    <span className="inline-flex w-full justify-center px-3 py-2 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-xl border border-emerald-100 uppercase tracking-wider">
+                      Connected
+                    </span>
                   ) : available ? (
-                    <Button
-                      variant="contained"
-                      fullWidth
+                    <button
                       onClick={() => handleSocialConnect(platform)}
-                      sx={{
-                        background: gradient,
-                        borderRadius: 2,
-                        py: 1.5,
-                        fontWeight: 600,
-                        transition: 'all 0.2s ease-in-out',
-                        '&:hover': {
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                        }
-                      }}
+                      className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
                     >
                       Connect
-                    </Button>
+                    </button>
                   ) : (
-                    <Chip
-                      label="Coming Soon"
-                      sx={{
-                        fontWeight: 600,
-                        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                        color: 'white'
-                      }}
-                    />
+                    <span className="inline-flex w-full justify-center px-3 py-2 bg-slate-100 text-slate-400 text-xs font-bold rounded-xl border border-slate-200 uppercase tracking-wider">
+                      Coming Soon
+                    </span>
                   )}
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-      {/* Social Connection Dialog */}
-      <Dialog
-        open={socialDialog}
-        onClose={() => setSocialDialog(false)}
-        maxWidth="sm"
-        fullWidth
-        sx={{
-          '& .MuiDialog-paper': {
-            borderRadius: 3,
-            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-          }
-        }}
-      >
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          fontWeight: 700,
-          borderRadius: '12px 12px 0 0'
-        }}>
-          Connect Social Accounts
-        </DialogTitle>
-        <DialogContent sx={{ p: 4 }}>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 4, fontSize: '1rem' }}>
-            Connect your social media accounts to enable automated posting
-          </Typography>
-
-          <Grid container spacing={3}>
-            {[
-              { platform: 'linkedin', icon: <LinkedInIcon />, name: 'LinkedIn', color: '#0077b5', gradient: 'linear-gradient(135deg, #0077b5 0%, #005885 100%)', available: true },
-              { platform: 'twitter', icon: <TwitterIcon />, name: 'Twitter', color: '#1da1f2', gradient: 'linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%)', available: true },
-              { platform: 'facebook', icon: <FacebookIcon />, name: 'Facebook', color: '#1877f2', gradient: 'linear-gradient(135deg, #1877f2 0%, #0d5bd7 100%)', available: false }
-            ].map(({ platform, icon, name, color, gradient, available }) => (
-              <Grid item xs={12} key={platform}>
-                <Card variant="outlined" sx={{
-                  p: 3,
-                  borderRadius: 3,
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                  border: '1px solid rgba(255, 255, 255, 0.8)',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15)'
-                  }
-                }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar sx={{
-                        bgcolor: gradient,
-                        mr: 3,
-                        width: 50,
-                        height: 50,
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                      }}>
-                        {icon}
-                      </Avatar>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: '#2d3748' }}>{name}</Typography>
-                    </Box>
-                    {currentUser.socialConnections?.[platform]?.connected ? (
-                      <Chip
-                        label="Connected"
-                        color="success"
-                        sx={{
-                          fontWeight: 600,
-                          background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                          color: 'white'
-                        }}
-                      />
-                    ) : available ? (
-                      <Button
-                        variant="contained"
-                        onClick={() => handleSocialConnect(platform)}
-                        sx={{
-                          background: gradient,
-                          borderRadius: 2,
-                          px: 3,
-                          fontWeight: 600,
-                          transition: 'all 0.2s ease-in-out',
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                          }
-                        }}
-                      >
-                        Connect
-                      </Button>
-                    ) : (
-                      <Chip
-                        label="Coming Soon"
-                        sx={{
-                          fontWeight: 600,
-                          background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                          color: 'white'
-                        }}
-                      />
-                    )}
-                  </Box>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 0 }}>
-          <Button
-            onClick={() => setSocialDialog(false)}
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              fontWeight: 600
-            }}
-          >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+      {/* Snackbar Alert */}
+      {snackbar.open && (
+        <div className="fixed bottom-4 right-4 z-50 animate-in fade-in slide-in-from-bottom duration-300">
+          <div className={`px-4 py-3 rounded-xl shadow-lg border text-sm font-semibold flex items-center gap-2 ${
+            snackbar.severity === 'error' ? 'bg-rose-50 border-rose-200 text-rose-700' :
+            snackbar.severity === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+            'bg-emerald-50 border-emerald-200 text-emerald-700'
+          }`}>
+            <span>{snackbar.message}</span>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

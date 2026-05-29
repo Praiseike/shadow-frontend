@@ -1,41 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Avatar,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  useTheme,
-  useMediaQuery
-} from '@mui/material';
-import {
-  ExpandMore as ExpandMoreIcon,
-  Star as StarIcon,
-  CheckCircle as CheckCircleIcon,
-  TrendingUp as TrendingUpIcon,
-  Schedule as ScheduleIcon,
-  SmartToy as SmartToyIcon,
-  People as PeopleIcon,
-  Business as BusinessIcon,
-  ArrowForward as ArrowForwardIcon,
-  AutoAwesome as AutoAwesomeIcon,
-  Bolt as BoltIcon
-} from '@mui/icons-material';
 import Layout from './Layout';
 
 const LandingPage = () => {
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [activeFaq, setActiveFaq] = useState(null);
 
   const testimonials = [
     {
@@ -49,7 +17,7 @@ const LandingPage = () => {
       name: "Michael Chen",
       role: "Product Manager",
       company: "StartupXYZ",
-      content: "The AI-generated content is incredibly relevant to my field. It's like having a personal content strategist working 24/7.",
+      content: "The generated content is incredibly relevant to my field. It's like having a personal content strategist working 24/7.",
       avatar: "MC"
     },
     {
@@ -63,25 +31,34 @@ const LandingPage = () => {
 
   const features = [
     {
-      icon: <SmartToyIcon sx={{ fontSize: 56 }} />,
-      title: "AI-Powered Content",
-      description: "Advanced GPT-4 technology generates personalized, engaging content based on your expertise and selected topics.",
-      benefits: ["Context-aware writing", "Industry-specific insights", "Engagement-optimized posts"],
-      gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      title: "Targeted Content Ideas",
+      description: "Generates personalized, engaging content topics based on your specific expertise and selected target topics.",
+      benefits: ["Context-aware prompts", "Industry-specific insights", "Formatting hooks"],
+      icon: (
+        <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      )
     },
     {
-      icon: <TrendingUpIcon sx={{ fontSize: 56 }} />,
       title: "Multi-Platform Automation",
       description: "Connect LinkedIn, Twitter, and Facebook accounts for seamless cross-platform content distribution.",
-      benefits: ["Unified scheduling", "Platform-optimized formatting", "Performance analytics"],
-      gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+      benefits: ["Unified scheduling", "Platform-optimized layouts", "Performance metrics"],
+      icon: (
+        <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+      )
     },
     {
-      icon: <ScheduleIcon sx={{ fontSize: 56 }} />,
       title: "Smart Scheduling",
-      description: "Post twice daily at optimal times based on your audience's engagement patterns and time zones.",
-      benefits: ["Peak engagement timing", "Automated posting", "Flexible scheduling"],
-      gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+      description: "Post twice daily at optimal times based on your target audience's engagement patterns and time zones.",
+      benefits: ["Peak engagement timing", "Automated queue", "Flexible schedule configuration"],
+      icon: (
+        <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
     }
   ];
 
@@ -90,785 +67,392 @@ const LandingPage = () => {
       name: "Starter",
       price: "$9",
       period: "/month",
-      description: "Perfect for individual developers",
+      description: "Perfect for individual developers starting out",
       features: [
-        "1 Social Account",
-        "AI Content Generation",
-        "Basic Scheduling",
-        "Content Analytics",
-        "Email Support"
+        "1 Social Account Link",
+        "AI Content Generation Support",
+        "Basic Queue Scheduling",
+        "Content History Analytics",
+        "Standard Email Support"
       ],
       popular: false,
-      gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"
+      buttonText: "Start Free Trial"
     },
     {
       name: "Professional",
       price: "$29",
       period: "/month",
-      description: "For growing professionals",
+      description: "For growing professionals and thought leaders",
       features: [
-        "3 Social Accounts",
-        "Advanced AI Content",
-        "Custom Scheduling",
-        "Detailed Analytics",
-        "Priority Support",
-        "Custom Topics"
+        "3 Social Account Links",
+        "Advanced Content Suggestions",
+        "Custom Automated Schedules",
+        "Detailed Performance Analytics",
+        "Priority Email Support",
+        "Custom Topic Configurations"
       ],
       popular: true,
-      gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      buttonText: "Get Started"
     },
     {
       name: "Enterprise",
       price: "$99",
       period: "/month",
-      description: "For teams and organizations",
+      description: "For agencies and tech teams",
       features: [
-        "Unlimited Accounts",
-        "Premium AI Features",
-        "Team Collaboration",
-        "Advanced Analytics",
-        "24/7 Support",
-        "API Access"
+        "Unlimited Connected Accounts",
+        "Premium Content Features",
+        "Team Dashboard Access",
+        "Advanced Analytics & Exports",
+        "Dedicated Support",
+        "Full API Access"
       ],
       popular: false,
-      gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
+      buttonText: "Get Started"
     }
   ];
 
   const faqs = [
     {
       question: "How does the AI content generation work?",
-      answer: "Our AI analyzes your profile, selected topics, and industry trends to create personalized, engaging content that resonates with your audience. Each post is crafted to sound like you while incorporating current best practices."
+      answer: "Our engine analyzes your professional profile, selected topics, and industry trends to create personalized, engaging content suggestions. The tone is engineered to match professional guidelines while keeping things conversational and concise."
     },
     {
       question: "Can I customize the posting schedule?",
-      answer: "Absolutely! You can set two posting times per day, choose which platforms to post on, and even specify different content topics for different times. The system learns from your audience's engagement patterns."
+      answer: "Absolutely! You can choose specific days and post times, configure different platforms, and adjust how many times you post per day. The scheduler handles all timezone translations automatically."
     },
     {
       question: "Is my data secure?",
-      answer: "Yes, security is our top priority. All data is encrypted, we use secure OAuth connections for social media platforms, and we never store your social media passwords. Your content and personal information are protected with enterprise-grade security."
+      answer: "Yes, security is our primary focus. We use secure OAuth standard protocols to link your social accounts directly, meaning we never see or store your social platform passwords. All personal data is encrypted."
     },
     {
       question: "What platforms are supported?",
-      answer: "Currently, we fully support LinkedIn with Twitter and Facebook integration coming soon. Each platform gets content optimized for its unique audience and formatting requirements."
+      answer: "We support LinkedIn and Twitter/X integrations out of the box, with Facebook page and group connections fully supported as well."
     },
     {
-      question: "Can I edit the AI-generated content?",
-      answer: "Yes! You can review, edit, and save drafts of AI-generated content before publishing. The AI provides a great starting point, but you have full control over the final content."
+      question: "Can I edit posts before they go live?",
+      answer: "Yes! Every generated post can be fully reviewed, edited, or saved as a draft. You retain complete control over your public presence."
     }
   ];
 
   return (
     <Layout>
-
       {/* Hero Section */}
-      <section>
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 16 } }}>
-          <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Chip 
-                label="🚀 Now with GPT-4 Turbo" 
-                sx={{ 
-                  mb: 3,
-                  background: 'rgba(102, 126, 234, 0.2)',
-                  color: 'white',
-                  border: '1px solid rgba(102, 126, 234, 0.3)',
-                  backdropFilter: 'blur(10px)',
-                  fontWeight: 600
-                }} 
-              />
-              <Typography
-                variant="h1"
-                sx={{
-                  fontWeight: 900,
-                  mb: 3,
-                  fontSize: { xs: '2.5rem', md: '4rem' },
-                  lineHeight: 1.1,
-                  background: 'linear-gradient(135deg, #ffffff 0%, #a8b5ff 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  letterSpacing: '-2px'
-                }}
-              >
-                AI-Powered Social Media on Autopilot
-              </Typography>
-              <Typography variant="h6" sx={{ 
-                color: 'rgba(255, 255, 255, 0.7)', 
-                mb: 5, 
-                lineHeight: 1.8,
-                fontSize: { xs: '1.1rem', md: '1.3rem' }
-              }}>
-                Connect once. Let AI create engaging content. Watch your network grow while you sleep.
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', mb: 6 }}>
-                <Link to="/auth">
-                  <Button
-                    variant="contained"
-                    size="large"
-                    endIcon={<BoltIcon />}
-                    sx={{
-                      px: 5,
-                      py: 2,
-                      fontSize: '1.1rem',
-                      fontWeight: 700,
-                      borderRadius: 4,
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      boxShadow: '0 12px 40px rgba(102, 126, 234, 0.5)',
-                      textTransform: 'none',
-                      '&:hover': {
-                        boxShadow: '0 16px 56px rgba(102, 126, 234, 0.7)',
-                        transform: 'translateY(-3px)'
-                      },
-                      transition: 'all 0.3s'
-                    }}
+      <section className="relative overflow-hidden bg-white pt-16 pb-24 md:pt-24 md:pb-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
+            {/* Left text column */}
+            <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 mb-6">
+                ⚡ Automate Your Professional Brand
+              </span>
+              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight sm:text-5xl md:text-6xl leading-[1.1]">
+                Automated Social Media on Autopilot
+              </h1>
+              <p className="mt-4 text-base text-slate-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl leading-relaxed">
+                Connect your platforms once. Let our scheduler distribute professional tech and development posts tailored to your exact topics. Watch your audience grow.
+              </p>
+              <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <Link
+                    to="/auth"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-lg shadow-sm transition-all duration-150"
                   >
                     Start Free Trial
-                  </Button>
-                </Link>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{ 
-                    px: 5, 
-                    py: 2,
-                    fontSize: '1.1rem',
-                    fontWeight: 600,
-                    borderRadius: 4,
-                    borderColor: 'rgba(255, 255, 255, 0.3)',
-                    color: 'white',
-                    textTransform: 'none',
-                    backdropFilter: 'blur(10px)',
-                    '&:hover': {
-                      borderColor: 'rgba(255, 255, 255, 0.6)',
-                      background: 'rgba(255, 255, 255, 0.05)'
-                    }
-                  }}
-                  onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
-                >
-                  See How It Works
-                </Button>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box sx={{ display: 'flex' }}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <StarIcon key={star} sx={{ color: '#fbbf24', fontSize: 20 }} />
+                  </Link>
+                  <a
+                    href="#features"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200/80 transition-all duration-150"
+                  >
+                    See How It Works
+                  </a>
+                </div>
+                <div className="mt-6 flex items-center justify-center lg:justify-start gap-4">
+                  <div className="flex text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
                     ))}
-                  </Box>
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontWeight: 500 }}>
-                    4.9/5 from 10,000+ users
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  {['💼', '🚀', '🎯'].map((emoji, i) => (
-                    <Box key={i} sx={{ 
-                      width: 36, 
-                      height: 36, 
-                      borderRadius: 2, 
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      backdropFilter: 'blur(10px)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.2rem'
-                    }}>
-                      {emoji}
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  position: 'relative',
-                  height: { xs: 300, md: 500 },
-                  borderRadius: 6,
-                  overflow: 'hidden',
-                  boxShadow: '0 25px 80px rgba(0, 0, 0, 0.4)',
-                  transform: 'perspective(1000px) rotateY(-5deg)',
-                  transition: 'transform 0.6s',
-                  '&:hover': {
-                    transform: 'perspective(1000px) rotateY(0deg)'
-                  }
-                }}
-              >
-                <Box sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 4
-                }}>
-                  <Box sx={{ 
-                    fontSize: { xs: '4rem', md: '6rem' },
-                    animation: 'pulse 2s ease-in-out infinite'
-                  }}>
-                    🤖
-                  </Box>
-                  <Typography variant="h3" sx={{ color: 'white', fontWeight: 800, textAlign: 'center', px: 4 }}>
-                    AI Creates.<br/>You Succeed.
-                  </Typography>
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    {[
-                      { icon: '📈', label: '+300%' },
-                      { icon: '⚡', label: '2x Daily' },
-                      { icon: '🎯', label: '100% Auto' }
-                    ].map((stat, i) => (
-                      <Box key={i} sx={{
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: 3,
-                        px: 3,
-                        py: 2,
-                        textAlign: 'center'
-                      }}>
-                        <Box sx={{ fontSize: '2rem', mb: 1 }}>{stat.icon}</Box>
-                        <Typography sx={{ color: 'white', fontWeight: 700 }}>{stat.label}</Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
+                  </div>
+                  <span className="text-sm font-medium text-slate-500">
+                    Loved by 10,000+ developers
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right graphic column */}
+            <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-6">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+                  <div className="flex space-x-2">
+                    <span className="w-3 h-3 rounded-full bg-red-400" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <span className="w-3 h-3 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Post Preview
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+                      PN
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-800">Your Name</h4>
+                      <p className="text-xs text-slate-400">Software Architect</p>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-slate-600 leading-relaxed bg-white border border-slate-100 p-4 rounded-xl">
+                    💡 **Quick Tip on Code Architecture:** Keep interfaces lean and single-purposed. It makes decoupling components 10x easier when scaling backend services. Focus on modularity early! 🛠️
+                    <br /><br />
+                    <span className="text-indigo-600">#SoftwareEngineering #CleanCode #Programming</span>
+                  </p>
+
+                  <div className="flex gap-2 justify-end">
+                    <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-md border border-green-200">
+                      ✓ Ready
+                    </span>
+                    <span className="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-md border border-indigo-200">
+                      📅 Scheduled: 9:00 AM
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" style={{ paddingTop: '120px', paddingBottom: '120px' }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 10 }}>
-            <Chip 
-              label="Features" 
-              sx={{ 
-                mb: 3,
-                background: 'rgba(102, 126, 234, 0.2)',
-                color: 'white',
-                border: '1px solid rgba(102, 126, 234, 0.3)',
-                backdropFilter: 'blur(10px)',
-                fontWeight: 600,
-                fontSize: '0.9rem'
-              }} 
-            />
-            <Typography variant="h2" sx={{ 
-              fontWeight: 900, 
-              color: 'white', 
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              letterSpacing: '-1px'
-            }}>
+      <section id="features" className="bg-slate-50 border-t border-slate-200/80 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 mb-4">
+              Core Capabilities
+            </span>
+            <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl tracking-tight">
               Everything You Need to Dominate
-            </Typography>
-            <Typography variant="h6" sx={{ 
-              color: 'rgba(255, 255, 255, 0.6)', 
-              maxWidth: 700, 
-              mx: 'auto',
-              lineHeight: 1.8
-            }}>
-              Powerful AI meets seamless automation. Your social media presence, reimagined.
-            </Typography>
-          </Box>
+            </h2>
+            <p className="mt-4 text-lg text-slate-500 leading-relaxed">
+              Say goodbye to writer's block. Connect your socials, select your fields of interest, and let our system handle the queue.
+            </p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4" spacing={4}>
-            {features.map((feature, index) => (
-              <Grid xs={12} md={4} key={index}>
-                <Card
-                  onMouseEnter={() => setHoveredCard(index)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  sx={{
-                    height: '100%',
-                    background: hoveredCard === index 
-                      ? 'rgba(255, 255, 255, 0.08)' 
-                      : 'rgba(255, 255, 255, 0.03)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: 5,
-                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transform: hoveredCard === index ? 'translateY(-12px) scale(1.02)' : 'translateY(0) scale(1)',
-                    boxShadow: hoveredCard === index 
-                      ? '0 24px 60px rgba(102, 126, 234, 0.3)' 
-                      : '0 8px 24px rgba(0, 0, 0, 0.2)',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '4px',
-                      background: feature.gradient,
-                      opacity: hoveredCard === index ? 1 : 0,
-                      transition: 'opacity 0.3s'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: 5 }}>
-                    <Box sx={{ 
-                      mb: 3,
-                      width: 80,
-                      height: 80,
-                      borderRadius: 4,
-                      background: feature.gradient,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
-                    }}>
-                      {feature.icon}
-                    </Box>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: 'white', mb: 2 }}>
-                      {feature.title}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4, lineHeight: 1.7 }}>
-                      {feature.description}
-                    </Typography>
-                    <Box>
-                      {feature.benefits.map((benefit, idx) => (
-                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                          <CheckCircleIcon sx={{ color: '#10b981', mr: 1.5, fontSize: 20 }} />
-                          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
-                            {benefit}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, i) => (
+              <div
+                key={i}
+                className="bg-white border border-slate-200 rounded-2xl p-8 hover:shadow-md transition-shadow duration-200 flex flex-col h-full"
+              >
+                <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-6">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                  {feature.description}
+                </p>
+                <div className="mt-auto space-y-2 border-t border-slate-100 pt-4">
+                  {feature.benefits.map((benefit, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                      <svg className="w-4 h-4 text-green-500 fill-current" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {benefit}
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" style={{ paddingTop: '120px', paddingBottom: '120px' }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 10 }}>
-            <Chip 
-              label="Success Stories" 
-              sx={{ 
-                mb: 3,
-                background: 'rgba(240, 147, 251, 0.2)',
-                color: 'white',
-                border: '1px solid rgba(240, 147, 251, 0.3)',
-                backdropFilter: 'blur(10px)',
-                fontWeight: 600,
-                fontSize: '0.9rem'
-              }} 
-            />
-            <Typography variant="h2" sx={{ 
-              fontWeight: 900, 
-              color: 'white', 
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              letterSpacing: '-1px'
-            }}>
-              Loved by Thousands
-            </Typography>
-            <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-              Real people, real results, real growth
-            </Typography>
-          </Box>
+      <section id="testimonials" className="bg-white py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 mb-4">
+              Community Review
+            </span>
+            <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl tracking-tight">
+              Loved by Thousands of Pros
+            </h2>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4" spacing={4}>
-            {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Card sx={{ 
-                  height: '100%',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: 5,
-                  p: 4,
-                  transition: 'all 0.3s',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 20px 48px rgba(240, 147, 251, 0.2)',
-                    border: '1px solid rgba(240, 147, 251, 0.3)'
-                  }
-                }}>
-                  <CardContent sx={{ p: 0 }}>
-                    <Box sx={{ display: 'flex', mb: 3 }}>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <StarIcon key={star} sx={{ color: '#fbbf24', fontSize: 18 }} />
-                      ))}
-                    </Box>
-                    <Typography variant="body1" sx={{ 
-                      color: 'rgba(255, 255, 255, 0.9)', 
-                      mb: 4, 
-                      fontStyle: 'italic',
-                      lineHeight: 1.8,
-                      fontSize: '1.05rem'
-                    }}>
-                      "{testimonial.content}"
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar sx={{ 
-                        width: 56, 
-                        height: 56,
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        fontWeight: 700,
-                        fontSize: '1.2rem'
-                      }}>
-                        {testimonial.avatar}
-                      </Avatar>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ color: 'white', fontWeight: 700 }}>
-                          {testimonial.name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                          {testimonial.role} at {testimonial.company}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((t, i) => (
+              <div
+                key={i}
+                className="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:p-8 flex flex-col justify-between"
+              >
+                <div className="flex mb-4 text-amber-400">
+                  {[...Array(5)].map((_, starIndex) => (
+                    <svg key={starIndex} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-600 text-sm leading-relaxed italic mb-6">
+                  "{t.content}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-800">{t.name}</h4>
+                    <p className="text-xs text-slate-500">{t.role} at {t.company}</p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" style={{ paddingTop: '120px', paddingBottom: '120px' }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 10 }}>
-            <Chip 
-              label="Pricing" 
-              sx={{ 
-                mb: 3,
-                background: 'rgba(79, 172, 254, 0.2)',
-                color: 'white',
-                border: '1px solid rgba(79, 172, 254, 0.3)',
-                backdropFilter: 'blur(10px)',
-                fontWeight: 600,
-                fontSize: '0.9rem'
-              }} 
-            />
-            <Typography variant="h2" sx={{ 
-              fontWeight: 900, 
-              color: 'white', 
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              letterSpacing: '-1px'
-            }}>
+      <section id="pricing" className="bg-slate-50 border-t border-b border-slate-200/80 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 mb-4">
+              Flexible Plans
+            </span>
+            <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl tracking-tight">
               Simple, Transparent Pricing
-            </Typography>
-            <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-              Choose the perfect plan for your growth journey
-            </Typography>
-          </Box>
+            </h2>
+            <p className="mt-4 text-lg text-slate-500">
+              Upgrade or cancel at any time. No hidden setup fees.
+            </p>
+          </div>
 
-          <Grid container spacing={4} justifyContent="center">
-            {pricingPlans.map((plan, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    position: 'relative',
-                    background: plan.popular 
-                      ? 'rgba(255, 255, 255, 0.1)' 
-                      : 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(20px)',
-                    border: plan.popular 
-                      ? '2px solid rgba(102, 126, 234, 0.5)' 
-                      : '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: 5,
-                    transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
-                    transition: 'all 0.4s',
-                    '&:hover': {
-                      transform: plan.popular ? 'scale(1.07)' : 'scale(1.02)',
-                      boxShadow: '0 24px 60px rgba(102, 126, 234, 0.3)'
-                    }
-                  }}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
+            {pricingPlans.map((plan, i) => (
+              <div
+                key={i}
+                className={`bg-white border rounded-2xl p-8 flex flex-col justify-between shadow-sm relative ${
+                  plan.popular ? 'border-2 border-indigo-600 md:scale-[1.03]' : 'border-slate-200'
+                }`}
+              >
+                {plan.popular && (
+                  <span className="absolute -top-3 right-6 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white shadow-sm">
+                    Most Popular
+                  </span>
+                )}
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{plan.name}</h3>
+                  <div className="flex items-baseline mb-2">
+                    <span className="text-4xl font-extrabold text-slate-900">{plan.price}</span>
+                    <span className="text-slate-500 text-sm ml-1">{plan.period}</span>
+                  </div>
+                  <p className="text-slate-500 text-xs leading-relaxed mb-6">{plan.description}</p>
+                  <ul className="space-y-3 mb-8 border-t border-slate-100 pt-6">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-600">
+                        <svg className="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Link
+                  to={plan.name === 'Starter' ? '/auth' : '/user/plans'}
+                  className={`w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150 ${
+                    plan.popular
+                      ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200'
+                  }`}
                 >
-                  {plan.popular && (
-                    <Box sx={{
-                      position: 'absolute',
-                      top: -2,
-                      left: -2,
-                      right: -2,
-                      height: '6px',
-                      background: plan.gradient,
-                      borderRadius: '5px 5px 0 0'
-                    }} />
-                  )}
-                  {plan.popular && (
-                    <Chip
-                      label="⚡ Most Popular"
-                      sx={{
-                        position: 'absolute',
-                        top: 20,
-                        right: 20,
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
-                        fontWeight: 700,
-                        boxShadow: '0 4px 16px rgba(102, 126, 234, 0.4)'
-                      }}
-                    />
-                  )}
-                  <CardContent sx={{ p: 5 }}>
-                    <Typography variant="h4" sx={{ 
-                      fontWeight: 800, 
-                      color: 'white', 
-                      mb: 2,
-                      mt: plan.popular ? 3 : 0
-                    }}>
-                      {plan.name}
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 2 }}>
-                      <Typography variant="h2" sx={{ 
-                        fontWeight: 900, 
-                        background: plan.gradient,
-                        backgroundClip: 'text',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent'
-                      }}>
-                        {plan.price}
-                      </Typography>
-                      <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.6)', ml: 1 }}>
-                        {plan.period}
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" sx={{ 
-                      color: 'rgba(255, 255, 255, 0.7)', 
-                      mb: 4,
-                      fontSize: '1rem'
-                    }}>
-                      {plan.description}
-                    </Typography>
-                    <Box sx={{ mb: 4 }}>
-                      {plan.features.map((feature, idx) => (
-                        <Box key={idx} sx={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          mb: 2,
-                          padding: '8px 0'
-                        }}>
-                          <CheckCircleIcon sx={{ 
-                            color: '#10b981', 
-                            mr: 2, 
-                            fontSize: 22 
-                          }} />
-                          <Typography variant="body2" sx={{ 
-                            color: 'rgba(255, 255, 255, 0.9)',
-                            fontSize: '1rem',
-                            fontWeight: 500
-                          }}>
-                            {feature}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                    <Link to={plan.name === 'Starter' ? '/auth' : '/user/plans'} style={{ textDecoration: 'none' }}>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                        sx={{
-                          py: 2,
-                          borderRadius: 3,
-                          fontSize: '1rem',
-                          fontWeight: 700,
-                          textTransform: 'none',
-                          background: plan.popular
-                            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                            : 'rgba(255, 255, 255, 0.1)',
-                          color: 'white',
-                          border: plan.popular ? 'none' : '1px solid rgba(255, 255, 255, 0.2)',
-                          boxShadow: plan.popular
-                            ? '0 8px 24px rgba(102, 126, 234, 0.4)'
-                            : 'none',
-                          '&:hover': {
-                            background: plan.popular
-                              ? 'linear-gradient(135deg, #5a5fd6 0%, #6a4191 100%)'
-                              : 'rgba(255, 255, 255, 0.15)',
-                            boxShadow: '0 12px 32px rgba(102, 126, 234, 0.5)',
-                            transform: 'translateY(-2px)'
-                          },
-                          transition: 'all 0.3s'
-                        }}
-                      >
-                        {plan.name === 'Starter' ? 'Start Free Trial' : 'Get Started'}
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              </Grid>
+                  {plan.buttonText}
+                </Link>
+              </div>
             ))}
-          </Grid>
-        </Container>
+          </div>
+        </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" style={{ paddingTop: '120px', paddingBottom: '120px' }}>
-        <Container maxWidth="md">
-          <Box sx={{ textAlign: 'center', mb: 10 }}>
-            <Chip 
-              label="FAQ" 
-              sx={{ 
-                mb: 3,
-                background: 'rgba(250, 112, 154, 0.2)',
-                color: 'white',
-                border: '1px solid rgba(250, 112, 154, 0.3)',
-                backdropFilter: 'blur(10px)',
-                fontWeight: 600,
-                fontSize: '0.9rem'
-              }} 
-            />
-            <Typography variant="h2" sx={{ 
-              fontWeight: 900, 
-              color: 'white', 
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              letterSpacing: '-1px'
-            }}>
+      <section id="faq" className="bg-white py-20 md:py-28">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 mb-4">
+              Answers
+            </span>
+            <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl tracking-tight">
               Got Questions?
-            </Typography>
-            <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-              We've got answers to everything you need to know
-            </Typography>
-          </Box>
+            </h2>
+          </div>
 
-          {faqs.map((faq, index) => (
-            <Accordion 
-              key={index} 
-              sx={{ 
-                mb: 2,
-                background: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '12px !important',
-                overflow: 'hidden',
-                '&:before': { display: 'none' },
-                '&:hover': {
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                },
-                transition: 'all 0.3s'
-              }}
-            >
-              <AccordionSummary 
-                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
-                sx={{ py: 2 }}
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div
+                key={i}
+                className="border border-slate-200 rounded-xl overflow-hidden"
               >
-                <Typography variant="h6" sx={{ 
-                  fontWeight: 700,
-                  color: 'white',
-                  fontSize: '1.1rem'
-                }}>
-                  {faq.question}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails sx={{ pt: 0, pb: 3 }}>
-                <Typography variant="body1" sx={{ 
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  lineHeight: 1.8,
-                  fontSize: '1rem'
-                }}>
-                  {faq.answer}
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Container>
-      </section>
-
-      {/* CTA Section */}
-      <section style={{ paddingTop: '120px', paddingBottom: '120px' }}>
-        <Container maxWidth="md">
-          <Box sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: 6,
-            p: { xs: 6, md: 10 },
-            textAlign: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 32px 80px rgba(102, 126, 234, 0.4)'
-          }}>
-            <Box sx={{
-              position: 'absolute',
-              top: -50,
-              right: -50,
-              width: 200,
-              height: 200,
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.1)',
-              filter: 'blur(60px)'
-            }} />
-            <Box sx={{
-              position: 'absolute',
-              bottom: -30,
-              left: -30,
-              width: 150,
-              height: 150,
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.1)',
-              filter: 'blur(40px)'
-            }} />
-            <Box sx={{ position: 'relative', zIndex: 1 }}>
-              <Typography variant="h2" sx={{ 
-                color: 'white', 
-                fontWeight: 900, 
-                mb: 3,
-                fontSize: { xs: '2rem', md: '3rem' },
-                letterSpacing: '-1px'
-              }}>
-                Ready to 10x Your Social Presence?
-              </Typography>
-              <Typography variant="h6" sx={{ 
-                color: 'rgba(255, 255, 255, 0.9)', 
-                mb: 5,
-                lineHeight: 1.8,
-                fontSize: '1.2rem'
-              }}>
-                Join 10,000+ professionals already growing on autopilot
-              </Typography>
-              <Link to="/auth">
-                <Button
-                  variant="contained"
-                  size="large"
-                  endIcon={<ArrowForwardIcon />}
-                  sx={{
-                    px: 8,
-                    py: 3,
-                    backgroundColor: 'white',
-                    color: '#667eea',
-                    fontSize: '1.2rem',
-                    fontWeight: 800,
-                    borderRadius: 4,
-                    textTransform: 'none',
-                    boxShadow: '0 16px 48px rgba(0, 0, 0, 0.3)',
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)'
-                    },
-                    transition: 'all 0.3s'
-                  }}
+                <button
+                  onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+                  className="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-50/50 hover:bg-slate-50 transition-colors"
                 >
-                  Start Free Trial Now
-                </Button>
-              </Link>
-              <Typography variant="body2" sx={{ 
-                color: 'rgba(255, 255, 255, 0.8)', 
-                mt: 3,
-                fontSize: '1rem'
-              }}>
-                ✓ No credit card required  •  ✓ 14-day free trial  •  ✓ Cancel anytime
-              </Typography>
-            </Box>
-          </Box>
-        </Container>
+                  <span className="font-bold text-slate-800 text-sm md:text-base">
+                    {faq.question}
+                  </span>
+                  <svg
+                    className={`w-5 h-5 text-slate-400 transform transition-transform duration-200 ${
+                      activeFaq === i ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {activeFaq === i && (
+                  <div className="px-6 py-4 bg-white border-t border-slate-100 text-sm leading-relaxed text-slate-600">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
+      {/* Final CTA */}
+      <section className="bg-white pb-20 md:pb-28">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-indigo-600 rounded-3xl p-8 md:p-12 text-center text-white shadow-lg overflow-hidden relative">
+            <div className="relative z-10">
+              <h2 className="text-3xl font-extrabold sm:text-4xl">
+                Ready to level up your professional presence?
+              </h2>
+              <p className="mt-4 text-indigo-100 max-w-xl mx-auto text-base sm:text-lg">
+                Sign up in minutes. Connect your profiles. Let the automation engine handle the rest.
+              </p>
+              <div className="mt-8 flex justify-center">
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center justify-center px-6 py-3 text-base font-bold text-indigo-600 bg-white hover:bg-slate-50 active:bg-slate-100 rounded-lg shadow-sm transition-all"
+                >
+                  Get Started for Free
+                </Link>
+              </div>
+            </div>
+            {/* Background design accents */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-700/30 rounded-full blur-3xl" />
+          </div>
+        </div>
+      </section>
     </Layout>
   );
 };

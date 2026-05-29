@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Box, IconButton } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
 import Sidebar from './Sidebar';
 import MobileSidebar from './MobileSidebar';
 import { UserProvider } from '../../hooks/useUser';
@@ -14,50 +12,37 @@ const DashboardLayout = ({ onLogout }) => {
   };
 
   return (
-          <UserProvider>
-    <Box sx={{
-      display: 'flex',
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      backgroundAttachment: 'fixed'
-    }}>
-      {/* Mobile menu button */}
-      <IconButton
-        sx={{ 
-          display: { xs: 'block', md: 'none' }, 
-          position: 'fixed', 
-          top: 16, 
-          left: 16, 
-          zIndex: 1100 
-        }}
-        onClick={() => setDrawerOpen(true)}
-      >
-        <MenuIcon />
-      </IconButton>
+    <UserProvider>
+      <div className="flex min-h-screen bg-slate-50 text-slate-800">
+        {/* Mobile menu button */}
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="md:hidden fixed top-4 left-4 z-40 p-2 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:bg-slate-50 text-slate-600 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
 
-      {/* Desktop Sidebar */}
-      <Sidebar onLogout={onLogout} />
+        {/* Desktop Sidebar */}
+        <Sidebar onLogout={onLogout} />
 
-      {/* Mobile Sidebar */}
-      <MobileSidebar
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onNavigate={handleNavigation}
-        onLogout={onLogout}
-      />
+        {/* Mobile Sidebar */}
+        <MobileSidebar
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          onNavigate={handleNavigation}
+          onLogout={onLogout}
+        />
 
-      {/* Main content */}
-      <Box component="main" sx={{
-        flexGrow: 1,
-        p: 3,
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        minHeight: '100vh'
-      }}>
-        <Outlet />
-      </Box>
-    </Box>
-          </UserProvider>
+        {/* Main content */}
+        <main className="flex-1 min-h-screen p-6 md:p-10 pt-20 md:pt-10 overflow-x-hidden">
+          <div className="max-w-5xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </UserProvider>
   );
 };
 

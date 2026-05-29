@@ -1,13 +1,4 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider
-} from '@mui/material';
-import { Logout as LogoutIcon } from '@mui/icons-material';
 import { menuItems } from './menuItems';
 
 const NavigationList = ({ onLogout, onNavigate }) => {
@@ -20,73 +11,41 @@ const NavigationList = ({ onLogout, onNavigate }) => {
   };
 
   return (
-    <List sx={{ p: 1 }}>
-      {menuItems.map((item) => (
-        <ListItem key={item.id} disablePadding sx={{ mb: 0.5 }}>
-          <ListItemButton
-            selected={location.pathname === item.path}
-            onClick={() => handleNavigation(item.path)}
-            sx={{
-              borderRadius: 2,
-              mx: 1,
-              transition: 'all 0.2s ease-in-out',
-              '&.Mui-selected': {
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)'
-                }
-              },
-              '&:hover': {
-                background: 'rgba(255, 255, 255, 0.1)',
-                transform: 'translateX(4px)'
-              }
-            }}
-          >
-            <ListItemIcon 
-              sx={{ 
-                color: location.pathname === item.path 
-                  ? 'white' 
-                  : 'rgba(255, 255, 255, 0.7)' 
-              }}
+    <div className="flex flex-col h-full justify-between p-4">
+      <nav className="space-y-1">
+        {menuItems.map((item) => {
+          const isSelected = location.pathname === item.path;
+          return (
+            <button
+              key={item.id}
+              onClick={() => handleNavigation(item.path)}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                isSelected
+                  ? 'bg-indigo-50 text-indigo-600 font-semibold'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
             >
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText
-              primary={item.label}
-              sx={{
-                '& .MuiTypography-root': {
-                  fontWeight: location.pathname === item.path ? 600 : 400
-                }
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      ))}
-      
-      <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-      
-      <ListItem disablePadding sx={{ mb: 0.5 }}>
-        <ListItemButton
+              <span className={isSelected ? 'text-indigo-600' : 'text-slate-400'}>
+                {item.icon}
+              </span>
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="pt-4 border-t border-slate-200/80 mt-auto">
+        <button
           onClick={onLogout}
-          sx={{
-            borderRadius: 2,
-            mx: 1,
-            transition: 'all 0.2s ease-in-out',
-            '&:hover': {
-              background: 'rgba(239, 68, 68, 0.1)',
-              color: '#fca5a5',
-              transform: 'translateX(4px)'
-            }
-          }}
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all"
         >
-          <ListItemIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItemButton>
-      </ListItem>
-    </List>
+          <svg className="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
   );
 };
 

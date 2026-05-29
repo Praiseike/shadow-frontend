@@ -1,111 +1,125 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  Button,
-  IconButton,
-  useTheme,
-  useMediaQuery
-} from '@mui/material';
-import {
-  AutoAwesome as AutoAwesomeIcon,
-  Menu as MenuIcon,
-  Close as CloseIcon
-} from '@mui/icons-material';
 
 const Nav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <nav style={{
-      background: 'rgba(15, 12, 41, 0.8)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000
-    }}>
-      <Container maxWidth="lg">
-        <div className="flex justify-between items-center h-20">
+    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <div className="flex items-center gap-2">
-            <AutoAwesomeIcon sx={{ color: '#667eea', fontSize: 32 }} />
-            <Typography variant="h4" component="h1" sx={{
-              fontWeight: 800,
-              background: 'linear-gradient(135deg, #667eea 0%, #f093fb 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.5px'
-            }}>
-              PostNexus
-            </Typography>
+            <Link to="/" className="flex items-center space-x-2">
+              <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="text-xl font-extrabold text-slate-900 tracking-tight">
+                PostNexus
+              </span>
+            </Link>
           </div>
 
-          {!isMobile && (
-            <div className="flex items-center space-x-8">
-              <a href="#features" style={{ color: 'rgba(255,255,255,0.8)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.8)'}>Features</a>
-              <a href="#pricing" style={{ color: 'rgba(255,255,255,0.8)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.8)'}>Pricing</a>
-              <a href="#testimonials" style={{ color: 'rgba(255,255,255,0.8)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.8)'}>Testimonials</a>
-              <a href="#faq" style={{ color: 'rgba(255,255,255,0.8)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color = '#667eea'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.8)'}>FAQ</a>
-              <Link to="/auth">
-                <Button variant="contained" sx={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  px: 3,
-                  py: 1.2,
-                  borderRadius: 3,
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
-                  '&:hover': {
-                    boxShadow: '0 12px 32px rgba(102, 126, 234, 0.6)',
-                    transform: 'translateY(-2px)'
-                  },
-                  transition: 'all 0.3s'
-                }}>
-                  Get Started
-                </Button>
-              </Link>
-            </div>
-          )}
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center space-x-8">
+            <a href="#features" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              Features
+            </a>
+            <a href="#pricing" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              Pricing
+            </a>
+            <a href="#testimonials" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              Testimonials
+            </a>
+            <a href="#faq" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              FAQ
+            </a>
+            <Link
+              to="/auth"
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              Log in
+            </Link>
+            <Link
+              to="/auth"
+              className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-lg shadow-sm transition-all duration-150"
+            >
+              Get Started
+            </Link>
+          </div>
 
-          {isMobile && (
-            <IconButton onClick={() => setMobileMenuOpen(!mobileMenuOpen)} sx={{ color: 'white' }}>
-              {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
-          )}
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-600 hover:bg-slate-100 focus:outline-none"
+            >
+              {mobileMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+      </div>
 
-        {isMobile && mobileMenuOpen && (
-          <div style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            background: 'rgba(15, 12, 41, 0.95)',
-            backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-          }}>
-            <div className="flex flex-col space-y-4 p-6">
-              <a href="#features" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setMobileMenuOpen(false)}>Features</a>
-              <a href="#pricing" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-              <a href="#testimonials" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setMobileMenuOpen(false)}>Testimonials</a>
-              <a href="#faq" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setMobileMenuOpen(false)}>FAQ</a>
-              <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="contained" fullWidth sx={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  mt: 2
-                }}>
-                  Get Started
-                </Button>
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-b border-slate-200 bg-white">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a
+              href="#features"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Features
+            </a>
+            <a
+              href="#pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Pricing
+            </a>
+            <a
+              href="#testimonials"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Testimonials
+            </a>
+            <a
+              href="#faq"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+            >
+              FAQ
+            </a>
+            <Link
+              to="/auth"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Log in
+            </Link>
+            <div className="pt-2 px-3">
+              <Link
+                to="/auth"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center px-4 py-2.5 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-all"
+              >
+                Get Started
               </Link>
             </div>
           </div>
-        )}
-      </Container>
+        </div>
+      )}
     </nav>
   );
 };
