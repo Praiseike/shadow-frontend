@@ -1,23 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Paper,
-  Typography,
-  Button,
-  TextField,
-  Chip,
-  Alert,
-  CircularProgress
-} from '@mui/material';
-import {
-  Topic as TopicIcon,
-  Person as PersonIcon,
-  ArrowForward as ArrowForwardIcon,
-  ArrowBack as ArrowBackIcon
-} from '@mui/icons-material';
-
-import { motion, AnimatePresence } from 'framer-motion';
 import apiService from '../services/api';
 import topicsData from '../data/topics.json';
 
@@ -29,7 +11,13 @@ const Onboarding = () => {
 
   const [onboardingData, setOnboardingData] = useState({
     topics: [],
-    bio: ''
+    bio: '',
+    schedule: {
+      time1: '09:00',
+      time2: '15:00',
+      platforms: ['linkedin'],
+      startDate: new Date().toISOString().split('T')[0]
+    }
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,12 +39,29 @@ const Onboarding = () => {
     {
       title: 'Choose Your Topics',
       subtitle: 'Select topics for your AI-generated posts',
-      icon: <TopicIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.8)' }} />
+      icon: (
+        <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      )
     },
     {
       title: 'Tell Us About Yourself',
       subtitle: 'Write a short bio for your profile',
-      icon: <PersonIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.8)' }} />
+      icon: (
+        <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      )
+    },
+    {
+      title: 'Set Your Schedule',
+      subtitle: 'Choose when to post automatically',
+      icon: (
+        <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
     }
   ];
 
@@ -96,6 +101,15 @@ const Onboarding = () => {
       // Update topics
       await apiService.updateTopics(onboardingData.topics);
 
+      // Create schedule
+      await apiService.createOrUpdateSchedule({
+        time1: onboardingData.schedule.time1,
+        time2: onboardingData.schedule.time2,
+        platforms: onboardingData.schedule.platforms,
+        startDate: onboardingData.schedule.startDate,
+        active: true
+      });
+
       // Refresh user data
       const profileData = await apiService.getProfile();
       localStorage.setItem('currentUser', JSON.stringify(profileData.user));
@@ -113,140 +127,155 @@ const Onboarding = () => {
     switch (currentStep) {
       case 0:
         return (
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="h6" gutterBottom sx={{ color: 'white', fontWeight: 600 }}>
-              Select Topics
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 3 }}>
-              Choose topics that interest you for personalized content
-            </Typography>
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-slate-900 mb-1">Select Topics</h3>
+            <p className="text-sm text-slate-500 mb-6">Choose topics that interest you for personalized content.</p>
 
             {/* Search Input */}
-            <TextField
-              fullWidth
-              placeholder="Search topics..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{
-                mb: 3,
-                '& .MuiOutlinedInput-root': {
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: 3,
-                  '& fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.3)',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'rgba(102, 126, 234, 0.5)',
-                  }
-                },
-                '& .MuiInputBase-input': {
-                  color: 'white',
-                  '&::placeholder': {
-                    color: 'rgba(255, 255, 255, 0.5)',
-                    opacity: 1
-                  }
-                }
-              }}
-              InputProps={{
-                startAdornment: (
-                  <Box sx={{ color: 'rgba(255, 255, 255, 0.5)', mr: 1 }}>
-                    🔍
-                  </Box>
-                )
-              }}
-            />
+            <div className="relative mb-6">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                placeholder="Search topics..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
+              />
+            </div>
 
-            <Box className="scroll-none" sx={{ maxHeight: 400, overflowY: 'auto', pr: 1 }}>
+            <div className="max-h-80 overflow-y-auto pr-1 space-y-6">
               {filteredCategories.length > 0 ? (
                 filteredCategories.map(category => (
-                  <Box key={category.name} sx={{ mb: 4 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ color: 'white', fontWeight: 600, mb: 2 }}>
+                  <div key={category.name} className="space-y-3">
+                    <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       {category.name}
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
-                      {category.topics.map(topic => (
-                        <Chip
-                          key={topic}
-                          label={topic}
-                          clickable
-                          onClick={() => handleTopicToggle(topic)}
-                          sx={{
-                            borderRadius: 2,
-                            fontWeight: 500,
-                            transition: 'all 0.2s',
-                            background: onboardingData.topics.includes(topic)
-                              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                              : 'rgba(255, 255, 255, 0.1)',
-                            color: onboardingData.topics.includes(topic) ? 'white' : 'rgba(255, 255, 255, 0.8)',
-                            border: onboardingData.topics.includes(topic) ? 'none' : '1px solid rgba(255, 255, 255, 0.2)',
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(102, 126, 234, 0.3)'
-                            }
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  </Box>
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {category.topics.map(topic => {
+                        const isSelected = onboardingData.topics.includes(topic);
+                        return (
+                          <button
+                            key={topic}
+                            type="button"
+                            onClick={() => handleTopicToggle(topic)}
+                            className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
+                              isSelected
+                                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+                            }`}
+                          >
+                            {topic}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 ))
               ) : (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                    No topics found matching "{searchTerm}"
-                  </Typography>
-                </Box>
+                <div className="text-center py-6">
+                  <p className="text-sm text-slate-500">No topics found matching "{searchTerm}"</p>
+                </div>
               )}
-            </Box>
+            </div>
+
             {onboardingData.topics.length > 0 && (
-              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', mt: 2 }}>
-                Selected: {onboardingData.topics.length} topics
-              </Typography>
+              <p className="text-xs font-semibold text-slate-400 mt-4">
+                Selected: <span className="text-indigo-600 font-bold">{onboardingData.topics.length}</span> topics
+              </p>
             )}
-          </Box>
+          </div>
         );
 
       case 1:
         return (
-          <Box sx={{ width: '100%', maxWidth: 600 }}>
-            <Typography variant="h6" gutterBottom sx={{ color: 'white', fontWeight: 600 }}>
-              Your Bio
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 3 }}>
-              Tell us a bit about yourself and your expertise
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-slate-900 mb-1">Your Bio</h3>
+            <p className="text-sm text-slate-500 mb-6">Tell us a bit about yourself and your expertise.</p>
+            <textarea
               rows={4}
               placeholder="I'm a software engineer with 5 years of experience in full-stack development..."
               value={onboardingData.bio}
               onChange={(e) => setOnboardingData(prev => ({ ...prev, bio: e.target.value }))}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: 3,
-                  '& fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.3)',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'rgba(102, 126, 234, 0.5)',
-                  }
-                },
-                '& .MuiInputBase-input': {
-                  color: 'white',
-                  py: 2
-                }
-              }}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm resize-none"
             />
-          </Box>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-slate-900 mb-1">Posting Schedule</h3>
+            <p className="text-sm text-slate-500 mb-6">Set two times per day and select a start date for automated posting.</p>
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">FIRST POST TIME</label>
+                <input
+                  type="time"
+                  value={onboardingData.schedule.time1}
+                  onChange={(e) => setOnboardingData(prev => ({
+                    ...prev,
+                    schedule: { ...prev.schedule, time1: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">SECOND POST TIME</label>
+                <input
+                  type="time"
+                  value={onboardingData.schedule.time2}
+                  onChange={(e) => setOnboardingData(prev => ({
+                    ...prev,
+                    schedule: { ...prev.schedule, time2: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">SCHEDULE START DATE</label>
+              <input
+                type="date"
+                value={onboardingData.schedule.startDate}
+                min={new Date().toISOString().split('T')[0]}
+                onChange={(e) => setOnboardingData(prev => ({
+                  ...prev,
+                  schedule: { ...prev.schedule, startDate: e.target.value }
+                }))}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
+              />
+            </div>
+
+            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              Platforms
+            </h4>
+            <div className="flex items-center gap-3">
+              <label className="inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={onboardingData.schedule.platforms.includes('linkedin')}
+                  onChange={(e) => setOnboardingData(prev => ({
+                    ...prev,
+                    schedule: {
+                      ...prev.schedule,
+                      platforms: e.target.checked
+                        ? [...prev.schedule.platforms, 'linkedin']
+                        : prev.schedule.platforms.filter(p => p !== 'linkedin')
+                    }
+                  }))}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 relative"></div>
+                <span className="ml-3 text-sm font-semibold text-slate-700">LinkedIn</span>
+              </label>
+            </div>
+          </div>
         );
 
       default:
@@ -255,228 +284,124 @@ const Onboarding = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-        p: 2
-      }}
-    >
-      {/* Animated background elements */}
-      <Box sx={{
-        position: 'absolute',
-        top: '10%',
-        left: '10%',
-        width: 300,
-        height: 300,
-        borderRadius: '50%',
-        background: 'rgba(102, 126, 234, 0.15)',
-        filter: 'blur(80px)',
-        animation: 'float 6s ease-in-out infinite'
-      }} />
-      <Box sx={{
-        position: 'absolute',
-        bottom: '10%',
-        right: '10%',
-        width: 400,
-        height: 400,
-        borderRadius: '50%',
-        background: 'rgba(118, 75, 162, 0.15)',
-        filter: 'blur(80px)',
-        animation: 'float 8s ease-in-out infinite reverse'
-      }} />
-
-      <style>
-        {`
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) translateX(0px); }
-            50% { transform: translateY(-30px) translateX(30px); }
-          }
-        `}
-      </style>
-
-      <Paper
-        elevation={0}
-        sx={{
-          p: { xs: 4, sm: 6 },
-          width: '100%',
-          maxWidth: 800,
-          borderRadius: 5,
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          position: 'relative',
-          zIndex: 1,
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)'
-        }}
-      >
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Box sx={{
-            fontSize: '3rem',
-            mb: 2,
-            animation: 'pulse 2s ease-in-out infinite'
-          }}>
-            🤖
-          </Box>
-          <Typography
-            variant="h3"
-            component="h1"
-            sx={{
-              fontWeight: 900,
-              mb: 1,
-              background: 'linear-gradient(135deg, #ffffff 0%, #a8b5ff 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-1px'
-            }}
-          >
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-2xl bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 sm:p-10 relative">
+        
+        {/* Logo and Intro */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-indigo-50 rounded-xl mb-3">
+            <svg className="w-6 h-6 text-indigo-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1 tracking-tight">
             Welcome to PostNexus
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+          </h1>
+          <p className="text-sm text-slate-500">
             Let's set up your profile in just a few steps
-          </Typography>
-        </Box>
+          </p>
+        </div>
 
-        {/* Step indicator */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+        {/* Step Indicator */}
+        <div className="flex items-center justify-center gap-2 mb-10">
           {steps.map((step, index) => (
-            <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: index <= currentStep
-                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                  : 'rgba(255, 255, 255, 0.1)',
-                color: 'white',
-                fontWeight: 600,
-                transition: 'all 0.3s'
-              }}>
-                {index < currentStep ? '✓' : index + 1}
-              </Box>
+            <div key={index} className="flex items-center">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+                  index <= currentStep
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-slate-100 text-slate-400'
+                }`}
+              >
+                {index < currentStep ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  index + 1
+                )}
+              </div>
               {index < steps.length - 1 && (
-                <Box sx={{
-                  width: 60,
-                  height: 2,
-                  background: index < currentStep
-                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
-                  mx: 1,
-                  transition: 'all 0.3s'
-                }} />
+                <div
+                  className={`w-12 h-0.5 mx-2 transition-all duration-300 ${
+                    index < currentStep ? 'bg-indigo-600' : 'bg-slate-100'
+                  }`}
+                />
               )}
-            </Box>
+            </div>
           ))}
-        </Box>
+        </div>
 
-        {/* Step content */}
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-          <Box sx={{ mr: 3 }}>
+        {/* Active Step Details */}
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+          <div className="p-2.5 bg-indigo-50 rounded-xl">
             {steps[currentStep].icon}
-          </Box>
-          <Box>
-            <Typography variant="h5" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-slate-900 leading-tight">
               {steps[currentStep].title}
-            </Typography>
-            <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
               {steps[currentStep].subtitle}
-            </Typography>
-          </Box>
-        </Box>
+            </p>
+          </div>
+        </div>
 
         {error && (
-          <Alert
-            severity="error"
-            sx={{
-              mb: 3,
-              background: 'rgba(239, 68, 68, 0.1)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              color: '#fca5a5',
-              '& .MuiAlert-icon': {
-                color: '#fca5a5'
-              }
-            }}
-          >
-            {error}
-          </Alert>
+          <div className="mb-6 bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl flex items-center gap-2.5 text-sm">
+            <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className="font-medium">{error}</span>
+          </div>
         )}
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderStepContent()}
-          </motion.div>
-        </AnimatePresence>
+        {/* Step Form Content */}
+        <div className="min-h-[16rem]">
+          {renderStepContent()}
+        </div>
 
-        {/* Navigation buttons */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-          <Button
+        {/* Bottom Actions */}
+        <div className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100">
+          <button
+            type="button"
             onClick={handleBack}
             disabled={currentStep === 0}
-            startIcon={<ArrowBackIcon />}
-            sx={{
-              borderRadius: 3,
-              px: 3,
-              py: 1.5,
-              textTransform: 'none',
-              fontWeight: 600,
-              color: 'rgba(255, 255, 255, 0.7)',
-              '&:hover': {
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: 'white'
-              },
-              '&:disabled': {
-                color: 'rgba(255, 255, 255, 0.3)'
-              }
-            }}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-slate-500 transition-colors"
           >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
             Back
-          </Button>
-          <Button
+          </button>
+          
+          <button
+            type="button"
             onClick={handleNext}
             disabled={loading}
-            endIcon={loading ? <CircularProgress size={20} /> : <ArrowForwardIcon />}
-            sx={{
-              borderRadius: 3,
-              px: 3,
-              color: "white",
-              py: 1.5,
-              textTransform: 'none',
-              fontWeight: 600,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #5a5fd6 0%, #6a4191 100%)',
-                boxShadow: '0 12px 32px rgba(102, 126, 234, 0.6)',
-                transform: 'translateY(-2px)'
-              },
-              '&:disabled': {
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: 'rgba(255, 255, 255, 0.3)'
-              },
-              transition: 'all 0.3s'
-            }}
+            className="flex items-center gap-1.5 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
           >
-            {currentStep === steps.length - 1 ? 'Complete Setup' : 'Next'}
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Processing...
+              </span>
+            ) : (
+              <>
+                {currentStep === steps.length - 1 ? 'Complete Setup' : 'Next'}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </>
+            )}
+          </button>
+        </div>
+
+      </div>
+    </div>
   );
 };
 

@@ -1,46 +1,9 @@
 import { useState, useEffect } from 'react';
-import {
-  Container,
-  Paper,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Avatar,
-  Chip,
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-  Switch,
-  FormControlLabel,
-  Alert,
-  Snackbar,
-  CircularProgress,
-  Divider
-} from '@mui/material';
-import {
-  LinkedIn as LinkedInIcon,
-  Twitter as TwitterIcon,
-  Facebook as FacebookIcon,
-  Schedule as ScheduleIcon,
-  Topic as TopicIcon,
-  TrendingUp,
-  CalendarMonth,
-  Folder,
-  Article,
-  CheckCircle,
-  Error as ErrorIcon,
-  Pending,
-  BarChart
-} from '@mui/icons-material';
 import { useUser } from '../../hooks/useUser';
 import apiService from '../../services/api';
 
-const DashboardHome = ({ user, onLogout }) => {
-  const { user: currentUser, userPlan, loading: userLoading, updateUser, loadUserData } = useUser();
+const DashboardHome = () => {
+  const { user: currentUser, userPlan, loading: userLoading, updateUser } = useUser();
   const [profileDialog, setProfileDialog] = useState(false);
   const [scheduleDialog, setScheduleDialog] = useState(false);
   const [topicDialog, setTopicDialog] = useState(false);
@@ -66,7 +29,6 @@ const DashboardHome = ({ user, onLogout }) => {
   const [selectedTopics, setSelectedTopics] = useState(currentUser?.topics?.map(t => t.topic) || []);
   const [customTopic, setCustomTopic] = useState('');
 
-  // Fetch dashboard overview data
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -106,6 +68,9 @@ const DashboardHome = ({ user, onLogout }) => {
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
+    setTimeout(() => {
+      setSnackbar(prev => ({ ...prev, open: false }));
+    }, 4000);
   };
 
   const handleProfileSave = async () => {
@@ -116,7 +81,6 @@ const DashboardHome = ({ user, onLogout }) => {
         experience: profileData.experience,
         bio: profileData.bio
       });
-
       setProfileDialog(false);
       showSnackbar('Profile updated successfully');
     } catch (error) {
@@ -133,9 +97,7 @@ const DashboardHome = ({ user, onLogout }) => {
         platforms: scheduleData.platforms,
         active: true
       };
-
       await apiService.createOrUpdateSchedule(schedulePayload);
-
       setScheduleDialog(false);
       showSnackbar('Schedule updated successfully');
     } catch (error) {
@@ -162,7 +124,6 @@ const DashboardHome = ({ user, onLogout }) => {
   const handleTopicsSave = async () => {
     try {
       await apiService.updateTopics({ topics: selectedTopics });
-
       setTopicDialog(false);
       showSnackbar('Topics updated successfully');
     } catch (error) {
@@ -171,7 +132,6 @@ const DashboardHome = ({ user, onLogout }) => {
     }
   };
 
-  // Start real OAuth flow; mirrors SocialPage behaviour so both entry points are consistent.
   const handleSocialConnect = async (platform) => {
     try {
       if (platform === 'linkedin' || platform === 'twitter') {
@@ -200,1339 +160,503 @@ const DashboardHome = ({ user, onLogout }) => {
 
   if (userLoading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <CircularProgress size={50} />
-        </div>
-      </Container>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <svg className="animate-spin h-10 w-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+      </div>
     );
   }
 
   const stats = dashboardData ? [
     {
-      title: 'Connected',
+      title: 'Connected Accounts',
       value: dashboardData.stats.connectedAccounts,
-      subtitle: 'Accounts',
-      icon: <LinkedInIcon />,
-      gradient: 'from-blue-500 to-purple-600'
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      ),
+      bg: 'bg-blue-50 text-blue-600'
     },
     {
-      title: 'Active',
+      title: 'Active Schedules',
       value: dashboardData.stats.activeSchedules,
-      subtitle: 'Schedules',
-      icon: <CalendarMonth />,
-      gradient: 'from-pink-500 to-red-500'
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+      bg: 'bg-rose-50 text-rose-600'
     },
     {
-      title: 'Selected',
+      title: 'Selected Topics',
       value: dashboardData.stats.selectedTopics,
-      subtitle: 'Topics',
-      icon: <Folder />,
-      gradient: 'from-cyan-500 to-blue-500'
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        </svg>
+      ),
+      bg: 'bg-cyan-50 text-cyan-600'
     },
     {
-      title: 'Generated',
+      title: 'Generated Posts',
       value: dashboardData.stats.totalGenerated,
-      subtitle: 'Posts',
-      icon: <Article />,
-      gradient: 'from-green-500 to-teal-500'
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+      bg: 'bg-violet-50 text-violet-600'
     },
     {
-      title: 'Posted',
+      title: 'Posted Successfully',
       value: dashboardData.stats.totalPosted,
-      subtitle: 'Posts',
-      icon: <CheckCircle />,
-      gradient: 'from-emerald-500 to-green-600'
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      bg: 'bg-emerald-50 text-emerald-600'
     },
     {
-      title: 'This Week',
+      title: 'Posted This Week',
       value: dashboardData.stats.postsThisWeek,
-      subtitle: 'Posts',
-      icon: <BarChart />,
-      gradient: 'from-orange-500 to-red-500'
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      bg: 'bg-amber-50 text-amber-600'
     }
-  ] : [
-    {
-      title: 'Connected',
-      value: Object.keys(currentUser?.socialConnections || {}).length,
-      subtitle: 'Accounts',
-      icon: <LinkedInIcon />,
-      iconColor: '#1e3a8a',
-      iconBg: 'rgba(30, 58, 138, 0.08)'
-    },
-    {
-      title: 'Active',
-      value: currentUser?.schedules?.length || 0,
-      subtitle: 'Schedules',
-      icon: <CalendarMonth />,
-      iconColor: '#b45309',
-      iconBg: 'rgba(180, 83, 9, 0.08)'
-    },
-    {
-      title: 'Selected',
-      value: currentUser?.topics?.length || 0,
-      subtitle: 'Topics',
-      icon: <Folder />,
-      iconColor: '#0f766e',
-      iconBg: 'rgba(15, 118, 110, 0.08)'
-    },
-    {
-      title: 'Generated',
-      value: 0,
-      subtitle: 'Posts',
-      icon: <Article />,
-      iconColor: '#334155',
-      iconBg: 'rgba(51, 65, 85, 0.08)'
-    }
-  ];
+  ] : [];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <div className="space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <Typography variant="h4" sx={{ color: '#2d3748', fontWeight: 700, mb: 1 }}>
-          Dashboard
-        </Typography>
-        <Typography variant="body1" sx={{ color: '#718096' }}>
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Welcome back, {currentUser?.name}! Here's your overview.
-        </Typography>
+        </p>
       </div>
 
-      {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Column - Main Content */}
-        <div className="flex-1">
+      {/* Main Layout Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left Columns - Contents */}
+        <div className="lg:col-span-2 space-y-6">
+          
           {/* Plan Card */}
-          {userPlan && (
-            <Card
-              sx={{
-                mb: 4,
-                borderRadius: 3,
-                border: '1px solid #e2e8f0',
-                boxShadow: '0 12px 30px rgba(15, 23, 42, 0.08)',
-                background: 'linear-gradient(135deg, #0f172a 0%, #1f2937 60%, #0f172a 100%)',
-                color: 'white'
-              }}
-            >
-              <CardContent sx={{ p: 4 }}>
-                <div className="flex items-center justify-between mb:4 md:mb-3">
-                  <div>
-                    <Typography variant="overline" sx={{ opacity: 0.85, fontSize: '0.75rem', letterSpacing: 1 }}>
-                      CURRENT PLAN
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.5 }}>
-                      {dashboardData?.plan?.name || userPlan?.plan?.name || 'Free Trial'}
-                    </Typography>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <TrendingUp sx={{ fontSize: 40, color: 'rgba(255,255,255,0.8)' }} />
-                  </div>
+          {(userPlan || dashboardData?.plan) && (
+            <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-2xl p-6 shadow-sm border border-indigo-700/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold tracking-wider uppercase opacity-75">CURRENT PLAN</span>
+                  <h2 className="text-xl font-bold mt-1">
+                    {dashboardData?.plan?.name || userPlan?.plan?.name || 'Free Trial'}
+                  </h2>
                 </div>
-
-                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)', my: 3 }} />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
-                      Posts per Week
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                      {dashboardData?.plan?.postsPerWeek || userPlan?.postsPerWeek || 2}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
-                      Used This Week
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                      {dashboardData?.plan?.postsThisWeek || userPlan?.postsThisWeek || 0}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
-                      Remaining
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                      {dashboardData?.plan?.remainingPosts || userPlan?.remainingPosts || 0}
-                    </Typography>
-                  </div>
-                  {(userPlan?.subscribedAt || dashboardData?.plan?.subscribedAt) && (
-                    <div>
-                      <Typography variant="body2" sx={{ opacity: 0.9, mb: 0.5 }}>
-                        Member Since
-                      </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {new Date(userPlan?.subscribedAt || dashboardData?.plan?.subscribedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                      </Typography>
-                    </div>
-                  )}
+                <div className="p-3 bg-white/10 rounded-xl">
+                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              
+              <div className="h-px bg-white/10 my-4" />
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-xs text-white/70">Posts/Week</p>
+                  <p className="text-lg font-bold mt-0.5">
+                    {dashboardData?.plan?.postsPerWeek || userPlan?.postsPerWeek || 2}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/70">Used This Week</p>
+                  <p className="text-lg font-bold mt-0.5">
+                    {dashboardData?.plan?.postsThisWeek || userPlan?.postsThisWeek || 0}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/70">Remaining</p>
+                  <p className="text-lg font-bold mt-0.5">
+                    {dashboardData?.plan?.remainingPosts || userPlan?.remainingPosts || 0}
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {stats.map((stat, index) => (
-              <Card
-                key={index}
-                sx={{
-                  borderRadius: 3,
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 6px 20px rgba(15, 23, 42, 0.06)',
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    boxShadow: '0 10px 30px rgba(15, 23, 42, 0.12)',
-                    transform: 'translateY(-3px)'
-                  }
-                }}
-              >
-                <CardContent sx={{ p: 3 }}>
-                  <Box
-                    sx={{
-                      width: 52,
-                      height: 52,
-                      borderRadius: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: stat.iconBg,
-                      color: stat.iconColor,
-                      mb: 2
-                    }}
-                  >
-                    {stat.icon}
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: '#0f172a', mb: 0.5 }}>
-                    {stat.value}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#334155', fontWeight: 600 }}>
-                    {stat.title}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#64748b' }}>
-                    {stat.subtitle}
-                  </Typography>
-                </CardContent>
-              </Card>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {stats.map((stat, i) => (
+              <div key={i} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex flex-col justify-between min-h-[8rem]">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.bg}`}>
+                  {stat.icon}
+                </div>
+                <div className="mt-4">
+                  <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
+                  <p className="text-xs font-medium text-slate-500 mt-0.5">{stat.title}</p>
+                </div>
+              </div>
             ))}
           </div>
 
           {/* Recent Activity */}
-          <Card sx={{
-            borderRadius: 3,
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-            mb: 4
-          }}>
-            <CardContent sx={{ p: 4 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#2d3748', mb: 1 }}>
-                Recent Activity
-              </Typography>
-              <Divider sx={{ mb: 3 }} />
-              {dashboardData?.recentPosts && dashboardData.recentPosts.length > 0 ? (
-                <div className="space-y-3">
-                  {dashboardData.recentPosts.map((post) => (
-                    <div
-                      key={post.id}
-                      className="p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Chip
-                            label={post.platform}
-                            size="small"
-                            sx={{
-                              fontWeight: 600,
-                              textTransform: 'capitalize'
-                            }}
-                          />
-                          <Chip
-                            label={post.status}
-                            size="small"
-                            icon={
-                              post.status === 'posted' ? <CheckCircle /> :
-                              post.status === 'failed' ? <ErrorIcon /> :
-                              <Pending />
-                            }
-                            color={
-                              post.status === 'posted' ? 'success' :
-                              post.status === 'failed' ? 'error' :
-                              'default'
-                            }
-                          />
-                        </div>
-                        <Typography variant="caption" sx={{ color: '#718096' }}>
-                          {new Date(post.createdAt).toLocaleDateString()}
-                        </Typography>
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
+            <h3 className="text-base font-bold text-slate-900 mb-4">Recent Activity</h3>
+            {dashboardData?.recentPosts && dashboardData.recentPosts.length > 0 ? (
+              <div className="space-y-4">
+                {dashboardData.recentPosts.map((post) => (
+                  <div key={post.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-indigo-50 text-indigo-600 tracking-wider">
+                          {post.platform}
+                        </span>
+                        <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded tracking-wider ${
+                          post.status === 'posted' ? 'bg-emerald-50 text-emerald-600' :
+                          post.status === 'failed' ? 'bg-rose-50 text-rose-600' :
+                          'bg-slate-100 text-slate-600'
+                        }`}>
+                          {post.status}
+                        </span>
                       </div>
-                      <Typography variant="body2" sx={{ color: '#2d3748' }}>
-                        {post.content}
-                      </Typography>
-                      {post.error && (
-                        <Typography variant="caption" sx={{ color: '#e53e3e', mt: 1, display: 'block' }}>
-                          Error: {post.error}
-                        </Typography>
-                      )}
+                      <span className="text-[10px] font-medium text-slate-400">
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Typography variant="body1" sx={{ color: '#718096' }}>
-                    No recent activity yet
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#a0aec0', mt: 1 }}>
-                    Connect your accounts and set up a schedule to get started
-                  </Typography>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Post Performance */}
-          {dashboardData?.postsByPlatform && dashboardData.postsByPlatform.length > 0 && (
-            <Card sx={{
-              borderRadius: 3,
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
-            }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#2d3748', mb: 1 }}>
-                  Post Performance by Platform
-                </Typography>
-                <Divider sx={{ mb: 3 }} />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {dashboardData.postsByPlatform.map((platform) => (
-                    <div
-                      key={platform.platform}
-                      className="p-4 rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white"
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        {platform.platform === 'linkedin' && <LinkedInIcon sx={{ color: '#0077b5' }} />}
-                        {platform.platform === 'twitter' && <TwitterIcon sx={{ color: '#1DA1F2' }} />}
-                        {platform.platform === 'facebook' && <FacebookIcon sx={{ color: '#1877F2' }} />}
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#2d3748', textTransform: 'capitalize' }}>
-                          {platform.platform}
-                        </Typography>
-                      </div>
-                      <Typography variant="h4" sx={{ fontWeight: 700, color: '#667eea' }}>
-                        {platform.count}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#718096' }}>
-                        Posts
-                      </Typography>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Right Column - Quick Actions */}
-        <div className="w-full lg:w-96">
-          <Card sx={{
-            borderRadius: 3,
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-            position: 'sticky',
-            top: 24
-          }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#2d3748', mb: 3 }}>
-                Quick Actions
-              </Typography>
-              
-              <div className="flex flex-col gap-3">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<LinkedInIcon />}
-                  onClick={() => setSocialDialog(true)}
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    py: 1.4,
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    boxShadow: '0 6px 18px rgba(59, 130, 246, 0.28)',
-                    '&:hover': {
-                      boxShadow: '0 10px 24px rgba(59, 130, 246, 0.35)'
-                    }
-                  }}
-                >
-                  Connect Accounts
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  startIcon={<ScheduleIcon />}
-                  onClick={() => setScheduleDialog(true)}
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    py: 1.35,
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    borderColor: '#cbd5e1',
-                    color: '#0f172a',
-                    '&:hover': {
-                      borderColor: '#94a3b8',
-                      backgroundColor: '#f8fafc'
-                    }
-                  }}
-                >
-                  Set Schedule
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  startIcon={<TopicIcon />}
-                  onClick={() => setTopicDialog(true)}
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    py: 1.35,
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    borderColor: '#cbd5e1',
-                    color: '#0f172a',
-                    '&:hover': {
-                      borderColor: '#94a3b8',
-                      backgroundColor: '#f8fafc'
-                    }
-                  }}
-                >
-                  Choose Topics
-                </Button>
-              </div>
-
-              <Divider sx={{ my: 3 }} />
-
-              <div>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#2d3748', mb: 2 }}>
-                  Getting Started
-                </Typography>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    </div>
-                    <div>
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: '#2d3748' }}>
-                        Connect your social accounts
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#718096' }}>
-                        Link LinkedIn, Twitter, or Facebook
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-                    </div>
-                    <div>
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: '#2d3748' }}>
-                        Choose your topics
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#718096' }}>
-                        Select interests for content
-                      </Typography>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-                    </div>
-                    <div>
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: '#2d3748' }}>
-                        Set posting schedule
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#718096' }}>
-                        Automate your content
-                      </Typography>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Schedule Dialog */}
-      <Dialog
-        open={scheduleDialog}
-        onClose={() => setScheduleDialog(false)}
-        maxWidth="sm"
-        fullWidth
-        sx={{
-          '& .MuiDialog-paper': {
-            borderRadius: { xs: 3, sm: 4 },
-            m: { xs: 1, sm: 2 },
-            width: { xs: 'calc(100% - 16px)', sm: 'auto' },
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(0, 0, 0, 0.08)',
-            backdropFilter: 'blur(20px)',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)'
-          }
-        }}
-      >
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-          color: 'white',
-          fontWeight: 600,
-          py: { xs: 3, sm: 3.5 },
-          px: { xs: 3, sm: 4 },
-          fontSize: { xs: '1.125rem', sm: '1.25rem' },
-          letterSpacing: '-0.025em',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
-            borderRadius: 'inherit'
-          }
-        }}>
-          <Box sx={{ position: 'relative', zIndex: 1 }}>
-            Set Posting Schedule
-          </Box>
-        </DialogTitle>
-        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#64748b',
-              mb: { xs: 4, sm: 5 },
-              fontSize: { xs: '0.875rem', sm: '0.95rem' },
-              lineHeight: 1.6,
-              fontWeight: 400
-            }}
-          >
-            Configure automated posting times and select which platforms to use for content distribution.
-          </Typography>
-
-          {/* Time Selection Section */}
-          <Box sx={{ mb: { xs: 4, sm: 5 } }}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 600,
-                color: '#1e293b',
-                mb: 3,
-                fontSize: '1rem',
-                letterSpacing: '-0.025em'
-              }}
-            >
-              Posting Times
-            </Typography>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <TextField
-                fullWidth
-                label="First Post Time"
-                type="time"
-                value={scheduleData.time1}
-                onChange={(e) => setScheduleData(prev => ({ ...prev, time1: e.target.value }))}
-                InputLabelProps={{ shrink: true }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                    backdropFilter: 'blur(10px)',
-                    '& fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.08)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.15)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#6366f1',
-                      borderWidth: 2,
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#64748b',
-                    fontWeight: 500,
-                    '&.Mui-focused': {
-                      color: '#6366f1',
-                      fontWeight: 600,
-                    },
-                  },
-                }}
-              />
-              <TextField
-                fullWidth
-                label="Second Post Time"
-                type="time"
-                value={scheduleData.time2}
-                onChange={(e) => setScheduleData(prev => ({ ...prev, time2: e.target.value }))}
-                InputLabelProps={{ shrink: true }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                    backdropFilter: 'blur(10px)',
-                    '& fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.08)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.15)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#6366f1',
-                      borderWidth: 2,
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#64748b',
-                    fontWeight: 500,
-                    '&.Mui-focused': {
-                      color: '#6366f1',
-                      fontWeight: 600,
-                    },
-                  },
-                }}
-              />
-            </div>
-          </Box>
-
-          {/* Platform Selection Section */}
-          <Box>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 600,
-                color: '#1e293b',
-                mb: 3,
-                fontSize: '1rem',
-                letterSpacing: '-0.025em'
-              }}
-            >
-              Target Platforms
-            </Typography>
-            <div className="space-y-3">
-              {[
-                { platform: 'linkedin', label: 'LinkedIn', description: 'Professional networking', available: true, color: '#0077b5' },
-                { platform: 'twitter', label: 'Twitter', description: 'Real-time engagement', available: true, color: '#1da1f2' },
-                { platform: 'facebook', label: 'Facebook', description: 'Coming Soon', available: false, color: '#f59e0b' }
-              ].map(({ platform, label, description, available, color }) => (
-                <Card
-                  key={platform}
-                  sx={{
-                    borderRadius: 2,
-                    border: '1px solid rgba(0, 0, 0, 0.06)',
-                    background: available
-                      ? 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)'
-                      : 'linear-gradient(145deg, rgba(254, 243, 199, 0.3) 0%, rgba(253, 230, 138, 0.2) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: available
-                      ? '0 2px 4px rgba(0, 0, 0, 0.04)'
-                      : '0 2px 4px rgba(245, 158, 11, 0.1)',
-                    transition: 'all 0.2s ease',
-                    opacity: available ? 1 : 0.7
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={scheduleData.platforms.includes(platform)}
-                          onChange={(e) => setScheduleData(prev => ({
-                            ...prev,
-                            platforms: e.target.checked
-                              ? [...prev.platforms, platform]
-                              : prev.platforms.filter(p => p !== platform)
-                          }))}
-                          disabled={!available}
-                          sx={{
-                            '& .MuiSwitch-switchBase': {
-                              color: color,
-                              '&.Mui-checked': {
-                                color: color,
-                                '& + .MuiSwitch-track': {
-                                  backgroundColor: `${color}40`,
-                                },
-                              },
-                            },
-                            '& .MuiSwitch-switchBase.Mui-disabled': {
-                              color: '#d1d5db',
-                              '& + .MuiSwitch-track': {
-                                backgroundColor: '#f3f4f6'
-                              }
-                            }
-                          }}
-                        />
-                      }
-                      label={
-                        <Box sx={{ ml: 1 }}>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontWeight: 600,
-                              color: available ? '#1e293b' : '#92400e',
-                              fontSize: '0.95rem',
-                              lineHeight: 1.2
-                            }}
-                          >
-                            {label}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: available ? '#64748b' : '#d97706',
-                              fontSize: '0.8rem',
-                              fontWeight: 400
-                            }}
-                          >
-                            {description}
-                          </Typography>
-                        </Box>
-                      }
-                      sx={{
-                        m: 0,
-                        width: '100%',
-                        alignItems: 'flex-start',
-                        '& .MuiFormControlLabel-label': {
-                          flex: 1,
-                          marginTop: '2px'
-                        }
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{
-          p: { xs: 3, sm: 4 },
-          pt: 0,
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 2, sm: 0 },
-          borderTop: '1px solid rgba(0, 0, 0, 0.06)'
-        }}>
-          <Button
-            onClick={() => setScheduleDialog(false)}
-            sx={{
-              fontWeight: 500,
-              width: { xs: '100%', sm: 'auto' },
-              order: { xs: 1, sm: 0 },
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-              color: '#64748b',
-              '&:hover': {
-                backgroundColor: '#f8fafc'
-              }
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleScheduleSave}
-            variant="contained"
-            sx={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-              fontWeight: 600,
-              px: { xs: 4, sm: 3 },
-              py: 1.5,
-              borderRadius: 2,
-              width: { xs: '100%', sm: 'auto' },
-              minWidth: { xs: '100%', sm: '140px' },
-              textTransform: 'none',
-              letterSpacing: '0.025em',
-              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
-                transform: 'translateY(-1px)',
-                boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
-              }
-            }}
-          >
-            Save Schedule
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Topics Dialog */}
-      <Dialog
-        open={topicDialog}
-        onClose={() => setTopicDialog(false)}
-        maxWidth="md"
-        fullWidth
-        sx={{
-          '& .MuiDialog-paper': {
-            borderRadius: { xs: 3, sm: 4 },
-            m: { xs: 1, sm: 2 },
-            width: { xs: 'calc(100% - 16px)', sm: 'auto' },
-            maxHeight: { xs: '95vh', sm: '90vh' },
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(0, 0, 0, 0.08)',
-            backdropFilter: 'blur(20px)',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)'
-          }
-        }}
-      >
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-          color: 'white',
-          fontWeight: 600,
-          py: { xs: 3, sm: 3.5 },
-          px: { xs: 3, sm: 4 },
-          fontSize: { xs: '1.125rem', sm: '1.25rem' },
-          letterSpacing: '-0.025em',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
-            borderRadius: 'inherit'
-          }
-        }}>
-          <Box sx={{ position: 'relative', zIndex: 1 }}>
-            Choose Content Topics
-          </Box>
-        </DialogTitle>
-        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#64748b',
-              mb: { xs: 4, sm: 5 },
-              fontSize: { xs: '0.875rem', sm: '0.95rem' },
-              lineHeight: 1.6,
-              fontWeight: 400
-            }}
-          >
-            Select topics that interest you to generate personalized, relevant content for your social media posts.
-          </Typography>
-
-          {/* Predefined Topics Section */}
-          <Box sx={{ mb: { xs: 5, sm: 6 } }}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 600,
-                color: '#1e293b',
-                mb: 3,
-                fontSize: '1rem',
-                letterSpacing: '-0.025em',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}
-            >
-              <Box sx={{
-                width: 4,
-                height: 16,
-                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                borderRadius: 2
-              }} />
-              Popular Topics
-            </Typography>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {predefinedTopics.map(topic => (
-                <Card
-                  key={topic}
-                  onClick={() => handleTopicToggle(topic)}
-                  sx={{
-                    borderRadius: 2,
-                    border: selectedTopics.includes(topic)
-                      ? '2px solid #6366f1'
-                      : '1px solid rgba(0, 0, 0, 0.06)',
-                    background: selectedTopics.includes(topic)
-                      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%)'
-                      : 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: selectedTopics.includes(topic)
-                      ? '0 4px 12px rgba(99, 102, 241, 0.15)'
-                      : '0 2px 4px rgba(0, 0, 0, 0.04)',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: selectedTopics.includes(topic)
-                        ? '0 8px 20px rgba(99, 102, 241, 0.2)'
-                        : '0 8px 20px rgba(0, 0, 0, 0.1)',
-                      borderColor: selectedTopics.includes(topic) ? '#6366f1' : 'rgba(0, 0, 0, 0.12)'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: 2.5, textAlign: 'center' }}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: selectedTopics.includes(topic) ? 600 : 500,
-                        color: selectedTopics.includes(topic) ? '#6366f1' : '#374151',
-                        fontSize: '0.85rem',
-                        lineHeight: 1.3
-                      }}
-                    >
-                      {topic}
-                    </Typography>
-                    {selectedTopics.includes(topic) && (
-                      <Box sx={{
-                        mt: 1,
-                        width: 6,
-                        height: 6,
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                        mx: 'auto'
-                      }} />
+                    <p className="text-sm text-slate-700 font-medium leading-relaxed">
+                      {post.content}
+                    </p>
+                    {post.error && (
+                      <p className="text-xs text-rose-600 bg-rose-50/50 p-2 rounded-lg border border-rose-100">
+                        Error: {post.error}
+                      </p>
                     )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </Box>
-
-          {/* Custom Topic Section */}
-          <Box sx={{ mb: { xs: 5, sm: 6 } }}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 600,
-                color: '#1e293b',
-                mb: 3,
-                fontSize: '1rem',
-                letterSpacing: '-0.025em',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}
-            >
-              <Box sx={{
-                width: 4,
-                height: 16,
-                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                borderRadius: 2
-              }} />
-              Custom Topics
-            </Typography>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <TextField
-                fullWidth
-                label="Add your own topic"
-                placeholder="e.g., React development, AI ethics, startup growth..."
-                value={customTopic}
-                onChange={(e) => setCustomTopic(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddCustomTopic()}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 2,
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                    backdropFilter: 'blur(10px)',
-                    '& fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.08)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.15)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#059669',
-                      borderWidth: 2,
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#64748b',
-                    fontWeight: 500,
-                    '&.Mui-focused': {
-                      color: '#059669',
-                      fontWeight: 600,
-                    },
-                  },
-                }}
-              />
-              <Button
-                onClick={handleAddCustomTopic}
-                variant="contained"
-                sx={{
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  fontWeight: 600,
-                  px: { xs: 4, sm: 3 },
-                  py: 1.5,
-                  borderRadius: 2,
-                  minWidth: { xs: '100%', sm: '120px' },
-                  textTransform: 'none',
-                  letterSpacing: '0.025em',
-                  boxShadow: '0 4px 14px 0 rgba(5, 150, 105, 0.25)',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #047857 0%, #065f46 100%)',
-                    transform: 'translateY(-1px)',
-                    boxShadow: '0 6px 20px 0 rgba(5, 150, 105, 0.35)'
-                  }
-                }}
-              >
-                Add Topic
-              </Button>
-            </div>
-          </Box>
-
-          {/* Selected Topics Section */}
-          {selectedTopics.length > 0 && (
-            <Box>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  fontWeight: 600,
-                  color: '#1e293b',
-                  mb: 3,
-                  fontSize: '1rem',
-                  letterSpacing: '-0.025em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1
-                }}
-              >
-                <Box sx={{
-                  width: 4,
-                  height: 16,
-                  background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
-                  borderRadius: 2
-                }} />
-                Selected Topics ({selectedTopics.length})
-              </Typography>
-              <div className="flex flex-wrap gap-2">
-                {selectedTopics.map(topic => (
-                  <Chip
-                    key={topic}
-                    label={topic}
-                    onDelete={() => handleTopicToggle(topic)}
-                    sx={{
-                      background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
-                      color: 'white',
-                      fontWeight: 500,
-                      borderRadius: 2,
-                      fontSize: '0.85rem',
-                      px: 1.5,
-                      py: 0.5,
-                      boxShadow: '0 2px 8px rgba(124, 58, 237, 0.2)',
-                      '& .MuiChip-deleteIcon': {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        '&:hover': {
-                          color: 'white'
-                        }
-                      },
-                      '&:hover': {
-                        background: 'linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%)',
-                        boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)'
-                      }
-                    }}
-                  />
+                  </div>
                 ))}
               </div>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions sx={{
-          p: { xs: 3, sm: 4 },
-          pt: 0,
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 2, sm: 0 },
-          borderTop: '1px solid rgba(0, 0, 0, 0.06)'
-        }}>
-          <Button
-            onClick={() => setTopicDialog(false)}
-            sx={{
-              fontWeight: 500,
-              width: { xs: '100%', sm: 'auto' },
-              order: { xs: 1, sm: 0 },
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-              color: '#64748b',
-              '&:hover': {
-                backgroundColor: '#f8fafc'
-              }
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleTopicsSave}
-            variant="contained"
-            disabled={selectedTopics.length === 0}
-            sx={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-              fontWeight: 600,
-              px: { xs: 4, sm: 3 },
-              py: 1.5,
-              borderRadius: 2,
-              width: { xs: '100%', sm: 'auto' },
-              minWidth: { xs: '100%', sm: '140px' },
-              textTransform: 'none',
-              letterSpacing: '0.025em',
-              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
-                transform: 'translateY(-1px)',
-                boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.35)'
-              },
-              '&:disabled': {
-                background: '#9ca3af',
-                boxShadow: 'none',
-                transform: 'none'
-              }
-            }}
-          >
-            Save Topics ({selectedTopics.length})
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Social Connection Dialog */}
-      <Dialog
-        open={socialDialog}
-        onClose={() => setSocialDialog(false)}
-        maxWidth="sm"
-        fullWidth
-        sx={{
-          '& .MuiDialog-paper': {
-            borderRadius: { xs: 3, sm: 4 },
-            m: { xs: 1, sm: 2 },
-            width: { xs: 'calc(100% - 16px)', sm: 'auto' },
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(0, 0, 0, 0.08)',
-            backdropFilter: 'blur(20px)',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)'
-          }
-        }}
-      >
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-          color: 'white',
-          fontWeight: 600,
-          py: { xs: 3, sm: 3.5 },
-          px: { xs: 3, sm: 4 },
-          fontSize: { xs: '1.125rem', sm: '1.25rem' },
-          letterSpacing: '-0.025em',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
-            borderRadius: 'inherit'
-          }
-        }}>
-          <Box sx={{ position: 'relative', zIndex: 1 }}>
-            Connect Social Accounts
-          </Box>
-        </DialogTitle>
-        <DialogContent sx={{ p: { xs: 3, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#64748b',
-              mb: { xs: 4, sm: 5 },
-              fontSize: { xs: '0.875rem', sm: '0.95rem' },
-              lineHeight: 1.6,
-              fontWeight: 400
-            }}
-          >
-            Link your social media accounts to enable automated content distribution and analytics tracking.
-          </Typography>
-
-          <div className="space-y-4">
-            {[
-              { platform: 'linkedin', icon: <LinkedInIcon />, name: 'LinkedIn', gradient: 'from-blue-600 to-blue-700', bgColor: '#0077b5', available: true },
-              { platform: 'twitter', icon: <TwitterIcon />, name: 'Twitter', gradient: 'from-sky-500 to-sky-600', bgColor: '#1da1f2', available: true },
-              { platform: 'facebook', icon: <FacebookIcon />, name: 'Facebook', gradient: 'from-blue-600 to-blue-700', bgColor: '#1877f2', available: false }
-            ].map(({ platform, icon, name, gradient, bgColor, available }) => (
-              <Card
-                key={platform}
-                sx={{
-                  borderRadius: 3,
-                  border: '1px solid rgba(0, 0, 0, 0.06)',
-                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%)',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  '&:hover': available ? {
-                    transform: 'translateY(-2px) scale(1.01)',
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                    border: '1px solid rgba(0, 0, 0, 0.08)'
-                  } : {}
-                }}
-              >
-                <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-                  {/* Professional responsive layout */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white flex-shrink-0 shadow-lg`}
-                           style={{ background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%)` }}>
-                        {icon}
-                      </div>
-                      <Box>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: 600,
-                            color: '#1e293b',
-                            fontSize: { xs: '1.125rem', sm: '1.25rem' },
-                            mb: 0.5,
-                            letterSpacing: '-0.025em'
-                          }}
-                        >
-                          {name}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: '#64748b',
-                            fontSize: '0.875rem',
-                            fontWeight: 400
-                          }}
-                        >
-                          {platform === 'linkedin' && 'Professional networking'}
-                          {platform === 'twitter' && 'Real-time engagement'}
-                          {platform === 'facebook' && 'Community building'}
-                        </Typography>
-                      </Box>
-                    </div>
-                    {currentUser?.socialConnections?.[platform]?.connected ? (
-                      <Box sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        gap: { xs: 3, sm: 2 },
-                        alignItems: { xs: 'stretch', sm: 'center' },
-                        width: { xs: '100%', sm: 'auto' }
-                      }}>
-                        <Chip
-                          label="✓ Connected"
-                          sx={{
-                            fontWeight: 600,
-                            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                            color: 'white',
-                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                            height: { xs: 32, sm: 36 },
-                            px: 2,
-                            borderRadius: 2,
-                            boxShadow: '0 2px 4px rgba(5, 150, 105, 0.2)'
-                          }}
-                        />
-                        <Button
-                          variant="outlined"
-                          onClick={() => handleSocialDisconnect(platform)}
-                          sx={{
-                            textTransform: 'none',
-                            fontWeight: 500,
-                            fontSize: { xs: '0.875rem', sm: '0.9rem' },
-                            px: { xs: 3, sm: 2.5 },
-                            py: { xs: 1.25, sm: 1 },
-                            width: { xs: '100%', sm: 'auto' },
-                            borderColor: '#d1d5db',
-                            color: '#6b7280',
-                            borderRadius: 2,
-                            '&:hover': {
-                              borderColor: '#9ca3af',
-                              backgroundColor: '#f9fafb'
-                            }
-                          }}
-                        >
-                          Disconnect
-                        </Button>
-                      </Box>
-                    ) : available ? (
-                      <Button
-                        variant="contained"
-                        onClick={() => handleSocialConnect(platform)}
-                        sx={{
-                          background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%)`,
-                          fontWeight: 600,
-                          px: { xs: 4, sm: 3.5 },
-                          py: { xs: 1.5, sm: 1.25 },
-                          fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                          width: { xs: '100%', sm: 'auto' },
-                          minWidth: { xs: '100%', sm: '140px' },
-                          borderRadius: 2,
-                          textTransform: 'none',
-                          letterSpacing: '0.025em',
-                          boxShadow: `0 4px 14px 0 rgba(${bgColor === '#0077b5' ? '0, 119, 181' : bgColor === '#1da1f2' ? '29, 161, 242' : '24, 119, 242'}, 0.25)`,
-                          '&:hover': {
-                            background: `linear-gradient(135deg, ${bgColor}dd 0%, ${bgColor} 100%)`,
-                            transform: 'translateY(-1px)',
-                            boxShadow: `0 6px 20px 0 rgba(${bgColor === '#0077b5' ? '0, 119, 181' : bgColor === '#1da1f2' ? '29, 161, 242' : '24, 119, 242'}, 0.35)`
-                          }
-                        }}
-                      >
-                        Connect
-                      </Button>
-                    ) : (
-                      <Chip
-                        label="Coming Soon"
-                        sx={{
-                          fontWeight: 600,
-                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                          color: 'white',
-                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                          height: { xs: 32, sm: 36 },
-                          px: 2,
-                          borderRadius: 2,
-                          boxShadow: '0 2px 4px rgba(245, 158, 11, 0.2)'
-                        }}
-                      />
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            ) : (
+              <div className="text-center py-10 border border-dashed border-slate-200 rounded-xl">
+                <p className="text-sm text-slate-500 font-medium">No recent activity yet</p>
+                <p className="text-xs text-slate-400 mt-1">Connect your accounts and set up a schedule to start.</p>
+              </div>
+            )}
           </div>
-        </DialogContent>
-        <DialogActions sx={{
-          p: { xs: 3, sm: 4 },
-          pt: 0,
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 2, sm: 0 },
-          borderTop: '1px solid rgba(0, 0, 0, 0.06)'
-        }}>
-          <Button
-            onClick={() => setSocialDialog(false)}
-            sx={{
-              fontWeight: 500,
-              width: { xs: '100%', sm: 'auto' },
-              order: { xs: 1, sm: 0 },
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-              color: '#64748b',
-              '&:hover': {
-                backgroundColor: '#f8fafc'
-              }
-            }}
-          >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
 
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-          sx={{ borderRadius: 2 }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+        </div>
+
+        {/* Right Column - Actions */}
+        <div className="space-y-6">
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6">
+            <h3 className="text-base font-bold text-slate-900">Quick Actions</h3>
+            
+            <div className="space-y-3">
+              <button
+                onClick={() => setSocialDialog(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all hover:-translate-y-0.5"
+              >
+                Connect Accounts
+              </button>
+              
+              <button
+                onClick={() => setScheduleDialog(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5"
+              >
+                Set Schedule
+              </button>
+              
+              <button
+                onClick={() => setTopicDialog(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5"
+              >
+                Choose Topics
+              </button>
+            </div>
+
+            <div className="h-px bg-slate-100" />
+
+            <div>
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Getting Started</h4>
+              <div className="space-y-4">
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">Connect accounts</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Link LinkedIn or Twitter profile</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-700">Choose topics</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Select content topics</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-700">Set posting schedule</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Automate your social calendar</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Schedule Dialog Modal */}
+      {scheduleDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate-900">Set Posting Schedule</h3>
+              <button onClick={() => setScheduleDialog(false)} className="text-slate-400 hover:text-slate-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <p className="text-xs text-slate-500">Choose two times per day for automated posting</p>
+              
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">FIRST POST TIME</label>
+                <input
+                  type="time"
+                  value={scheduleData.time1}
+                  onChange={(e) => setScheduleData(prev => ({ ...prev, time1: e.target.value }))}
+                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">SECOND POST TIME</label>
+                <input
+                  type="time"
+                  value={scheduleData.time2}
+                  onChange={(e) => setScheduleData(prev => ({ ...prev, time2: e.target.value }))}
+                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm"
+                />
+              </div>
+
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2">Select Platforms</h4>
+              <div className="space-y-2">
+                {['linkedin', 'twitter', 'facebook'].map((platform) => (
+                  <label key={platform} className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={scheduleData.platforms.includes(platform)}
+                      onChange={(e) => setScheduleData(prev => ({
+                        ...prev,
+                        platforms: e.target.checked
+                          ? [...prev.platforms, platform]
+                          : prev.platforms.filter(p => p !== platform)
+                      }))}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 relative"></div>
+                    <span className="ml-3 text-xs font-semibold text-slate-700 capitalize">{platform}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-3">
+              <button
+                onClick={() => setScheduleDialog(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleScheduleSave}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all"
+              >
+                Save Schedule
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Topics Dialog Modal */}
+      {topicDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-2xl w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate-900">Choose Content Topics</h3>
+              <button onClick={() => setTopicDialog(false)} className="text-slate-400 hover:text-slate-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto space-y-6 flex-1">
+              <div>
+                <p className="text-xs text-slate-500 mb-4">Select topics for your AI-generated posts</p>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Predefined Topics</h4>
+                <div className="flex flex-wrap gap-2">
+                  {predefinedTopics.map(topic => {
+                    const isSelected = selectedTopics.includes(topic);
+                    return (
+                      <button
+                        key={topic}
+                        onClick={() => handleTopicToggle(topic)}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                          isSelected
+                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        {topic}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Add Custom Topic</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Custom topic"
+                    value={customTopic}
+                    onChange={(e) => setCustomTopic(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddCustomTopic()}
+                    className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-xs"
+                  />
+                  <button
+                    onClick={handleAddCustomTopic}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-all"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              {selectedTopics.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Selected Topics ({selectedTopics.length})</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTopics.map(topic => (
+                      <span key={topic} className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg text-xs font-semibold">
+                        {topic}
+                        <button onClick={() => handleTopicToggle(topic)} className="hover:text-indigo-900">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-3">
+              <button
+                onClick={() => setTopicDialog(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleTopicsSave}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all"
+              >
+                Save Topics
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Social Connection Dialog Modal */}
+      {socialDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate-900">Connect Social Accounts</h3>
+              <button onClick={() => setSocialDialog(false)} className="text-slate-400 hover:text-slate-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <p className="text-xs text-slate-500 mb-2">Connect your accounts to enable automated posting</p>
+              
+              <div className="space-y-3">
+                {[
+                  { platform: 'linkedin', name: 'LinkedIn', color: 'bg-blue-600 hover:bg-blue-700' },
+                  { platform: 'twitter', name: 'Twitter', color: 'bg-sky-500 hover:bg-sky-600' },
+                  { platform: 'facebook', name: 'Facebook', color: 'bg-blue-700 hover:bg-blue-800' }
+                ].map(({ platform, name, color }) => {
+                  const isConnected = currentUser?.socialConnections?.[platform]?.connected;
+                  return (
+                    <div key={platform} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                      <span className="text-xs font-bold text-slate-700">{name}</span>
+                      {isConnected ? (
+                        <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-lg uppercase">
+                          Connected
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleSocialConnect(platform)}
+                          className={`px-3 py-1.5 text-white rounded-lg text-[10px] font-bold uppercase transition-all shadow-xs ${color}`}
+                        >
+                          Connect
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={() => setSocialDialog(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Snackbar Alert */}
+      {snackbar.open && (
+        <div className="fixed bottom-4 right-4 z-50 animate-in fade-in slide-in-from-bottom duration-300">
+          <div className={`px-4 py-3 rounded-xl shadow-lg border text-sm font-semibold flex items-center gap-2 ${
+            snackbar.severity === 'error' ? 'bg-rose-50 border-rose-200 text-rose-700' :
+            snackbar.severity === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+            'bg-emerald-50 border-emerald-200 text-emerald-700'
+          }`}>
+            <span>{snackbar.message}</span>
+          </div>
+        </div>
+      )}
+
+    </div>
   );
 };
 
