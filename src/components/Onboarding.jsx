@@ -15,7 +15,8 @@ const Onboarding = () => {
     schedule: {
       time1: '09:00',
       time2: '15:00',
-      platforms: ['linkedin']
+      platforms: ['linkedin'],
+      startDate: new Date().toISOString().split('T')[0]
     }
   });
 
@@ -105,6 +106,7 @@ const Onboarding = () => {
         time1: onboardingData.schedule.time1,
         time2: onboardingData.schedule.time2,
         platforms: onboardingData.schedule.platforms,
+        startDate: onboardingData.schedule.startDate,
         active: true
       });
 
@@ -207,7 +209,7 @@ const Onboarding = () => {
         return (
           <div className="w-full">
             <h3 className="text-lg font-semibold text-slate-900 mb-1">Posting Schedule</h3>
-            <p className="text-sm text-slate-500 mb-6">Set two times per day for automated posting.</p>
+            <p className="text-sm text-slate-500 mb-6">Set two times per day and select a start date for automated posting.</p>
             
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
@@ -234,6 +236,20 @@ const Onboarding = () => {
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
                 />
               </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">SCHEDULE START DATE</label>
+              <input
+                type="date"
+                value={onboardingData.schedule.startDate}
+                min={new Date().toISOString().split('T')[0]}
+                onChange={(e) => setOnboardingData(prev => ({
+                  ...prev,
+                  schedule: { ...prev.schedule, startDate: e.target.value }
+                }))}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
+              />
             </div>
 
             <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">

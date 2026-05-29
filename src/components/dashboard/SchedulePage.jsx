@@ -10,7 +10,8 @@ const SchedulePage = ({ user }) => {
   const [scheduleData, setScheduleData] = useState({
     time1: currentUser?.schedules?.[0]?.time1 || '09:00',
     time2: currentUser?.schedules?.[0]?.time2 || '15:00',
-    platforms: currentUser?.schedules?.[0]?.platforms?.map(p => p.platform) || []
+    platforms: currentUser?.schedules?.[0]?.platforms?.map(p => p.platform) || [],
+    startDate: currentUser?.schedules?.[0]?.startDate ? new Date(currentUser.schedules[0].startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
   });
 
   useEffect(() => {
@@ -25,7 +26,8 @@ const SchedulePage = ({ user }) => {
           setScheduleData({
             time1: schedule.time1,
             time2: schedule.time2,
-            platforms: schedule.platforms?.map(p => p.platform) || []
+            platforms: schedule.platforms?.map(p => p.platform) || [],
+            startDate: schedule.startDate ? new Date(schedule.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
           });
         }
       } catch (error) {
@@ -55,6 +57,7 @@ const SchedulePage = ({ user }) => {
         time1: scheduleData.time1,
         time2: scheduleData.time2,
         platforms: scheduleData.platforms,
+        startDate: scheduleData.startDate,
         active: true
       };
 
@@ -112,6 +115,14 @@ const SchedulePage = ({ user }) => {
                       {schedule.time1} &amp; {schedule.time2}
                     </p>
                   </div>
+                  {schedule.startDate && (
+                    <div className="ml-auto text-right">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Start Date</p>
+                      <p className="text-xs font-bold text-slate-600 mt-0.5">
+                        {new Date(schedule.startDate).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="h-px bg-indigo-100" />
@@ -195,6 +206,17 @@ const SchedulePage = ({ user }) => {
                   type="time"
                   value={scheduleData.time2}
                   onChange={(e) => setScheduleData(prev => ({ ...prev, time2: e.target.value }))}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">START DATE</label>
+                <input
+                  type="date"
+                  value={scheduleData.startDate}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) => setScheduleData(prev => ({ ...prev, startDate: e.target.value }))}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm"
                 />
               </div>
