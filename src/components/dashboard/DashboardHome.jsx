@@ -3,7 +3,7 @@ import { useUser } from '../../hooks/useUser';
 import apiService from '../../services/api';
 
 const DashboardHome = () => {
-  const { user: currentUser, userPlan, loading: userLoading, updateUser } = useUser();
+  const { user: currentUser, userPlan, loading: userLoading, updateUser, loadUserData } = useUser();
   const [profileDialog, setProfileDialog] = useState(false);
   const [scheduleDialog, setScheduleDialog] = useState(false);
   const [topicDialog, setTopicDialog] = useState(false);
@@ -29,24 +29,37 @@ const DashboardHome = () => {
   const [selectedTopics, setSelectedTopics] = useState(currentUser?.topics?.map(t => t.topic) || []);
   const [customTopic, setCustomTopic] = useState('');
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoadingDashboard(true);
-        const data = await apiService.getDashboardOverview();
-        setDashboardData(data.overview);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-        showSnackbar('Failed to load dashboard data', 'error');
-      } finally {
-        setLoadingDashboard(false);
-      }
-    };
+  const fetchDashboardData = async () => {
+    try {
+      setLoadingDashboard(true);
+      const data = await apiService.getDashboardOverview(true);
+      setDashboardData(data.overview);
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+      showSnackbar('Failed to load dashboard data', 'error');
+    } finally {
+      setLoadingDashboard(false);
+    }
+  };
 
+  useEffect(() => {
     if (!userLoading) {
       fetchDashboardData();
     }
   }, [userLoading]);
+
+  useEffect(() => {
+    if (currentUser?.topics) {
+      setSelectedTopics(currentUser.topics.map(t => t.topic));
+    }
+    if (currentUser?.schedules?.[0]) {
+      setScheduleData({
+        time1: currentUser.schedules[0].time1 || '09:00',
+        time2: currentUser.schedules[0].time2 || '15:00',
+        platforms: currentUser.schedules[0].platforms?.map(p => p.platform) || []
+      });
+    }
+  }, [currentUser]);
 
   const predefinedTopics = [
     'clean code practices',
@@ -98,6 +111,8 @@ const DashboardHome = () => {
         active: true
       };
       await apiService.createOrUpdateSchedule(schedulePayload);
+      await loadUserData();
+      await fetchDashboardData();
       setScheduleDialog(false);
       showSnackbar('Schedule updated successfully');
     } catch (error) {
@@ -124,6 +139,8 @@ const DashboardHome = () => {
   const handleTopicsSave = async () => {
     try {
       await apiService.updateTopics(selectedTopics);
+      await loadUserData();
+      await fetchDashboardData();
       setTopicDialog(false);
       showSnackbar('Topics updated successfully');
     } catch (error) {
@@ -376,6 +393,49 @@ const DashboardHome = () => {
               >
                 Choose Topics
               </button>
+            </div>
+
+            <div className="h-px bg-slate-100" />
+
+            <div>
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Your Integration</h4>
+              <div className="space-y-3">
+                {/* Connected Channels */}
+                <div>
+                  <p className="text-[10px] font-semibold text-slate-400 uppercase mb-1">Channels</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {['linkedin', 'twitter', 'facebook'].map(plat => {
+                      const isConnected = currentUser?.socialConnections?.[plat]?.connected;
+                      if (!isConnected) return null;
+                      return (
+                        <span key={plat} className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md text-[10px] font-bold capitalize">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          {plat}
+                        </span>
+                      );
+                    })}
+                    {Object.values(currentUser?.socialConnections || {}).filter(c => c.connected).length === 0 && (
+                      <span className="text-[11px] text-slate-400 italic">No channels connected</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Selected Topics */}
+                <div>
+                  <p className="text-[10px] font-semibold text-slate-400 uppercase mb-1">Active Topics</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedTopics.length > 0 ? (
+                      selectedTopics.map(topic => (
+                        <span key={topic} className="inline-flex items-center px-1.5 py-0.5 bg-slate-50 text-slate-600 border border-slate-200 rounded text-[10px] font-medium capitalize">
+                          #{topic}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-[11px] text-slate-400 italic">No topics chosen</span>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="h-px bg-slate-100" />
