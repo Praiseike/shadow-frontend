@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
 import topicsData from '../data/topics.json';
@@ -8,6 +8,14 @@ const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Guard: redirect to login if no auth token
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth', { replace: true });
+    }
+  }, [navigate]);
 
   const [onboardingData, setOnboardingData] = useState({
     topics: [],

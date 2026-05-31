@@ -1,30 +1,31 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
+import { isDisposableEmail } from '../utils/disposableEmails';
+import OTPVerification from './auth/OTPVerification';
 
 const Auth = ({ onLogin }) => {
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0); // 0 = Login, 1 = Signup
   const [showPassword, setShowPassword] = useState(false);
+
+  // OTP verification state
   const [showOTPVerification, setShowOTPVerification] = useState(false);
   const [otp, setOtp] = useState('');
   const [pendingEmail, setPendingEmail] = useState('');
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: ''
-  });
+  const [isNewUser, setIsNewUser] = useState(false); // track whether we redirect to onboarding
+
+  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendingOTP, setResendingOTP] = useState(false);
 
   const handleInputChange = (field) => (event) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }));
+    setFormData(prev => ({ ...prev, [field]: event.target.value }));
   };
 
+  // ── Google SSO (mock) ──────────────────────────────────────────────────────
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError('');
@@ -34,12 +35,12 @@ const Auth = ({ onLogin }) => {
         googleId: 'google-mock-id-' + Math.floor(Math.random() * 100000),
         email: 'demo-google@postnexus.com',
         name: 'Demo Google User',
-        avatar: null
+        avatar: null,
       });
-
       localStorage.setItem('token', response.token);
       localStorage.setItem('currentUser', JSON.stringify(response.user));
       onLogin(response.user);
+      navigate('/user/dashboard');
     } catch (err) {
       setError(err.message || 'Google authentication failed');
     } finally {
@@ -47,63 +48,69 @@ const Auth = ({ onLogin }) => {
     }
   };
 
+  // ── Email Auth (Login / Sign Up) ───────────────────────────────────────────
   const handleEmailAuth = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
-      let response;
-      if (tabValue === 0) { // Login
-        response = await apiService.login({
+      if (tabValue === 0) {
+        // ── LOGIN ──
+        const response = await apiService.login({
           email: formData.email,
-          password: formData.password
+          password: formData.password,
         });
 
-        // Check if email verification is required
         if (response.requiresVerification) {
+          // Unverified account: show OTP screen without a token yet
           setPendingEmail(formData.email);
+          setIsNewUser(false);
           setShowOTPVerification(true);
-          setError(response.message || 'Please verify your email address');
+          setSuccess('A verification code has been sent to your email.');
           return;
         }
 
-        // Store token and user data
+        // Verified login — persist session
         localStorage.setItem('token', response.token);
         localStorage.setItem('currentUser', JSON.stringify(response.user));
         onLogin(response.user);
-      } else { // Sign up
+        navigate('/user/dashboard');
+
+      } else {
+        // ── SIGN UP ──
         if (!formData.email || !formData.password || !formData.name) {
           throw new Error('All fields are required');
         }
 
-        response = await apiService.register({
+        if (isDisposableEmail(formData.email)) {
+          throw new Error('Temporary or disposable email addresses are not allowed. Please use a permanent email address.');
+        }
+
+        const response = await apiService.register({
           email: formData.email,
           password: formData.password,
-          name: formData.name
+          name: formData.name,
         });
 
-        // Check if OTP verification is required
         if (response.requiresVerification) {
+          // Show OTP screen — no token yet
           setPendingEmail(formData.email);
+          setIsNewUser(true);
           setShowOTPVerification(true);
-          setError('');
+          setSuccess('Check your email for a verification code to activate your account.');
           return;
         }
 
-        // Store token and user data
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('currentUser', JSON.stringify(response.user));
-
-        // Redirect to onboarding for new users
-        navigate('/onboarding');
-        return;
+        // Edge case: registration returned a token immediately
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          onLogin(response.user);
+          navigate('/onboarding');
+        }
       }
-
-      // Store token and user data
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('currentUser', JSON.stringify(response.user));
-      onLogin(response.user);
     } catch (err) {
       setError(err.message || 'Authentication failed');
     } finally {
@@ -111,6 +118,73 @@ const Auth = ({ onLogin }) => {
     }
   };
 
+  // ── OTP Verification ───────────────────────────────────────────────────────
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    if (!otp || otp.length < 4) {
+      setError('Please enter the verification code');
+      return;
+    }
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await apiService.verifyOTP(pendingEmail, otp);
+
+      // verifyOTP returns { message, user, token }
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+      onLogin(response.user);
+
+      // New users → onboarding; returning users → dashboard
+      navigate(isNewUser ? '/onboarding' : '/user/dashboard');
+    } catch (err) {
+      setError(err.message || 'Invalid or expired verification code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    setResendingOTP(true);
+    setError('');
+    setSuccess('');
+    try {
+      await apiService.sendOTP(pendingEmail);
+      setSuccess('A new code has been sent to your email.');
+    } catch (err) {
+      setError(err.message || 'Failed to resend code');
+    } finally {
+      setResendingOTP(false);
+    }
+  };
+
+  // ── OTP Screen ─────────────────────────────────────────────────────────────
+  if (showOTPVerification) {
+    return (
+      <OTPVerification
+        showOTPVerification={showOTPVerification}
+        pendingEmail={pendingEmail}
+        otp={otp}
+        setOtp={setOtp}
+        error={error}
+        success={success}
+        loading={loading}
+        resendingOTP={resendingOTP}
+        handleVerifyOTP={handleVerifyOTP}
+        handleResendOTP={handleResendOTP}
+        onCancel={() => {
+          setShowOTPVerification(false);
+          setOtp('');
+          setError('');
+          setSuccess('');
+        }}
+      />
+    );
+  }
+
+
+  // ── Login / Sign Up Screen ─────────────────────────────────────────────────
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl border border-slate-200/80 shadow-sm">
@@ -120,9 +194,7 @@ const Auth = ({ onLogin }) => {
             <svg className="w-10 h-10 text-indigo-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span className="text-2xl font-extrabold text-slate-900 tracking-tight">
-              PostNexus
-            </span>
+            <span className="text-2xl font-extrabold text-slate-900 tracking-tight">PostNexus</span>
           </div>
           <h2 className="text-xl font-bold text-slate-950">
             {tabValue === 0 ? 'Welcome back' : 'Create your account'}
@@ -137,10 +209,7 @@ const Auth = ({ onLogin }) => {
         {/* Tab Selection */}
         <div className="flex bg-slate-100 p-1 rounded-xl">
           <button
-            onClick={() => {
-              setTabValue(0);
-              setError('');
-            }}
+            onClick={() => { setTabValue(0); setError(''); setSuccess(''); }}
             className={`flex-1 text-center py-2.5 text-sm font-semibold rounded-lg transition-all duration-150 ${
               tabValue === 0 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
             }`}
@@ -148,10 +217,7 @@ const Auth = ({ onLogin }) => {
             Login
           </button>
           <button
-            onClick={() => {
-              setTabValue(1);
-              setError('');
-            }}
+            onClick={() => { setTabValue(1); setError(''); setSuccess(''); }}
             className={`flex-1 text-center py-2.5 text-sm font-semibold rounded-lg transition-all duration-150 ${
               tabValue === 1 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
             }`}
@@ -160,7 +226,7 @@ const Auth = ({ onLogin }) => {
           </button>
         </div>
 
-        {/* Errors */}
+        {/* Alerts */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg flex items-center gap-2">
             <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,7 +242,7 @@ const Auth = ({ onLogin }) => {
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-slate-200 rounded-lg bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-sm active:bg-slate-100 transition-all duration-150"
+            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-slate-200 rounded-lg bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-sm active:bg-slate-100 transition-all duration-150 disabled:opacity-60"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

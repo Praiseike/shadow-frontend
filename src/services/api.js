@@ -289,6 +289,30 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  async uploadMedia(file) {
+    const formData = new FormData();
+    formData.append('media', file);
+
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const url = `${this.baseURL}/posts/upload`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Upload failed');
+    }
+    return data;
+  }
 }
 
 export default new ApiService();

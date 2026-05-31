@@ -114,8 +114,8 @@ const SchedulePage = ({ user }) => {
 
   const handleScheduleSave = async () => {
     try {
-      if (scheduleData.times.length === 0) {
-        showSnackbar('At least one posting time is required', 'error');
+      if (!scheduleData.time1 || !scheduleData.time2) {
+        showSnackbar('Both post times are required', 'error');
         return;
       }
 
@@ -124,18 +124,11 @@ const SchedulePage = ({ user }) => {
         return;
       }
 
-      if (scheduleData.type === 'custom' && scheduleData.customDays.length === 0) {
-        showSnackbar('Please select at least one day for custom schedule', 'error');
-        return;
-      }
-
       const schedulePayload = {
-        name: scheduleData.name,
-        type: scheduleData.type,
-        times: scheduleData.times, // New format
-        time1: scheduleData.times[0] || scheduleData.time1, // Legacy support
-        time2: scheduleData.times[1] || scheduleData.time2, // Legacy support
-        customDays: scheduleData.type === 'custom' ? scheduleData.customDays : null,
+        type: 'daily',
+        times: [scheduleData.time1, scheduleData.time2],
+        time1: scheduleData.time1,
+        time2: scheduleData.time2,
         platforms: scheduleData.platforms,
         startDate: scheduleData.startDate,
         active: true
@@ -150,7 +143,7 @@ const SchedulePage = ({ user }) => {
       showSnackbar('Schedule updated successfully');
     } catch (error) {
       console.error('Failed to save schedule:', error);
-      showSnackbar('Failed to update schedule', 'error');
+      showSnackbar(error.message || 'Failed to update schedule', 'error');
     }
   };
 
@@ -363,12 +356,36 @@ const SchedulePage = ({ user }) => {
 
       {/* Snackbar Alert */}
       {snackbar.open && (
-        <div className="fixed bottom-4 right-4 z-50 animate-in fade-in slide-in-from-bottom duration-300">
-          <div className={`px-4 py-3 rounded-xl shadow-lg border text-sm font-semibold flex items-center gap-2 ${
-            snackbar.severity === 'error' ? 'bg-rose-50 border-rose-200 text-rose-700' :
-            'bg-emerald-50 border-emerald-200 text-emerald-700'
-          }`}>
-            <span>{snackbar.message}</span>
+        <div className="fixed top-5 right-5 z-50 animate-in fade-in slide-in-from-top duration-300">
+          <div className="flex items-center gap-3 px-4 py-3 bg-white/95 backdrop-blur-md border border-slate-200/60 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] max-w-md">
+            {snackbar.severity === 'error' ? (
+              <div className="flex-shrink-0 p-1.5 bg-rose-50 text-rose-600 rounded-lg">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+            ) : snackbar.severity === 'warning' ? (
+              <div className="flex-shrink-0 p-1.5 bg-amber-50 text-amber-600 rounded-lg">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+            ) : (
+              <div className="flex-shrink-0 p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            )}
+            <span className="text-sm font-semibold text-slate-800 pr-2 leading-tight">{snackbar.message}</span>
+            <button
+              onClick={() => setSnackbar(prev => ({ ...prev, open: false }))}
+              className="ml-auto text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
       )}
