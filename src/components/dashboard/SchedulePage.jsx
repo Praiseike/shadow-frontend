@@ -203,11 +203,15 @@ const SchedulePage = ({ user }) => {
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">TARGET PLATFORMS</span>
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
-                    {schedule.platforms?.map(platform => (
-                      <span key={platform} className="px-2.5 py-1 bg-indigo-100/50 text-indigo-700 text-xs font-bold rounded-lg uppercase tracking-wider">
-                        {platform}
-                      </span>
-                    )) || <span className="text-xs font-medium text-slate-400">None selected</span>}
+                    {schedule.platforms?.map(platform => {
+                      const platformStr = typeof platform === 'string' ? platform : platform.platform;
+                      const platformKey = typeof platform === 'string' ? platform : (platform.id || platform.platform);
+                      return (
+                        <span key={platformKey} className="px-2.5 py-1 bg-indigo-100/50 text-indigo-700 text-xs font-bold rounded-lg uppercase tracking-wider">
+                          {platformStr}
+                        </span>
+                      );
+                    }) || <span className="text-xs font-medium text-slate-400">None selected</span>}
                   </div>
                 </div>
               </div>
