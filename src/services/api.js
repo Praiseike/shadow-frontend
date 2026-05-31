@@ -39,8 +39,8 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        // Handle 401 Unauthorized
-        if (response.status === 401 && !exceptions.includes(window.location.pathname)) {
+        // Handle 401 Unauthorized or 403 Forbidden (invalid/expired token)
+        if ([401, 403].includes(response.status) && !exceptions.includes(window.location.pathname)) {
           // Clear user data
           localStorage.removeItem('token');
           localStorage.removeItem('currentUser');
