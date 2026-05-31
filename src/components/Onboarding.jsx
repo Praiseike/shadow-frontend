@@ -21,8 +21,9 @@ const Onboarding = () => {
     topics: [],
     bio: '',
     schedule: {
-      time1: '09:00',
-      time2: '15:00',
+      type: 'custom',
+      customDays: [1, 4], // Mon and Thu default (2 posts/week)
+      time: '09:00',
       platforms: ['linkedin'],
       startDate: new Date().toISOString().split('T')[0]
     }
@@ -83,6 +84,11 @@ const Onboarding = () => {
   };
 
   const handleNext = () => {
+    if (currentStep === 2 && (!onboardingData.schedule.customDays || onboardingData.schedule.customDays.length === 0)) {
+      setError('Please select at least one day of the week for your posting schedule.');
+      return;
+    }
+    setError('');
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -91,12 +97,17 @@ const Onboarding = () => {
   };
 
   const handleBack = () => {
+    setError('');
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
   const handleComplete = async () => {
+    if (!onboardingData.schedule.customDays || onboardingData.schedule.customDays.length === 0) {
+      setError('Please select at least one day of the week for your posting schedule.');
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -111,8 +122,9 @@ const Onboarding = () => {
 
       // Create schedule
       await apiService.createOrUpdateSchedule({
-        time1: onboardingData.schedule.time1,
-        time2: onboardingData.schedule.time2,
+        type: 'custom',
+        customDays: onboardingData.schedule.customDays,
+        times: [onboardingData.schedule.time],
         platforms: onboardingData.schedule.platforms,
         startDate: onboardingData.schedule.startDate,
         active: true
@@ -217,47 +229,86 @@ const Onboarding = () => {
         return (
           <div className="w-full">
             <h3 className="text-lg font-semibold text-slate-900 mb-1">Posting Schedule</h3>
-            <p className="text-sm text-slate-500 mb-6">Set two times per day and select a start date for automated posting.</p>
+            <p className="text-sm text-slate-500 mb-6">Select the days of the week and preferred post time for automated scheduling.</p>
+
+            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              Select Posting Days (Choose up to 2 days)
+            </h4>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {[
+                { label: 'Sun', value: 0 },
+                { label: 'Mon', value: 1 },
+                { label: 'Tue', value: 2 },
+                { label: 'Wed', value: 3 },
+                { label: 'Thu', value: 4 },
+                { label: 'Fri', value: 5 },
+                { label: 'Sat', value: 6 }
+              ].map(day => {
+                const isSelected = onboardingData.schedule.customDays.includes(day.value);
+                return (
+                  <button
+                    key={day.value}
+                    type="button"
+                    onClick={() => {
+                      setOnboardingData(prev => {
+                        const currentDays = prev.schedule.customDays || [];
+                        let newDays;
+                        if (currentDays.includes(day.value)) {
+                          newDays = currentDays.filter(d => d !== day.value);
+                        } else {
+                          if (currentDays.length >= 2) {
+                            return prev;
+                          }
+                          newDays = [...currentDays, day.value].sort();
+                        }
+                        return {
+                          ...prev,
+                          schedule: {
+                            ...prev.schedule,
+                            customDays: newDays
+                          }
+                        };
+                      });
+                    }}
+                    className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-semibold transition-all border ${
+                      isSelected
+                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
+                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    {day.label}
+                  </button>
+                );
+              })}
+            </div>
             
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1.5">FIRST POST TIME</label>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">PREFERRED POST TIME</label>
                 <input
                   type="time"
-                  value={onboardingData.schedule.time1}
+                  value={onboardingData.schedule.time}
                   onChange={(e) => setOnboardingData(prev => ({
                     ...prev,
-                    schedule: { ...prev.schedule, time1: e.target.value }
+                    schedule: { ...prev.schedule, time: e.target.value }
                   }))}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1.5">SECOND POST TIME</label>
-                <input
-                  type="time"
-                  value={onboardingData.schedule.time2}
-                  onChange={(e) => setOnboardingData(prev => ({
-                    ...prev,
-                    schedule: { ...prev.schedule, time2: e.target.value }
-                  }))}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
-                />
-              </div>
-            </div>
 
-            <div className="mb-6">
-              <label className="block text-xs font-semibold text-slate-500 mb-1.5">SCHEDULE START DATE</label>
-              <input
-                type="date"
-                value={onboardingData.schedule.startDate}
-                min={new Date().toISOString().split('T')[0]}
-                onChange={(e) => setOnboardingData(prev => ({
-                  ...prev,
-                  schedule: { ...prev.schedule, startDate: e.target.value }
-                }))}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
-              />
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">SCHEDULE START DATE</label>
+                <input
+                  type="date"
+                  value={onboardingData.schedule.startDate}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) => setOnboardingData(prev => ({
+                    ...prev,
+                    schedule: { ...prev.schedule, startDate: e.target.value }
+                  }))}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm"
+                />
+              </div>
             </div>
 
             <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
