@@ -19,6 +19,8 @@ import SettingsPage from './components/dashboard/SettingsPage';
 import ScheduledPostsPage from './components/dashboard/ScheduledPostsPage';
 import Terms from './components/Terms';
 import Privacy from './components/Privacy';
+import Security from './components/Security';
+import Cookies from './components/Cookies';
 import Onboarding from './components/Onboarding';
 import AdminDashboard from './components/AdminDashboard';
 
@@ -50,6 +52,8 @@ function AppContent({ handleLogin }) {
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
+      <Route path="/security" element={<Security />} />
+      <Route path="/cookies" element={<Cookies />} />
       <Route
         path="/auth"
         element={

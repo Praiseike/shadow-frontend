@@ -5,107 +5,111 @@ const Terms = () => {
   return (
     <Layout>
       <Container maxWidth="md" sx={{ py: 8 }}>
-        <Paper sx={{
-          p: 6,
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: 4
-        }}>
+        <Paper 
+          elevation={0}
+          sx={{
+            p: { xs: 4, md: 6 },
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 4,
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)'
+          }}
+        >
           <Typography variant="h2" sx={{
-            color: 'white',
-            fontWeight: 900,
-            mb: 4,
+            color: '#0f172a',
+            fontWeight: 800,
+            mb: 2,
             textAlign: 'center',
-            fontSize: { xs: '2.5rem', md: '3.5rem' },
+            fontSize: { xs: '2.25rem', md: '3rem' },
             letterSpacing: '-1px'
           }}>
             Terms of Service
           </Typography>
 
           <Typography variant="h6" sx={{
-            color: 'rgba(255, 255, 255, 0.7)',
+            color: '#64748b',
             mb: 6,
             textAlign: 'center',
-            lineHeight: 1.8
+            fontSize: '0.875rem',
+            fontWeight: 500
           }}>
             Last updated: October 27, 2024
           </Typography>
 
-          <Box sx={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.8 }}>
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+          <Box sx={{ color: '#334155', lineHeight: 1.8 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               1. Acceptance of Terms
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               By accessing and using PostNexus, you accept and agree to be bound by the terms and provision of this agreement.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               2. Use License
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               Permission is granted to temporarily use PostNexus for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
             </Typography>
             <Box sx={{ pl: 4, mb: 4 }}>
-              <Typography variant="body1" sx={{ mb: 2 }}>• Modify or copy the materials</Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>• Use the materials for any commercial purpose or for any public display</Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>• Attempt to decompile or reverse engineer any software contained on PostNexus</Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>• Remove any copyright or other proprietary notations from the materials</Typography>
+              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Modify or copy the materials</Typography>
+              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Use the materials for any commercial purpose or for any public display</Typography>
+              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Attempt to decompile or reverse engineer any software contained on PostNexus</Typography>
+              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Remove any copyright or other proprietary notations from the materials</Typography>
             </Box>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               3. Service Description
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               PostNexus provides AI-powered social media content generation and automation services. We reserve the right to modify or discontinue the service at any time without notice.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               4. User Responsibilities
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               5. Content Ownership
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               All content generated by our AI remains your property. You retain full rights to use, modify, and distribute the generated content as you see fit.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               6. Limitation of Liability
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               In no event shall PostNexus or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use PostNexus.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               7. Termination
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               8. Governing Law
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               These terms and conditions are governed by and construed in accordance with applicable laws, and any disputes relating to these terms and conditions will be subject to the exclusive jurisdiction of the courts.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               9. Changes to Terms
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.
             </Typography>
 
-            <Typography variant="h4" sx={{ color: 'white', fontWeight: 700, mb: 3, mt: 4 }}>
+            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
               10. Contact Information
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
               If you have any questions about these Terms of Service, please contact us at legal@autopost.ai.
             </Typography>
           </Box>
