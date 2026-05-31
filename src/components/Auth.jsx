@@ -197,11 +197,33 @@ const Auth = ({ onLogin }) => {
             <span className="text-2xl font-extrabold text-slate-900 tracking-tight">PostNexus</span>
           </div>
           <h2 className="text-xl font-bold text-slate-950">
-            Welcome back
+            {tabValue === 0 ? 'Welcome back' : 'Create your account'}
           </h2>
           <p className="mt-1.5 text-sm text-slate-500">
-            Enter your credentials to access your dashboard
+            {tabValue === 0
+              ? 'Enter your credentials to access your dashboard'
+              : 'Start your 14-day free trial, no credit card required'}
           </p>
+        </div>
+
+        {/* Tab Selection */}
+        <div className="flex bg-slate-100 p-1 rounded-xl">
+          <button
+            onClick={() => { setTabValue(0); setError(''); setSuccess(''); }}
+            className={`flex-1 text-center py-2.5 text-sm font-semibold rounded-lg transition-all duration-150 ${
+              tabValue === 0 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            Login
+          </button>
+          <button
+            onClick={() => { setTabValue(1); setError(''); setSuccess(''); }}
+            className={`flex-1 text-center py-2.5 text-sm font-semibold rounded-lg transition-all duration-150 ${
+              tabValue === 1 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            Sign Up
+          </button>
         </div>
 
         {/* Alerts */}
@@ -316,9 +338,22 @@ const Auth = ({ onLogin }) => {
 
         {/* Footer Subtext */}
         <div className="text-center pt-2">
+          {tabValue === 0 ? (
+            <p className="text-xs text-slate-500">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                className="font-bold text-indigo-600 hover:text-indigo-700"
+                onClick={() => setTabValue(1)}
+              >
+                Sign up free
+              </button>
+            </p>
+          ) : (
           <p className="text-xs text-slate-400">
-            PostNexus Social Media Management Platform
+              ✓ No credit card required  •  ✓ 14-day free trial
           </p>
+          )}
         </div>
       </div>
     </div>
