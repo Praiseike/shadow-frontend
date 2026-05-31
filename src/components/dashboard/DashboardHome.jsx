@@ -665,10 +665,10 @@ const DashboardHome = () => {
               
               <div className="space-y-3">
                 {[
-                  { platform: 'linkedin', name: 'LinkedIn', color: 'bg-blue-600 hover:bg-blue-700' },
-                  { platform: 'twitter', name: 'Twitter', color: 'bg-sky-500 hover:bg-sky-600' },
-                  { platform: 'facebook', name: 'Facebook', color: 'bg-blue-700 hover:bg-blue-800' }
-                ].map(({ platform, name, color }) => {
+                  { platform: 'linkedin', name: 'LinkedIn', color: 'bg-blue-600 hover:bg-blue-700', available: true },
+                  { platform: 'twitter', name: 'Twitter', color: 'bg-sky-500 hover:bg-sky-600', available: false },
+                  { platform: 'facebook', name: 'Facebook', color: 'bg-blue-700 hover:bg-blue-800', available: false }
+                ].map(({ platform, name, color, available }) => {
                   const isConnected = currentUser?.socialConnections?.[platform]?.connected;
                   return (
                     <div key={platform} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50">
@@ -677,13 +677,17 @@ const DashboardHome = () => {
                         <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-lg uppercase">
                           Connected
                         </span>
-                      ) : (
+                      ) : available ? (
                         <button
                           onClick={() => handleSocialConnect(platform)}
                           className={`px-3 py-1.5 text-white rounded-lg text-[10px] font-bold uppercase transition-all shadow-xs ${color}`}
                         >
                           Connect
                         </button>
+                      ) : (
+                        <span className="px-2.5 py-1 bg-slate-100 text-slate-400 text-[10px] font-bold rounded-lg uppercase">
+                          Coming Soon
+                        </span>
                       )}
                     </div>
                   );
