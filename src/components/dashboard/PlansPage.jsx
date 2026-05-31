@@ -325,72 +325,93 @@ const PlansPage = () => {
       )}
 
       <div className="grid md:grid-cols-3 gap-6">
-        {plans.map((plan) => (
-          <div
-            key={plan.id}
-            className={`bg-white border rounded-lg shadow-sm p-6 ${
-              userPlan?.plan?.id === plan.id
-                ? 'border-blue-500 ring-2 ring-blue-200'
-                : 'border-gray-200'
-            }`}
-          >
-            <div className="text-center mb-4">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-1">
-                {plan.price ? `$${plan.price}` : 'Free'}
-                {plan.price && <span className="text-sm font-normal text-gray-500">/month</span>}
-              </div>
-            </div>
+        {plans.map((plan) => {
+          const isFree = !plan.price || plan.price === 0 || plan.name.toLowerCase() === 'free';
+          const comingSoon = !isFree;
 
-            <ul className="space-y-3 mb-6">
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-gray-700">{plan.postsPerWeek} posts per week</span>
-              </li>
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-gray-700">All social platforms</span>
-              </li>
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-gray-700">AI content generation</span>
-              </li>
-              <li className="flex items-center">
-                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-gray-700">Automated scheduling</span>
-              </li>
-            </ul>
-
-            <button
-              onClick={() => handleSubscribe(plan.id)}
-              disabled={userPlan?.plan?.id === plan.id || subscribing === plan.id}
-              className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
+          return (
+            <div
+              key={plan.id}
+              className={`bg-white border rounded-lg shadow-sm p-6 relative overflow-hidden ${
                 userPlan?.plan?.id === plan.id
-                  ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                  : subscribing === plan.id
-                  ? 'bg-blue-400 text-white cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'border-blue-500 ring-2 ring-blue-200'
+                  : 'border-gray-200'
               }`}
             >
-              {userPlan?.plan?.id === plan.id
-                ? 'Current Plan'
-                : subscribing === plan.id
-                ? 'Processing...'
-                : plan.price
-                ? `Subscribe - $${plan.price}/month`
-                : 'Get Started'
-              }
-            </button>
-          </div>
-        ))}
+              {comingSoon && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50/20 backdrop-blur-[2.5px] z-10">
+                  <span className="px-4 py-2 bg-indigo-600/90 text-white text-xs font-bold tracking-wider uppercase rounded-xl shadow-md border border-white/20">
+                    Coming Soon
+                  </span>
+                </div>
+              )}
+
+              <div className={`flex flex-col justify-between h-full ${comingSoon ? 'filter blur-[1.5px] select-none pointer-events-none' : ''}`}>
+                <div>
+                  <div className="text-center mb-4">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <div className="text-3xl font-bold text-blue-600 mb-1">
+                      {!plan.price || plan.price === 0 ? 'Free' : `$${plan.price}`}
+                      {plan.price > 0 && <span className="text-sm font-normal text-gray-500">/month</span>}
+                    </div>
+                  </div>
+
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">
+                        {plan.name.toLowerCase() === 'free' ? 'LinkedIn Integration only' : 'All social platforms'}
+                      </span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">{plan.postsPerWeek} posts per week</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">AI content generation</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">Automated scheduling</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <button
+                  onClick={() => !comingSoon && handleSubscribe(plan.id)}
+                  disabled={comingSoon || userPlan?.plan?.id === plan.id || subscribing === plan.id}
+                  className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
+                    userPlan?.plan?.id === plan.id
+                      ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                      : subscribing === plan.id
+                      ? 'bg-blue-400 text-white cursor-not-allowed'
+                      : comingSoon
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                >
+                  {userPlan?.plan?.id === plan.id
+                    ? 'Current Plan'
+                    : subscribing === plan.id
+                    ? 'Processing...'
+                    : comingSoon
+                    ? 'Coming Soon'
+                    : 'Get Started'
+                  }
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

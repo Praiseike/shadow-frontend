@@ -64,51 +64,52 @@ const LandingPage = () => {
 
   const pricingPlans = [
     {
-      name: "Starter",
-      price: "$9",
+      name: "Free",
+      price: "$0",
       period: "/month",
-      description: "Perfect for individual developers starting out",
+      description: "Automate your basic LinkedIn presence for free",
       features: [
-        "1 Social Account Link",
-        "AI Content Generation Support",
-        "Basic Queue Scheduling",
-        "Content History Analytics",
-        "Standard Email Support"
+        "LinkedIn Integration only",
+        "2 posts per week",
+        "AI Content Generation",
+        "Standard daily posting schedule",
+        "Community support"
       ],
       popular: false,
-      buttonText: "Start Free Trial"
+      buttonText: "Get Started Free",
+      isFree: true
     },
     {
-      name: "Professional",
-      price: "$29",
+      name: "Pro",
+      price: "$15",
       period: "/month",
-      description: "For growing professionals and thought leaders",
+      description: "Perfect for active professionals and creators",
       features: [
-        "3 Social Account Links",
-        "Advanced Content Suggestions",
-        "Custom Automated Schedules",
-        "Detailed Performance Analytics",
-        "Priority Email Support",
-        "Custom Topic Configurations"
+        "All social platforms",
+        "10 posts per week",
+        "AI Content Generation",
+        "Custom automated scheduling",
+        "Priority email support"
       ],
       popular: true,
-      buttonText: "Get Started"
+      buttonText: "Coming Soon",
+      comingSoon: true
     },
     {
       name: "Enterprise",
-      price: "$99",
+      price: "$49",
       period: "/month",
-      description: "For agencies and tech teams",
+      description: "For advanced creators and agencies",
       features: [
-        "Unlimited Connected Accounts",
-        "Premium Content Features",
-        "Team Dashboard Access",
-        "Advanced Analytics & Exports",
-        "Dedicated Support",
-        "Full API Access"
+        "All social platforms",
+        "50 posts per week",
+        "AI Content Generation",
+        "Unlimited custom schedule queues",
+        "Dedicated support"
       ],
       popular: false,
-      buttonText: "Get Started"
+      buttonText: "Coming Soon",
+      comingSoon: true
     }
   ];
 
@@ -336,44 +337,58 @@ const LandingPage = () => {
             {pricingPlans.map((plan, i) => (
               <div
                 key={i}
-                className={`bg-white border rounded-2xl p-8 flex flex-col justify-between shadow-sm relative ${
+                className={`bg-white border rounded-2xl p-8 flex flex-col justify-between shadow-sm relative overflow-hidden ${
                   plan.popular ? 'border-2 border-indigo-600 md:scale-[1.03]' : 'border-slate-200'
                 }`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-3 right-6 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white shadow-sm">
+                  <span className="absolute -top-3 right-6 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white shadow-sm z-20">
                     Most Popular
                   </span>
                 )}
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">{plan.name}</h3>
-                  <div className="flex items-baseline mb-2">
-                    <span className="text-4xl font-extrabold text-slate-900">{plan.price}</span>
-                    <span className="text-slate-500 text-sm ml-1">{plan.period}</span>
+                {plan.comingSoon && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50/20 backdrop-blur-[2.5px] z-10">
+                    <span className="px-4 py-2 bg-indigo-600/90 text-white text-xs font-bold tracking-wider uppercase rounded-xl shadow-md border border-white/20">
+                      Coming Soon
+                    </span>
                   </div>
-                  <p className="text-slate-500 text-xs leading-relaxed mb-6">{plan.description}</p>
-                  <ul className="space-y-3 mb-8 border-t border-slate-100 pt-6">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-600">
-                        <svg className="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                )}
+                <div className={`flex flex-col justify-between h-full ${plan.comingSoon ? 'filter blur-[1.5px] select-none pointer-events-none' : ''}`}>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900 mb-2">{plan.name}</h3>
+                    <div className="flex items-baseline mb-2">
+                      <span className="text-4xl font-extrabold text-slate-900">{plan.price}</span>
+                      <span className="text-slate-500 text-sm ml-1">{plan.period}</span>
+                    </div>
+                    <p className="text-slate-500 text-xs leading-relaxed mb-6">{plan.description}</p>
+                    <ul className="space-y-3 mb-8 border-t border-slate-100 pt-6">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-600">
+                          <svg className="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                <Link
-                  to={plan.name === 'Starter' ? '/auth' : '/user/plans'}
-                  className={`w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150 ${
-                    plan.popular
-                      ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200'
-                  }`}
-                >
-                  {plan.buttonText}
-                </Link>
+                  <Link
+                    to={plan.isFree ? '/auth' : '#'}
+                    onClick={(e) => {
+                      if (!plan.isFree) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className={`w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150 ${
+                      plan.popular
+                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200'
+                    }`}
+                  >
+                    {plan.buttonText}
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
