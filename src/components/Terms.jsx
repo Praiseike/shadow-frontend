@@ -1,120 +1,96 @@
-import { Container, Typography, Box, Paper } from '@mui/material';
 import Layout from './Layout';
 
 const Terms = () => {
   return (
     <Layout>
-      <Container maxWidth="md" sx={{ py: 8 }}>
-        <Paper 
-          elevation={0}
-          sx={{
-            p: { xs: 4, md: 6 },
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)'
-          }}
-        >
-          <Typography variant="h2" sx={{
-            color: '#0f172a',
-            fontWeight: 800,
-            mb: 2,
-            textAlign: 'center',
-            fontSize: { xs: '2.25rem', md: '3rem' },
-            letterSpacing: '-1px'
-          }}>
+      <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 md:p-10 shadow-xs">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight text-center mb-2">
             Terms of Service
-          </Typography>
-
-          <Typography variant="h6" sx={{
-            color: '#64748b',
-            mb: 6,
-            textAlign: 'center',
-            fontSize: '0.875rem',
-            fontWeight: 500
-          }}>
+          </h1>
+          <p className="text-xs font-semibold text-slate-400 text-center mb-8">
             Last updated: October 27, 2024
-          </Typography>
+          </p>
 
-          <Box sx={{ color: '#334155', lineHeight: 1.8 }}>
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              1. Acceptance of Terms
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              By accessing and using PostNexus, you accept and agree to be bound by the terms and provision of this agreement.
-            </Typography>
+          <div className="text-slate-600 text-sm leading-relaxed space-y-6">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">1. Acceptance of Terms</h2>
+              <p>
+                By accessing and using PostNexus, you accept and agree to be bound by the terms and provision of this agreement.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              2. Use License
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              Permission is granted to temporarily use PostNexus for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
-            </Typography>
-            <Box sx={{ pl: 4, mb: 4 }}>
-              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Modify or copy the materials</Typography>
-              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Use the materials for any commercial purpose or for any public display</Typography>
-              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Attempt to decompile or reverse engineer any software contained on PostNexus</Typography>
-              <Typography variant="body1" sx={{ mb: 1, fontSize: '0.95rem' }}>• Remove any copyright or other proprietary notations from the materials</Typography>
-            </Box>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">2. Use License</h2>
+              <p>
+                Permission is granted to temporarily use PostNexus for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+              </p>
+              <ul className="list-disc pl-5 mt-2 space-y-1 text-slate-500">
+                <li>Modify or copy the materials</li>
+                <li>Use the materials for any commercial purpose or for any public display</li>
+                <li>Attempt to decompile or reverse engineer any software contained on PostNexus</li>
+                <li>Remove any copyright or other proprietary notations from the materials</li>
+              </ul>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              3. Service Description
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              PostNexus provides AI-powered social media content generation and automation services. We reserve the right to modify or discontinue the service at any time without notice.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">3. Service Description</h2>
+              <p>
+                PostNexus provides AI-powered social media content generation and automation services. We reserve the right to modify or discontinue the service at any time without notice.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              4. User Responsibilities
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">4. User Responsibilities</h2>
+              <p>
+                You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              5. Content Ownership
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              All content generated by our AI remains your property. You retain full rights to use, modify, and distribute the generated content as you see fit.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">5. Content Ownership</h2>
+              <p>
+                All content generated by our AI remains your property. You retain full rights to use, modify, and distribute the generated content as you see fit.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              6. Limitation of Liability
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              In no event shall PostNexus or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use PostNexus.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">6. Limitation of Liability</h2>
+              <p>
+                In no event shall PostNexus or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use PostNexus.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              7. Termination
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">7. Termination</h2>
+              <p>
+                We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              8. Governing Law
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              These terms and conditions are governed by and construed in accordance with applicable laws, and any disputes relating to these terms and conditions will be subject to the exclusive jurisdiction of the courts.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">8. Governing Law</h2>
+              <p>
+                These terms and conditions are governed by and construed in accordance with applicable laws, and any disputes relating to these terms and conditions will be subject to the exclusive jurisdiction of the courts.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              9. Changes to Terms
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.
-            </Typography>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">9. Changes to Terms</h2>
+              <p>
+                We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.
+              </p>
+            </div>
 
-            <Typography variant="h4" sx={{ color: '#0f172a', fontWeight: 700, mb: 2, mt: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-              10. Contact Information
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: '0.95rem' }}>
-              If you have any questions about these Terms of Service, please contact us at legal@autopost.ai.
-            </Typography>
-          </Box>
-        </Paper>
-      </Container>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 mb-2">10. Contact Information</h2>
+              <p>
+                If you have any questions about these Terms of Service, please contact us at legal@autopost.ai.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 };
