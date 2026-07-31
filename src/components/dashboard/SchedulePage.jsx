@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiService from '../../services/api';
+import PreGeneratedPosts from './PreGeneratedPosts';
 
 const SchedulePage = ({ user }) => {
   const [currentUser, setCurrentUser] = useState(user);
@@ -173,6 +174,9 @@ const SchedulePage = ({ user }) => {
           </div>
         )}
       </div>
+
+      {/* Pre-Generated Upcoming Posts */}
+      <PreGeneratedPosts />
 
       {/* Schedule Dialog Modal */}
       {scheduleDialog && (

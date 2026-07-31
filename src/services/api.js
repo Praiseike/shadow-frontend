@@ -143,6 +143,25 @@ class ApiService {
     });
   }
 
+  // Scheduled Posts endpoints
+  async getScheduledPosts(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/posts/scheduled${query ? `?${query}` : ''}`);
+  }
+
+  async regenerateScheduledPost(id, suggestion) {
+    return this.request(`/posts/scheduled/${id}/regenerate`, {
+      method: 'POST',
+      body: JSON.stringify({ suggestion })
+    });
+  }
+
+  async cancelScheduledPost(id) {
+    return this.request(`/posts/scheduled/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
   // Topic endpoints
   async addTopic(topic) {
     return this.request('/topics', {
